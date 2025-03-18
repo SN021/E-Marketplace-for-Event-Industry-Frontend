@@ -1,55 +1,56 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Webhook } from 'svix';
-import { buffer } from 'micro'; 
+import { buffer } from 'micro';
 import { createClient } from '@supabase/supabase-js';
 
-// Supabase client (Service role key gives full DB access)
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
-// Disable Next.js body parsing to get the raw body for svix
+// Disable body parsing (must be raw)
 export const config = {
   api: {
     bodyParser: false,
   },
 };
 
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  // ✅ Check for POST
   if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
+    console.log(`❌ Method ${req.method} not allowed`);
+    return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET!;
-  const svix = new Webhook(WEBHOOK_SECRET);
-
-  // Get the raw body
+  // ✅ Get the raw body
   const payload = (await buffer(req)).toString();
 
-  // Get headers in the expected format
+  // ✅ Extract svix headers manually
   const headers = req.headers;
-
   const svixHeaders = {
     "svix-id": headers["svix-id"] as string,
     "svix-timestamp": headers["svix-timestamp"] as string,
     "svix-signature": headers["svix-signature"] as string,
   };
 
+  const webhookSecret = process.env.CLERK_WEBHOOK_SECRET!;
+
+  const svix = new Webhook(webhookSecret);
+
   let evt: { type: string; data: any };
 
   try {
     evt = svix.verify(payload, svixHeaders) as { type: string; data: any };
   } catch (err) {
-    console.error('Webhook signature verification failed.', err);
+    console.error('❌ Webhook signature verification failed:', err);
     return res.status(400).json({ message: 'Invalid signature' });
   }
 
   const { type, data } = evt;
 
-  console.log(`🔔 Received Clerk webhook: ${type}`);
+  console.log(`✅ Received webhook type: ${type}`);
 
-  // Handle different webhook types
+  // ✅ Do something with the event
   if (type === 'user.created') {
     const { id, email_addresses, first_name, last_name } = data;
     const email = email_addresses?.[0]?.email_address;
@@ -64,51 +65,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     ]);
 
     if (error) {
-      console.error('Error inserting user:', error);
-      return res.status(500).json({ message: 'Supabase insert failed' });
+      console.error('❌ Supabase insert error:', error);
+      return res.status(500).json({ message: 'Failed to insert user' });
     }
 
-    console.log('✅ User inserted into Supabase');
+    console.log('✅ User inserted successfully!');
   }
 
-  if (type === 'user.updated') {
-    const { id, email_addresses, first_name, last_name } = data;
-    const email = email_addresses?.[0]?.email_address;
-
-    const { error } = await supabase
-      .from('user')
-      .update({
-        email,
-        first_name,
-        last_name,
-      })
-      .eq('clerk_user_id', id);
-
-    if (error) {
-      console.error('Error updating user:', error);
-      return res.status(500).json({ message: 'Supabase update failed' });
-    }
-
-    console.log('✅ User updated in Supabase');
-  }
-
-  if (type === 'user.deleted') {
-    const { id } = data;
-
-    const { error } = await supabase
-      .from('user')
-      .delete()
-      .eq('clerk_user_id', id);
-
-    if (error) {
-      console.error('Error deleting user:', error);
-      return res.status(500).json({ message: 'Supabase delete failed' });
-    }
-
-    console.log('✅ User deleted from Supabase');
-  }
-
-  return res.status(200).json({ message: 'Webhook processed' });
+  // ✅ Success response to Clerk
+  return res.status(200).json({ message: 'Webhook received and processed' });
 };
 
 export default handler;
