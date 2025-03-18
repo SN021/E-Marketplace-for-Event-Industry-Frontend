@@ -1,64 +1,71 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { Webhook } from 'svix';
-import { createClient } from '@supabase/supabase-js';
+// import { NextRequest, NextResponse } from 'next/server';
+// import { Webhook } from 'svix';
+// import { createClient } from '@supabase/supabase-js';
 
-// Initialize Supabase
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { NextResponse } from "next/server";
 
-// POST handler for Clerk Webhook
-export async function POST(req: NextRequest) {
-  try {
-    // Clerk requires raw body for signature verification
-    const payload = await req.text();
+// // Initialize Supabase
+// const supabase = createClient(
+//   process.env.SUPABASE_URL!,
+//   process.env.SUPABASE_SERVICE_ROLE_KEY!
+// );
 
-    // Extract svix headers manually
-    const svixId = req.headers.get('svix-id');
-    const svixTimestamp = req.headers.get('svix-timestamp');
-    const svixSignature = req.headers.get('svix-signature');
+// // POST handler for Clerk Webhook
+// export async function POST(req: NextRequest) {
+//   try {
+//     // Clerk requires raw body for signature verification
+//     const payload = await req.text();
 
-    if (!svixId || !svixTimestamp || !svixSignature) {
-      return NextResponse.json({ message: 'Missing Svix headers' }, { status: 400 });
-    }
+//     // Extract svix headers manually
+//     const svixId = req.headers.get('svix-id');
+//     const svixTimestamp = req.headers.get('svix-timestamp');
+//     const svixSignature = req.headers.get('svix-signature');
 
-    const svix = new Webhook(process.env.CLERK_WEBHOOK_SECRET!);
+//     if (!svixId || !svixTimestamp || !svixSignature) {
+//       return NextResponse.json({ message: 'Missing Svix headers' }, { status: 400 });
+//     }
 
-    const evt = svix.verify(payload, {
-      'svix-id': svixId,
-      'svix-timestamp': svixTimestamp,
-      'svix-signature': svixSignature,
-    }) as { type: string; data: any };
+//     const svix = new Webhook(process.env.CLERK_WEBHOOK_SECRET!);
 
-    const { type, data } = evt;
+//     const evt = svix.verify(payload, {
+//       'svix-id': svixId,
+//       'svix-timestamp': svixTimestamp,
+//       'svix-signature': svixSignature,
+//     }) as { type: string; data: any };
 
-    console.log(`✅ Webhook Event Type: ${type}`);
+//     const { type, data } = evt;
 
-    if (type === 'user.created') {
-      const { id, email_addresses, first_name, last_name } = data;
-      const email = email_addresses?.[0]?.email_address;
+//     console.log(`✅ Webhook Event Type: ${type}`);
 
-      const { error } = await supabase.from('user').insert([
-        {
-          clerk_user_id: id,
-          email,
-          first_name,
-          last_name,
-        },
-      ]);
+//     if (type === 'user.created') {
+//       const { id, email_addresses, first_name, last_name } = data;
+//       const email = email_addresses?.[0]?.email_address;
 
-      if (error) {
-        console.error('❌ Supabase Insert Error:', error);
-        return NextResponse.json({ message: 'Supabase insert error' }, { status: 500 });
-      }
+//       const { error } = await supabase.from('user').insert([
+//         {
+//           clerk_user_id: id,
+//           email,
+//           first_name,
+//           last_name,
+//         },
+//       ]);
 
-      console.log('✅ User Created in Supabase');
-    }
+//       if (error) {
+//         console.error('❌ Supabase Insert Error:', error);
+//         return NextResponse.json({ message: 'Supabase insert error' }, { status: 500 });
+//       }
 
-    return NextResponse.json({ message: 'Webhook processed successfully' }, { status: 200 });
-  } catch (error) {
-    console.error('❌ Webhook error:', error);
-    return NextResponse.json({ message: 'Webhook error' }, { status: 400 });
-  }
+//       console.log('✅ User Created in Supabase');
+//     }
+
+//     return NextResponse.json({ message: 'Webhook processed successfully' }, { status: 200 });
+//   } catch (error) {
+//     console.error('❌ Webhook error:', error);
+//     return NextResponse.json({ message: 'Webhook error' }, { status: 400 });
+//   }
+// }
+
+
+export function GET(){
+    return NextResponse.json({message: "Hello World"})
 }
