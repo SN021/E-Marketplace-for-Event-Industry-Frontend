@@ -14,7 +14,8 @@ const supabase = createClient(
 export async function POST(req: NextRequest) {
   try {
     // 3) Clerk uses Svix signatures → must read raw text
-    const payload = await req.text();
+    const payloadPre = await req.json();
+    const payload = JSON.stringify(payloadPre)
 
     // 4) Grab the required Svix headers from Clerk
     const svixId = req.headers.get('svix-id');
