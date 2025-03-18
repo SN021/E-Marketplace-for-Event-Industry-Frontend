@@ -9,7 +9,7 @@ export default function Page() {
           backgroundImage: "url('./images/signup.png')",
         }}
       ></div>
-      <div className="flex items-center px-13 md:px-30 lg:px-30 h-screen">
+      <div className="flex items-center justify-center lg:justify-normal px-0 lg:px-30 h-screen">
         <SignUp />
       </div>
     </div>

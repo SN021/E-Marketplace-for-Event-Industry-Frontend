@@ -28,14 +28,14 @@ export default function RootLayout({
     <ClerkProvider
       appearance={{
         baseTheme: [dark],
-        variables: {
-          colorPrimary: "#86C232",
+        variables:{
+          // colorBackground: "#25292d",
           colorBackground: "rgba(34, 38, 41, 0)",
+          colorPrimary: "#86C232",
           colorSuccess: "#86C232",
           colorTextOnPrimaryBackground: "#ffff",
-          colorInputBackground: "#fff",
+          colorInputBackground:"#25292d",
           colorTextSecondary: "#9CA3AF",
-          colorInputText: "#222629",
         },
         layout: {
           socialButtonsPlacement: "bottom",
