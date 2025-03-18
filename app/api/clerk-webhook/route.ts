@@ -57,14 +57,16 @@ export async function POST(req: NextRequest) {
 
     if (eventType === 'user.created') {
       // The Clerk user data
-      const { id, email_addresses, username} = evt.data;
+      const { id, email_addresses, username, first_name, last_name } = evt.data;
       const email = email_addresses?.[0]?.email_address;
 
       // Insert into your DB
       const { error } = await supabase.from('user').insert([{
         clerk_user_id: id,
         email,
-        username, 
+        username,      // or use first_name/last_name if you prefer
+        first_name,
+        last_name,
       }]);
 
       if (error) {
@@ -75,7 +77,7 @@ export async function POST(req: NextRequest) {
 
     } else if (eventType === 'user.updated') {
       // The Clerk user data
-      const { id, email_addresses, username} = evt.data;
+      const { id, email_addresses, username, first_name, last_name } = evt.data;
       const email = email_addresses?.[0]?.email_address;
 
       // Update existing DB record by clerk_user_id
@@ -84,6 +86,8 @@ export async function POST(req: NextRequest) {
         .update({
           email,
           username,
+          first_name,
+          last_name,
         })
         .eq('clerk_user_id', id);
 
