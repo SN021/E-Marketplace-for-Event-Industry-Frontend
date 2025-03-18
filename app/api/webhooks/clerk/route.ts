@@ -61,14 +61,15 @@ export async function POST(req: NextRequest) {
       // The Clerk user data
       const { id, email_addresses, first_name, last_name } = evt.data;
       const email = email_addresses?.[0]?.email_address;
-      const name = `${first_name || ''} ${last_name || ''}`.trim();
+
 
       // Example: Insert into your DB (Supabase, etc.)
       const { error } = await supabase.from('user').insert([
         {
           clerk_user_id: id,
           email,
-          name,
+          first_name,
+          last_name,
         },
       ]);
 
