@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
 
     if (eventType === 'user.created') {
       // The Clerk user data
-      const { id, email_addresses, first_name, last_name } = evt.data;
+      const { id, email_addresses, first_name, last_name, username } = evt.data;
       const email = email_addresses?.[0]?.email_address;
 
       // Example: Insert into your DB (Supabase, etc.)
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
         {
           clerk_user_id: id,
           email,
-          // username,
+          username,
           first_name,
           last_name,
         },
