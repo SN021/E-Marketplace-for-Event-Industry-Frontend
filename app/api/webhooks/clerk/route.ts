@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 5) Verify Clerk event
-    const svix = new Webhook(process.env.CLERK_WEBHOOK_SECRET!);
+    const svix = new Webhook(process.env.SIGNING_SECRET!);
     const evt = svix.verify(payload, {
       'svix-id': svixId,
       'svix-timestamp': svixTimestamp,
