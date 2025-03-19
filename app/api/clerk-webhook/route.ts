@@ -67,6 +67,7 @@ export async function POST(req: NextRequest) {
         username,      // or use first_name/last_name if you prefer
         first_name,
         last_name,
+        is_vendor: false,
       }]);
 
       if (error) {
