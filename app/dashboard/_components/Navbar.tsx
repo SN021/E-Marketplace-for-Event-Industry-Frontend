@@ -51,7 +51,7 @@ const Navbar = () => {
           {/* Desktop Become a Vendor Button */}
           <Link href="">
             <button className="primary-btn hidden md:block">
-              Become A Vendor
+              Become Vendor
             </button>
           </Link>
 
@@ -96,7 +96,7 @@ const Navbar = () => {
 
               {/* Become a Vendor button */}
               <Link href="">
-                <button className="primary-btn w-full">Become A Vendor</button>
+                <button className="primary-btn w-full">Become Vendor</button>
               </Link>
             </div>
           </div>
