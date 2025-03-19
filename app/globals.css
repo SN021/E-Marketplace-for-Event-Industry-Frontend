@@ -34,8 +34,22 @@ body {
   backdrop-filter: blur(10px);
 }
 
-/* button styles */
-.primary-btn {
-  @apply bg-primary px-4 py-2 rounded-[10px];
+/* Clerk UserButton root */
+.cl-userButton-root {
+  @apply h-12 md:h-20;
 }
 
+/* Clerk avatar box */
+.cl-avatarBox {
+  @apply h-6 w-6;
+}
+
+/* Primary button */
+.primary-btn {
+  @apply bg-primary ml-0 md:ml-6 px-4 py-2 rounded-[10px] font-semibold hover:bg-[#729F25] duration-300;
+}
+
+/* Nav link styling */
+.nav-a {
+  @apply text-primary hover:text-white cursor-pointer duration-300;
+}

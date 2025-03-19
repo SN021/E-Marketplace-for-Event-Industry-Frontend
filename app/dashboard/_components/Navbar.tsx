@@ -1,16 +1,106 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
+import { Search, Mail, Heart, User, Menu, X } from "lucide-react";
+import { UserButton } from "@clerk/nextjs";
+import Link from "next/link";
 
 const Navbar = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
-    <div className="px-10 pt-2 fixed w-full">
-      <div className=" bg-[#171a1b]/85  backdrop-blur-md mx-auto h-20 border-b-[1px] rounded-2xl border-gray-500 text-white">
-        <div className="  h-full mx-auto px-5 flex items-center justify-between">
-          <h1 className="text-2xl uppercase font-bold">venzor</h1>
-          <ul className="flex items-center gap-6 text-5m font-semibold">
-            <li className="text-[#86C232] hover:text-white ">Community Hub</li>
+    <div className="px-4 md:px-10 pt-2 fixed w-full z-50">
+      <div className="bg-[#171a1b]/85 backdrop-blur-md mx-auto h-20 border-b-[1px] rounded-2xl border-gray-500 text-white">
+        <div className="h-full mx-auto px-5 flex items-center justify-between">
+          {/* Logo */}
+          <h2 className="text-2xl uppercase font-bold text-primary">venzor</h2>
+
+          {/* Search Bar (hidden on mobile) */}
+          <div className="hidden md:flex items-center flex-1 mx-10">
+            <div className="relative w-full max-w-xl">
+              <input
+                type="text"
+                placeholder="Search for the perfect vendors for your special event..."
+                className="w-full py-2 pl-4 pr-10 rounded-full bg-white text-sm text-gray-700 focus:outline-none"
+              />
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary" />
+            </div>
+
+            {/* Community Hub Link */}
+            <Link href="" className="nav-a text-lg font-semibold px-10">
+              Community Hub
+            </Link>
+          </div>
+
+          {/* Desktop Icons */}
+          <ul className="hidden md:flex items-center justify-center gap-6 text-sm font-semibold">
+            <li>
+              <Link href="">
+                <Mail className="nav-a" />
+              </Link>
+            </li>
+            <li>
+              <Link href="">
+                <Heart className="nav-a" />
+              </Link>
+            </li>
+            <li>
+              <UserButton />
+            </li>
           </ul>
-          <button className="primary-btn">Become A Vendor</button>
+
+          {/* Desktop Become a Vendor Button */}
+          <Link href="">
+            <button className="primary-btn hidden md:block">
+              Become A Vendor
+            </button>
+          </Link>
+
+          {/* Mobile Hamburger */}
+          <div className="flex md:hidden">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-primary focus:outline-none"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden px-6 py-4 bg-[#171a1b]/95 mt-2 backdrop-blur-lg rounded-2xl">
+            <div className="flex flex-col space-y-4">
+              {/* Search input for mobile */}
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  placeholder="Search vendors..."
+                  className="w-full py-2 pl-4 pr-10 rounded-full bg-white text-sm text-gray-700 focus:outline-none"
+                />
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary" />
+              </div>
+
+              {/* Menu items */}
+              <Link href="" className="nav-a text-lg font-semibold">
+                Community Hub
+              </Link>
+              <div className="flex items-center gap-4">
+                <Link href="">
+                  <Mail className="nav-a" />
+                </Link>
+                <Link href="">
+                  <Heart className="nav-a" />
+                </Link>
+                <UserButton />
+              </div>
+
+              {/* Become a Vendor button */}
+              <Link href="">
+                <button className="primary-btn w-full">Become A Vendor</button>
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
