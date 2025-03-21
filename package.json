@@ -12,13 +12,20 @@
     "@clerk/nextjs": "^6.12.5",
     "@clerk/themes": "^2.2.21",
     "@supabase/supabase-js": "^2.49.1",
+    "@tabler/icons-react": "^3.31.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.5.0",
     "lucide-react": "^0.483.0",
     "micro": "^10.0.1",
+    "motion": "^12.5.0",
     "next": "15.2.2",
     "postcss": "^8.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "svix": "^1.61.4"
+    "svix": "^1.61.4",
+    "tailwind-merge": "^3.0.2",
+    "tw-animate-css": "^1.2.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.14",
