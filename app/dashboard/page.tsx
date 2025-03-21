@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Dashboard() {
   return (
-    <div className="h-[2000px] pt-24">
+    <div className="h-[2000px]">
       <h1>
         HI BABY HI BABY HI BABY HI BABY HI BABY HI BABY HI BABY HI BABY HI BABY
         HI BABY HI BABY HI BABY HI BABY HI BABY HI BABY HI BABY HI BABY HI BABY

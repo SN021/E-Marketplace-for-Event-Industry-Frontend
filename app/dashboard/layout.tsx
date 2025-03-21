@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "./_components/Navbar";
 
+
 export default function DashboardLayout({
   children,
 }: Readonly<{
@@ -9,7 +10,7 @@ export default function DashboardLayout({
   return (
     <div className="">
       <Navbar />
-      <div>{children}</div>
+      <div className="pt-24">{children}</div>
     </div>
   );
 }
