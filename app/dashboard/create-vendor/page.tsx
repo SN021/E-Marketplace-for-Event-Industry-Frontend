@@ -243,7 +243,7 @@ const page = () => {
 
   return (
     <div className="container mx-auto">
-      <div className="w-full -mt-10 md:-mt-20">
+      <div className="w-full -mt-10 md:-mt-20 pb-20">
         <Timeline data={data} />
       </div>
     </div>
