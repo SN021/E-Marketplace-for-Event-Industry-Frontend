@@ -28,13 +28,13 @@ export default function RootLayout({
     <ClerkProvider
       appearance={{
         baseTheme: [dark],
-        variables:{
+        variables: {
           // colorBackground: "#25292d",
           colorBackground: "rgba(34, 38, 41, 0)",
-          colorPrimary: "#86C232",
+          colorPrimary: "#D39D55",
           colorSuccess: "#86C232",
           colorTextOnPrimaryBackground: "#ffff",
-          colorInputBackground:"#25292d",
+          colorInputBackground: "#25292d",
           colorTextSecondary: "#9CA3AF",
         },
         layout: {
@@ -44,7 +44,7 @@ export default function RootLayout({
     >
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased ` }
+          className={`${geistSans.variable} ${geistMono.variable} antialiased `}
         >
           {children}
         </body>

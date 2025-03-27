@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme{
-  --color-primary: #86c232;
+  --color-primary: #D39D55;
 }
 
 /* @theme inline {
@@ -16,7 +16,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #f5f5f5;
+    --background: #FBF7E9;
     --foreground: #171717;
   }
 } */
@@ -37,7 +37,7 @@
 
 /* Primary button */
 .primary-btn {
-  @apply bg-primary ml-0 md:ml-6 px-4 py-2 rounded-[10px] font-semibold hover:bg-[#729F25] duration-300;
+  @apply bg-primary ml-0 md:ml-6 px-4 py-2 rounded-[10px] font-semibold hover:bg-white hover:text-black duration-300;
 }
 
 /* Nav link styling */
@@ -47,13 +47,13 @@
 
 :root {
   --radius: 0.625rem;
-  --background: #f5f5f5;
+  --background: #FBF7E9;
   --foreground: #171717;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #86c232;
+  --primary: #D39D55;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
