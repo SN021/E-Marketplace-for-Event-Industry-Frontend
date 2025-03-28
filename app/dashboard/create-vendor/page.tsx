@@ -239,11 +239,86 @@ const page = () => {
         </div>
       ),
     },
+    {
+      title: "Step 03: Additional Information",
+      content: (
+        <div>
+          <div className="bg-amber-200 flex-col flex box items-center justify-center rounded-[40px] px-15 py-10 md:px-28 lg:px-32">
+            <form action="Post" className="flex flex-col gap-5 w-full">
+              <div className=" flex flex-col ">
+                <label>Language Spoken</label>
+                <input
+                  type="text"
+                  id="language"
+                  placeholder="Type the languages you use"
+                  className=" p-2 border border-black rounded-sm "
+                  required
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label>Social Media Links</label>
+                <input
+                  type="text"
+                  id="social media links"
+                  placeholder="Enter your preferred name to display"
+                  className=" p-2 border border-black rounded-sm"
+                  required
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label>Email Address</label>
+                <input
+                  type="email"
+                  id="email"
+                  placeholder="Enter your email address"
+                  className=" p-2 border border-black rounded-sm "
+                  required
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label>About</label>
+                <textarea
+                  placeholder="Enter a brief description about the vendor and what he does"
+                  className=" h-30 p-2 border border-black rounded-sm "
+                  id="description"
+                  required
+                ></textarea>
+              </div>
+
+              <div className="flex flex-col">
+                <label className=" mb-2">Profile Picture</label>
+                <div className="relative w-32 h-32">
+                  <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <span className="text-gray-400">Image</span>
+                  </div>
+                  <label
+                    htmlFor="profile-upload"
+                    className="absolute bottom-0 right-0 bg-white border border-gray-300 rounded-full p-1 cursor-pointer hover:bg-gray-100 transition"
+                  >
+                    <Pencil className="w-4 h-4 text-gray-600" />
+                  </label>
+                  <input
+                    type="file"
+                    id="profile-upload"
+                    accept="image/*"
+                    className="hidden"
+                    required
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      ),
+    },
   ];
 
   return (
     <div className="container mx-auto">
-      <div className="w-full -mt-10 md:-mt-20">
+      <div className="w-full -mt-10 md:-mt-20 pb-20">
         <Timeline data={data} />
       </div>
     </div>
