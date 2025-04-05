@@ -46,7 +46,7 @@ const Navbar = () => {
           </ul>
 
 
-          <Link href="">
+          <Link href="/dashboard/create-vendor">
             <button className="primary-btn hidden md:block">
               Become Vendor
             </button>
@@ -90,7 +90,7 @@ const Navbar = () => {
                 <UserButton />
               </div>
 
-              <Link href="">
+              <Link href="/dashboard/create-vendor">
                 <button className="primary-btn w-full">Become Vendor</button>
               </Link>
             </div>
