@@ -12,7 +12,9 @@ const Navbar = () => {
       <div className=" bg-[#171a1b]/85 backdrop-blur-md mx-auto h-20 border-b-[1px] rounded-2xl border-gray-500 text-white">
         <div className="h-full mx-auto px-5 flex items-center justify-between">
 
-          <h2 className="text-2xl uppercase font-bold text-primary">venzor</h2>
+          <Link href={"/dashboard"}>
+            <h2 className="text-2xl uppercase font-bold text-primary">venzor</h2>
+          </Link>
 
           <div className="hidden md:flex items-center flex-1 mx-10">
             <div className="relative w-full max-w-xl">
