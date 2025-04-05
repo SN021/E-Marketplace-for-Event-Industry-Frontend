@@ -382,7 +382,7 @@ const page = () => {
                           ))}
                         </motion.select>
                         {errors.experience && (
-                          <p className="text-red-500 text-xs italic mt-2 text-xs italic mt-2">
+                          <p className="text-red-500 text-xs italic mt-2 ">
                             {errors.experience.message}
                           </p>
                         )}
@@ -642,7 +642,7 @@ const page = () => {
                           />
 
                           {errors.legalDocuments && (
-                            <p className="text-red-500 text-xs italic mt-2 mt-2">
+                            <p className="text-red-500 text-xs italic mt-2 ">
                               {errors.legalDocuments.message}
                             </p>
                           )}
