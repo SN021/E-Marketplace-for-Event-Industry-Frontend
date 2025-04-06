@@ -24,7 +24,7 @@ const steps = [
   { label: "Publish" },
 ];
 
-export const eventServiceCategories = [
+const eventServiceCategories = [
   {
     value: "event_planning_coordination",
     label: "Event Planning & Coordination",
