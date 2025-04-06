@@ -225,7 +225,7 @@ const page = () => {
                           className={inputStyle}
                         />
                         <label htmlFor="email" className={inputLabelStyle}>
-                          Enter e-mail *
+                          Enter e-mail address*
                         </label>
                         {errors.email && (
                           <p className="error-msg">{errors.email.message}</p>
