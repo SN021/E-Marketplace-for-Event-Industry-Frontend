@@ -198,4 +198,8 @@
   @apply flex flex-col w-full;
 }
 
+.error-msg{
+  @apply text-red-500 text-xs italic mt-2;
+}
+
 

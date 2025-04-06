@@ -4,18 +4,20 @@ import React, { useState, useRef, useEffect } from "react";
 import ReactSelect from "react-select";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AlertCircle, Pencil, Plus, Upload, X } from "lucide-react";
 import {
-  AlertCircle,
-  Pencil,
-  Plus,
-  Upload,
-  X,
-} from "lucide-react";
-import { vendorFormSchema, VendorFormData } from "./_components/form-schemas";
+  vendorFormSchema,
+  VendorFormData,
+} from "@/validation-schemas/create-vendor-form-schemas";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const page = () => {
   // Timeline effect
@@ -29,9 +31,12 @@ const page = () => {
 
   // Input styles
   const inputContainerStyle = "relative z-0 w-full mb-6 group ";
-  const inputStyle = "block shadow py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 hover:border-gray-400 duration-300 hover:shadow-md appearance-none focus:outline-none focus:ring-0 focus:border-[#D39D55] peer"
-  const inputLabelStyle = "absolute px-2 text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 font-medium"
-  const selectStyle = "block appearance-none w-full shadow bg-white border-b border-gray-300 hover:border-gray-400 py-2.5 px-2 leading-tight focus:outline-none focus:border-primary transition-colors text-sm text-gray-500 font-medium duration-300 hover:shadow-md";
+  const inputStyle =
+    "block shadow py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 hover:border-gray-400 duration-300 hover:shadow-md appearance-none focus:outline-none focus:ring-0 focus:border-[#D39D55] peer";
+  const inputLabelStyle =
+    "absolute px-2 text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 font-medium";
+  const selectStyle =
+    "block appearance-none w-full shadow bg-white border-b border-gray-300 hover:border-gray-400 py-2.5 px-2 leading-tight focus:outline-none focus:border-primary transition-colors text-sm text-gray-500 font-medium duration-300 hover:shadow-md";
 
   useEffect(() => {
     const measureHeight = () => {
@@ -184,26 +189,28 @@ const page = () => {
                           Enter your username *
                         </label>
                         {errors.displayName && (
-                          <p className="text-red-500 text-xs italic mt-2">
+                          <p className="error-msg">
                             {errors.userName?.message}
                           </p>
                         )}
-                       
                       </div>
 
                       <div className={inputContainerStyle}>
-                          <input
-                            type="text"
-                            {...register("displayName")}
-                            aria-invalid={!!errors.displayName}
-                            placeholder=""
-                            className={inputStyle}
-                          />
-                          <label htmlFor="displayName" className={inputLabelStyle}>
-                            Enter display name *
-                          </label>
+                        <input
+                          type="text"
+                          {...register("displayName")}
+                          aria-invalid={!!errors.displayName}
+                          placeholder=""
+                          className={inputStyle}
+                        />
+                        <label
+                          htmlFor="displayName"
+                          className={inputLabelStyle}
+                        >
+                          Enter display name *
+                        </label>
                         {errors.displayName && (
-                          <p className="text-red-500 text-xs italic mt-2">
+                          <p className="error-msg">
                             {errors.displayName.message}
                           </p>
                         )}
@@ -221,29 +228,30 @@ const page = () => {
                           Enter e-mail *
                         </label>
                         {errors.email && (
-                          <p className="text-red-500 text-xs italic mt-2">{errors.email.message}</p>
+                          <p className="error-msg">{errors.email.message}</p>
                         )}
                       </div>
 
                       <div className={inputContainerStyle}>
-                        
                         <textarea
                           {...register("about")}
                           aria-invalid={!!errors.about}
                           placeholder=""
-                          className={`${inputStyle} h-32`} 
+                          className={`${inputStyle} h-32`}
                         />
                         <label htmlFor="about" className={inputLabelStyle}>
-                          Enter a brief description about the vendor and what he does *
+                          Enter a brief description about the vendor and what he
+                          does *
                         </label>
-                        
                         {errors.about && (
-                          <p className="text-red-500 text-xs italic mt-2">{errors.about.message}</p>
+                          <p className="error-msg">{errors.about.message}</p>
                         )}
                       </div>
 
                       <div className="create-vendor-input-container items-center justify-center pt-10">
-                        <label className=" mb-2 text-black/70 font-medium">Profile Picture *</label>
+                        <label className=" mb-2 text-black/70 font-medium">
+                          Profile Picture *
+                        </label>
                         <div className="flex flex-col items-center justify-center">
                           <div className="relative h-32 flex w-32">
                             <div className="flex items-center justify-center">
@@ -273,12 +281,11 @@ const page = () => {
                                 className="hidden"
                               />
                             </div>
-                            
                           </div>
                           <div>
-                              {errors.profilePicture && (
+                            {errors.profilePicture && (
                               <div>
-                                <p className="text-red-500 text-xs italic mt-2">
+                                <p className="error-msg">
                                   {errors.profilePicture.message}
                                 </p>
                               </div>
@@ -312,36 +319,39 @@ const page = () => {
                   <div className="pl-0 md:pl-10 lg:pl-0">
                     <div className="timeline-container">
                       <div className={inputContainerStyle}>
-                          <input
-                            type="text"
-                            {...register("businessName")}
-                            aria-invalid={!!errors.businessName}
-                            placeholder=""
-                            className={inputStyle}
-                          />
-                          <label htmlFor="businessName" className={inputLabelStyle}>
-                            Enter your business name *
-                          </label>
+                        <input
+                          type="text"
+                          {...register("businessName")}
+                          aria-invalid={!!errors.businessName}
+                          placeholder=""
+                          className={inputStyle}
+                        />
+                        <label
+                          htmlFor="businessName"
+                          className={inputLabelStyle}
+                        >
+                          Enter your business name *
+                        </label>
                         {errors.businessName && (
-                          <p className="text-red-500 text-xs italic mt-2">
+                          <p className="error-msg">
                             {errors.businessName.message}
                           </p>
                         )}
                       </div>
 
                       <div className={inputContainerStyle}>
-                         <input
-                            type="text"
-                            {...register("brn")}
-                            aria-invalid={!!errors.brn}
-                            placeholder=""
-                            className={inputStyle}
-                          />
-                          <label htmlFor="brn" className={inputLabelStyle}>
-                            Business Registration Number (optional)
-                          </label>
+                        <input
+                          type="text"
+                          {...register("brn")}
+                          aria-invalid={!!errors.brn}
+                          placeholder=""
+                          className={inputStyle}
+                        />
+                        <label htmlFor="brn" className={inputLabelStyle}>
+                          Business Registration Number (optional)
+                        </label>
                         {errors.brn && (
-                          <p className="text-red-500 text-xs italic mt-2">{errors.brn.message}</p>
+                          <p className="error-msg">{errors.brn.message}</p>
                         )}
                       </div>
 
@@ -351,13 +361,16 @@ const page = () => {
                           {...register("BusinessAddress")}
                           aria-invalid={!!errors.BusinessAddress}
                           placeholder=""
-                          className= {inputStyle}
+                          className={inputStyle}
                         />
-                        <label htmlFor="BusinessAddress" className={inputLabelStyle}>
+                        <label
+                          htmlFor="BusinessAddress"
+                          className={inputLabelStyle}
+                        >
                           Enter your business address *
                         </label>
                         {errors.BusinessAddress && (
-                          <p className="text-red-500 text-xs italic mt-2">
+                          <p className="error-msg">
                             {errors.BusinessAddress.message}
                           </p>
                         )}
@@ -365,32 +378,41 @@ const page = () => {
 
                       <div className={inputContainerStyle}>
                         <motion.select
-                          {...register("experience", { required: "Experience level is required" })}
+                          {...register("experience", {
+                            required: "Experience level is required",
+                          })}
                           aria-invalid={!!errors.experience}
                           className={selectStyle}
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ duration: 0.1, ease: "easeOut" }}
                           whileFocus={{ scale: 1.01 }}
                         >
-                          <option value="" disabled hidden className="text-black">
+                          <option
+                            value=""
+                            disabled
+                            hidden
+                            className="text-black"
+                          >
                             Select your experience level *
                           </option>
                           {experienceOptions.map((option) => (
-                            <option key={option.value} value={option.value} className="text-black">
+                            <option
+                              key={option.value}
+                              value={option.value}
+                              className="text-black"
+                            >
                               {option.label}
                             </option>
                           ))}
                         </motion.select>
                         {errors.experience && (
-                          <p className="text-red-500 text-xs italic mt-2 ">
+                          <p className="error-msg ">
                             {errors.experience.message}
                           </p>
                         )}
                       </div>
 
-
                       <div className={inputContainerStyle}>
-                        
                         <input
                           type="url"
                           {...register("website")}
@@ -402,13 +424,11 @@ const page = () => {
                           Website or portfolio link *
                         </label>
                         {errors.website && (
-                          <p className="text-red-500 text-xs italic mt-2">
-                            {errors.website.message}
-                          </p>
+                          <p className="error-msg">{errors.website.message}</p>
                         )}
                       </div>
 
-                      <div className={inputContainerStyle}>    
+                      <div className={inputContainerStyle}>
                         <motion.select
                           {...register("province")}
                           aria-invalid={!!errors.province}
@@ -427,9 +447,7 @@ const page = () => {
                           ))}
                         </motion.select>
                         {errors.province && (
-                          <p className="text-red-500 text-xs italic mt-2">
-                            {errors.province.message}
-                          </p>
+                          <p className="error-msg">{errors.province.message}</p>
                         )}
                       </div>
 
@@ -453,12 +471,11 @@ const page = () => {
                           ))}
                         </motion.select>
                         {errors.city && (
-                          <p className="text-red-500 text-xs italic mt-2">{errors.city.message}</p>
+                          <p className="error-msg">{errors.city.message}</p>
                         )}
                       </div>
 
                       <div className={inputContainerStyle}>
-                        
                         <input
                           type="email"
                           {...register("businessEmail")}
@@ -466,18 +483,20 @@ const page = () => {
                           placeholder=""
                           className={inputStyle}
                         />
-                        <label htmlFor="businessEmail" className={inputLabelStyle}>
+                        <label
+                          htmlFor="businessEmail"
+                          className={inputLabelStyle}
+                        >
                           Business Email Address *
                         </label>
                         {errors.businessEmail && (
-                          <p className="text-red-500 text-xs italic mt-2">
+                          <p className="error-msg">
                             {errors.businessEmail.message}
                           </p>
                         )}
                       </div>
 
                       <div className={inputContainerStyle}>
-                        
                         <input
                           type="Tel"
                           {...register("businessPhone")}
@@ -485,11 +504,14 @@ const page = () => {
                           placeholder=""
                           className={inputStyle}
                         />
-                        <label htmlFor="businessPhone" className={inputLabelStyle}>
+                        <label
+                          htmlFor="businessPhone"
+                          className={inputLabelStyle}
+                        >
                           {"Business Phone Number (07X XXX XXXX) *"}
                         </label>
                         {errors.businessPhone && (
-                          <p className="text-red-500 text-xs italic mt-2">
+                          <p className="error-msg">
                             {errors.businessPhone.message}
                           </p>
                         )}
@@ -498,7 +520,6 @@ const page = () => {
                   </div>
                 </div>
               </div>
-
 
               <div className="flex gap-3 items-center justify-end py-10 px-4">
                 <button
@@ -559,14 +580,17 @@ const page = () => {
                           )}
                         />
                         {errors.languages && (
-                          <p className="text-red-500 text-xs italic mt-2">
+                          <p className="error-msg">
                             {errors.languages.message}
                           </p>
                         )}
                       </div>
 
                       <div className={inputContainerStyle}>
-                        <label htmlFor="socialLinks" className=" px-2 text-sm text-gray-500 origin-[0] font-medium ">
+                        <label
+                          htmlFor="socialLinks"
+                          className=" px-2 text-sm text-gray-500 origin-[0] font-medium "
+                        >
                           Social Media Links
                         </label>
                         {fields.map((field, index) => (
@@ -580,7 +604,7 @@ const page = () => {
                             />
                             <Button
                               type="button"
-                              variant={'ghost'}
+                              variant={"ghost"}
                               onClick={() => remove(index)}
                               className="text-red-300 hover:text-red-600"
                             >
@@ -589,7 +613,7 @@ const page = () => {
                           </div>
                         ))}
                         {errors.socialLinks && (
-                          <p className="text-red-500 text-xs italic mt-2">
+                          <p className="error-msg">
                             {errors.socialLinks.message}
                             {Array.isArray(errors.socialLinks) &&
                               errors.socialLinks[0]?.url?.message}
@@ -597,7 +621,7 @@ const page = () => {
                         )}
                         <Button
                           type="button"
-                          variant={'secondary'}
+                          variant={"secondary"}
                           onClick={() => append({ url: "" })}
                           className="text-white mt-2 flex items-center justify-center  mx-auto"
                         >
@@ -642,7 +666,7 @@ const page = () => {
                           />
 
                           {errors.legalDocuments && (
-                            <p className="text-red-500 text-xs italic mt-2 ">
+                            <p className="error-msg ">
                               {errors.legalDocuments.message}
                             </p>
                           )}
@@ -682,9 +706,9 @@ const page = () => {
                         <label className="px-2 text-sm text-gray-500 origin-[0] font-medium">
                           Email Verification
                         </label>
-                        <button 
-                        className="bg-primary ml-0 md:ml-6 px-4 py-2 rounded-[10px] font-semibold text-white"
-                        disabled
+                        <button
+                          className="bg-primary ml-0 md:ml-6 px-4 py-2 rounded-[10px] font-semibold text-white"
+                          disabled
                         >
                           Verified
                         </button>
@@ -713,7 +737,7 @@ const page = () => {
                                   <TooltipProvider>
                                     <Tooltip>
                                       <TooltipTrigger>
-                                        <Button 
+                                        <Button
                                           variant={"outline"}
                                           className="text-black/60 font-base"
                                         >
@@ -730,8 +754,6 @@ const page = () => {
                                       </TooltipContent>
                                     </Tooltip>
                                   </TooltipProvider>
-                                  
-
                                 )}
                               </div>
                             </label>
@@ -743,7 +765,9 @@ const page = () => {
                               className="hidden"
                             />
                             {errors.nicFront && (
-                              <p className="text-red-500 text-xs italic mt-2">{errors.nicFront.message}</p>
+                              <p className="error-msg">
+                                {errors.nicFront.message}
+                              </p>
                             )}
                           </div>
 
@@ -765,7 +789,7 @@ const page = () => {
                                   <TooltipProvider>
                                     <Tooltip>
                                       <TooltipTrigger>
-                                        <Button 
+                                        <Button
                                           variant={"outline"}
                                           className="text-black/60 font-base"
                                         >
@@ -782,7 +806,6 @@ const page = () => {
                                       </TooltipContent>
                                     </Tooltip>
                                   </TooltipProvider>
-
                                 )}
                               </div>
                             </label>
@@ -794,7 +817,9 @@ const page = () => {
                               className="hidden"
                             />
                             {errors.nicBack && (
-                              <p className="text-red-500 text-xs italic mt-2">{errors.nicBack.message}</p>
+                              <p className="error-msg">
+                                {errors.nicBack.message}
+                              </p>
                             )}
                           </div>
                         </div>
@@ -810,7 +835,7 @@ const page = () => {
                           </label>
                         </div>
                         {errors.agreeToTerms && (
-                          <p className="text-red-500 text-xs italic mt-2">
+                          <p className="error-msg">
                             {errors.agreeToTerms.message}
                           </p>
                         )}
@@ -832,10 +857,7 @@ const page = () => {
                 >
                   Back
                 </button>
-                <button
-
-                  className="bg-primary ml-0 md:ml-6 px-4 py-2 rounded-[10px] font-semibold text-white duration-300 "
-                >
+                <button className="bg-primary ml-0 md:ml-6 px-4 py-2 rounded-[10px] font-semibold text-white duration-300 ">
                   Save & Continue
                 </button>
               </div>
