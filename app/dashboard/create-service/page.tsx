@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormContext, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   AlertCircle,
@@ -16,6 +16,8 @@ import {
   ServiceOverviewSchema,
 } from "@/validation-schemas/create-service-form-schemas";
 import { Button } from "@/components/ui/button";
+import Select from "react-select";
+
 
 const steps = [
   { label: "Service Overview" },
@@ -320,6 +322,35 @@ const eventServiceCategories = [
   },
 ];
 
+const locationOptions = [
+  { value: "islandwide", label: "Islandwide" },
+  { value: "Colombo", label: "Colombo" },
+  { value: "Gampaha", label: "Gampaha" },
+  { value: "Kalutara", label: "Kalutara" },
+  { value: "Kandy", label: "Kandy" },
+  { value: "Matale", label: "Matale" },
+  { value: "Nuwara Eliya", label: "Nuwara Eliya" },
+  { value: "Galle", label: "Galle" },
+  { value: "Matara", label: "Matara" },
+  { value: "Hambantota", label: "Hambantota" },
+  { value: "Jaffna", label: "Jaffna" },
+  { value: "Mannar", label: "Mannar" },
+  { value: "Vavuniya", label: "Vavuniya" },
+  { value: "Mullaitivu", label: "Mullaitivu" },
+  { value: "Kilinochchi", label: "Kilinochchi" },
+  { value: "Batticaloa", label: "Batticaloa" },
+  { value: "Ampara", label: "Ampara" },
+  { value: "Trincomalee", label: "Trincomalee" },
+  { value: "Kurunegala", label: "Kurunegala" },
+  { value: "Puttalam", label: "Puttalam" },
+  { value: "Anuradhapura", label: "Anuradhapura" },
+  { value: "Polonnaruwa", label: "Polonnaruwa" },
+  { value: "Badulla", label: "Badulla" },
+  { value: "Monaragala", label: "Monaragala" },
+  { value: "Ratnapura", label: "Ratnapura" },
+  { value: "Kegalle", label: "Kegalle" },
+];
+
 export default function CreateServicePage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [subcategories, setSubcategories] = useState<
@@ -338,10 +369,14 @@ export default function CreateServicePage() {
     defaultValues: {
       s_tags: [],
       basePriceFeatures: ["", "", "", ""],
+      photoGallery: [],
+      serviceableAreas: [],
     },
   });
 
   const selectedCategory = watch("s_category");
+  const photoGallery = watch("photoGallery");
+  const selected = watch("serviceableAreas"); //const selected = watch("serviceableAreas") || [] this is also correct or add it in to the default
 
   useEffect(() => {
     const matched = eventServiceCategories.find(
@@ -353,6 +388,14 @@ export default function CreateServicePage() {
   const onSubmit = (data: ServiceOverviewSchema) => {
     console.log("Form submitted", data);
     setCurrentStep(1);
+  };
+
+  const handleChange = (selectedOptions: any) => {
+    setValue(
+      "serviceableAreas",
+      selectedOptions.map((option: any) => option.value),
+      { shouldValidate: true }
+    );
   };
 
   return (
@@ -418,7 +461,7 @@ export default function CreateServicePage() {
           {currentStep === 0 && (
             <div className="flex-col flex box px-15 py-10 gap-5">
               <div className=" flex gap-13">
-                <label htmlFor="service-title"> Service Title*</label>
+                <label htmlFor="service-title"> Service Title *</label>
                 <input
                   type="text"
                   {...register("s_title")}
@@ -432,7 +475,7 @@ export default function CreateServicePage() {
               </div>
 
               <div className=" flex gap-4">
-                <label htmlFor="service-category">Service Category*</label>
+                <label htmlFor="service-category">Service Category *</label>
                 <div className="flex gap-2">
                   <select
                     {...register("s_category")}
@@ -475,7 +518,7 @@ export default function CreateServicePage() {
               </div>
 
               <div className="flex  gap-6.5 ">
-                <label>Search Tags*</label>
+                <label>Search Tags *</label>
 
                 <div className="flex flex-wrap gap-2 ">
                   {(watch("s_tags") || []).map((tag: string, index: number) => (
@@ -543,7 +586,7 @@ export default function CreateServicePage() {
             <div className="flex-col flex box px-15 py-10 gap-5">
               <div className=" flex gap-15">
                 <label htmlFor="service-description">
-                  Service Description*
+                  Service Description *
                 </label>
                 <textarea
                   {...register("fullDescription")}
@@ -557,7 +600,7 @@ export default function CreateServicePage() {
               </div>
 
               <div className=" flex gap-15">
-                <label htmlFor="base-price">Starting Price (LKR)*</label>
+                <label htmlFor="base-price">Starting Price (LKR) *</label>
                 <input
                   type="number"
                   {...register("basePrice", { valueAsNumber: true })}
@@ -572,7 +615,7 @@ export default function CreateServicePage() {
 
               <div className="flex gap-9">
                 <label htmlFor="base-price-features">
-                  Starting Price Features*
+                  Starting Price Features *
                 </label>
                 <div className="flex flex-col gap-4">
                   {[0, 1, 2, 3].map((index) => (
@@ -606,7 +649,7 @@ export default function CreateServicePage() {
 
               <div className=" flex gap-24">
                 <label htmlFor="cancellation-refund-policy">
-                  Cancellation & <br /> Refund Policy*
+                  Cancellation & <br /> Refund Policy *
                 </label>
                 <input
                   type="text"
@@ -632,29 +675,107 @@ export default function CreateServicePage() {
           {/* Form Content step 03 */}
           {currentStep === 2 && (
             <div className="flex-col flex box px-15 py-10 gap-5">
-              <div className=" flex gap-15">
-                <label htmlFor="photo-gallery">Photo Gallery*</label>
-                <input
-                  type="text"
-                  {...register("cancellationPolicy")}
-                  aria-invalid={!!errors.cancellationPolicy}
-                  placeholder="Type here..."
-                  className=" p-2 border border-black rounded-sm w-[512px] "
+              <div className="flex gap-15">
+                <label htmlFor="photo-gallery">Photo Gallery *</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                  {[0, 1, 2, 3].map((index) => (
+                    <div key={index} className="flex flex-col items-center">
+                      <label
+                        htmlFor={`photo-${index}`}
+                        className="flex flex-col items-center justify-center w-32 h-32 bg-gray-200 border border-gray-300 rounded cursor-pointer hover:bg-gray-300 transition"
+                      >
+                        {photoGallery[index] ? (
+                          <img
+                            src={URL.createObjectURL(photoGallery[index])}
+                            alt={`Gallery Preview ${index + 1}`}
+                            className="w-full h-full object-cover rounded"
+                          />
+                        ) : (
+                          <>
+                            <span className="text-sm font-medium text-primary">
+                              Choose Image
+                            </span>
+                          </>
+                        )}
+                      </label>
+                      <input
+                        id={`photo-${index}`}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        aria-invalid={!!errors.photoGallery}
+                        onChange={(e) => {
+                          const files = [...(photoGallery || [])];
+                          if (e.target.files?.[0]) {
+                            files[index] = e.target.files[0];
+                            setValue("photoGallery", files.filter(Boolean), {
+                              shouldValidate: true,
+                            });
+                          }
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+                {errors.photoGallery &&
+                  typeof errors.photoGallery.message === "string" && (
+                    <p className="error-msg">{errors.photoGallery.message}</p>
+                  )}
+              </div>
+
+              <div className=" flex gap-24">
+                <label htmlFor="serviceable-areas">Serviceable Areas *</label>
+                <Select
+                  isMulti
+                  options={locationOptions}
+                  onChange={handleChange}
+                  value={locationOptions.filter((opt) =>
+                    selected.includes(opt.value)
+                  )}
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                  placeholder="Select areas that you can service"
                 />
-                {errors.cancellationPolicy && (
+                {errors.serviceableAreas && (
                   <p className="error-msg">
-                    {errors.cancellationPolicy.message}
+                    {errors.serviceableAreas.message?.toString()}
                   </p>
                 )}
               </div>
 
-              <div className="flex gap-2">
-                <button className="btn" onClick={() => setCurrentStep(1)}>
-                  Back
-                </button>
-                <button className="btn" onClick={() => setCurrentStep(3)}>
-                  Next
-                </button>
+              <div className=" flex gap-4">
+                <label htmlFor="notice-lead-period">Notice/Lead Period *</label>
+                <input
+                  type="text"
+                  {...register("noticePeriod")}
+                  aria-invalid={!!errors.noticePeriod}
+                  placeholder="E.g. 2 weeks notice"
+                  className=" p-2 border border-black rounded-sm w-[512px] "
+                />
+                {errors.noticePeriod && (
+                  <p className="error-msg">{errors.noticePeriod.message}</p>
+                )}
+              </div>
+
+              <div className=" flex gap-10">
+                <label htmlFor="other-details">
+                  Any Other Details <br /> (Optional)
+                </label>
+                <input
+                  type="text"
+                  {...register("otherDetails")}
+                  aria-invalid={!!errors.otherDetails}
+                  placeholder="Type here..."
+                  className=" p-2 border border-black rounded-sm w-[512px] "
+                />
+                {errors.otherDetails && (
+                  <p className="error-msg">{errors.otherDetails.message}</p>
+                )}
+              </div>
+
+              <div className="flex gap-3 items-center justify-center py-10 px-4">
+                <Button onClick={() => setCurrentStep(1)}>Back</Button>
+                <Button onClick={() => setCurrentStep(3)}>Next</Button>
               </div>
             </div>
           )}
@@ -664,13 +785,14 @@ export default function CreateServicePage() {
             <div>
               <h2 className="text-lg font-semibold mb-4">Step 4: Publish</h2>
               {/* Your fields here */}
-              <div className="flex gap-2">
-                <button className="btn" onClick={() => setCurrentStep(2)}>
+
+              <div className="flex gap-3 items-center justify-center py-10 px-4">
+                <Button onClick={() => setCurrentStep(2)}>
                   Back
-                </button>
-                <button className="btn" type="submit">
+                </Button>
+                <Button  type="submit">
                   Submit
-                </button>
+                </Button>
               </div>
             </div>
           )}

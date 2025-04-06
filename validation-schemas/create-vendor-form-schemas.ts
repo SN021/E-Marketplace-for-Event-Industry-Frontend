@@ -36,15 +36,15 @@ export const vendorFormSchema = z.object({
   socialLinks: z
   .array(
     z.object({
-      url: z.string().url("Must be a valid URL"),
+      url: z.string().url("Invalid URL").or(z.literal("")).optional(),
     })
   )
   .max(3, "Maximum 3 social links allowed"),
   legalDocuments: z
-  .custom<FileList>((file) => file instanceof FileList && file.length > 0, {
-    message: "Please upload at least one legal document",
-  })
+  .any()
+  .optional()
   .refine((files) => {
+    if (!files || !(files instanceof FileList) || files.length === 0) return true; 
     return Array.from(files).every((file) =>
       ["application/pdf", "image/png", "image/jpeg"].includes(file.type)
     );

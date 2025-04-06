@@ -421,7 +421,7 @@ const page = () => {
                           className={inputStyle}
                         />
                         <label htmlFor="website" className={inputLabelStyle}>
-                          Website or portfolio link *
+                          Website or portfolio link (optional)
                         </label>
                         {errors.website && (
                           <p className="error-msg">{errors.website.message}</p>
@@ -559,7 +559,6 @@ const page = () => {
                   <div>
                     <div className="timeline-container">
                       <div className=" flex flex-col w-full ">
-                        {/* <label>Languages Spoken</label> */}
                         <Controller
                           control={control}
                           name="languages"
@@ -591,7 +590,7 @@ const page = () => {
                           htmlFor="socialLinks"
                           className=" px-2 text-sm text-gray-500 origin-[0] font-medium "
                         >
-                          Social Media Links
+                          Social Media Links (optional)
                         </label>
                         {fields.map((field, index) => (
                           <div key={field.id} className="flex gap-2 mb-2">
@@ -646,7 +645,7 @@ const page = () => {
                                 <Upload />
                               </div>
                               <p className="mb-3 text-zinc-500">
-                                Upload your document here
+                                Upload your document here (optional)
                               </p>
 
                               {watch("legalDocuments")?.length > 0 && (
@@ -665,11 +664,14 @@ const page = () => {
                             className="hidden"
                           />
 
-                          {errors.legalDocuments && (
-                            <p className="error-msg ">
-                              {errors.legalDocuments.message}
-                            </p>
-                          )}
+                          {errors.legalDocuments?.message &&
+                            typeof errors.legalDocuments.message ===
+                              "string" && (
+                              <p className="error-msg">
+                                {errors.legalDocuments.message}
+                              </p>
+                            )}
+
                           <p className="text-[12px] text-black font-italic mt-4 opacity-50 w-full max-w-sm mx-auto text-center">
                             <span className="text-red-500 font-bold">*</span>
                             Adding your BRN, Business License, or Certifications
