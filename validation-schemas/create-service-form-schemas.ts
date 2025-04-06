@@ -32,18 +32,26 @@ export const serviceOverviewSchema = z.object({
   .string()
   .min(10, "Cancellation & Refund Policy must be at least 10 characters.")
   .max(1000, "Cancellation & Refund Policy cannot exceed 1000 characters."),
-    photoGallery: z
-    .array(z.any())
-    .min(1, "At least one photo is required")
-    .max(4, "You can upload up to 4 images"),
-
+  photoGallery: z
+   .array(
+     z
+      .instanceof(File)
+      .refine((file) => file.size <= 5 * 1024 * 1024, {
+        message: "Each file must be less than 5MB",
+      })
+      .refine((file) => ["image/jpeg", "image/png", "image/webp"].includes(file.type), {
+        message: "Only JPEG, PNG, or WEBP images are allowed",
+      })
+   )
+    .min(1, "Please upload at least 1 photo")
+    .max(4, "You can upload up to 4 photos"),
   serviceableAreas: z
-    .string()
-    .min(3, "Please enter at least one serviceable area"),
+    .array(z.string())
+    .min(1, "Please select at least one serviceable area"),
 
   noticePeriod: z
     .string()
-    .min(2, "Please specify a valid lead time (e.g. 2 weeks notice)"),
+    .min(2, "Please specify a valid notice/lead time"),
 
   otherDetails: z
     .string()
