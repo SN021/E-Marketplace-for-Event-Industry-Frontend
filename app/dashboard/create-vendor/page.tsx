@@ -4,7 +4,14 @@ import React, { useState, useRef, useEffect } from "react";
 import ReactSelect from "react-select";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, LoaderPinwheel, Pencil, Plus, Upload, X } from "lucide-react";
+import {
+  AlertCircle,
+  LoaderPinwheel,
+  Pencil,
+  Plus,
+  Upload,
+  X,
+} from "lucide-react";
 import {
   vendorFormSchema,
   VendorFormData,
@@ -18,11 +25,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import axios from 'axios';
+import axios from "axios";
 import { useUser } from "@clerk/nextjs";
 
-
-const page =  () => {
+const page = () => {
   // Timeline effect
   const ref = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -79,6 +85,7 @@ const page =  () => {
     name: "socialLinks",
   });
 
+  //options for map function
   const experienceOptions = [
     { value: "just-started", label: "just-started (0-6 months)" },
     { value: "growing", label: "Growing (6 months-2 years)" },
@@ -99,31 +106,44 @@ const page =  () => {
   ];
 
   const cityOptions = [
+    { value: "Ampara", label: "Ampara" },
+    { value: "Anuradhapura", label: "Anuradhapura" },
+    { value: "Avissawella", label: "Avissawella" },
+    { value: "Badulla", label: "Badulla" },
+    { value: "Batticaloa", label: "Batticaloa" },
+    { value: "Beruwala", label: "Beruwala" },
+    { value: "Chilaw", label: "Chilaw" },
     { value: "Colombo", label: "Colombo" },
+    { value: "Dehiwala-Mount Lavinia", label: "Dehiwala-Mount Lavinia" },
+    { value: "Eravur", label: "Eravur" },
+    { value: "Galle", label: "Galle" },
     { value: "Gampaha", label: "Gampaha" },
+    { value: "Hambantota", label: "Hambantota" },
+    { value: "Hatton", label: "Hatton" },
+    { value: "Homagama", label: "Homagama" },
+    { value: "Jaffna", label: "Jaffna" },
+    { value: "Kalmunai", label: "Kalmunai" },
     { value: "Kalutara", label: "Kalutara" },
     { value: "Kandy", label: "Kandy" },
-    { value: "Matale", label: "Matale" },
-    { value: "Nuwara Eliya", label: "Nuwara Eliya" },
-    { value: "Galle", label: "Galle" },
-    { value: "Matara", label: "Matara" },
-    { value: "Hambantota", label: "Hambantota" },
-    { value: "Jaffna", label: "Jaffna" },
-    { value: "Mannar", label: "Mannar" },
-    { value: "Vavuniya", label: "Vavuniya" },
-    { value: "Mullaitivu", label: "Mullaitivu" },
-    { value: "Kilinochchi", label: "Kilinochchi" },
-    { value: "Batticaloa", label: "Batticaloa" },
-    { value: "Ampara", label: "Ampara" },
-    { value: "Trincomalee", label: "Trincomalee" },
-    { value: "Kurunegala", label: "Kurunegala" },
-    { value: "Puttalam", label: "Puttalam" },
-    { value: "Anuradhapura", label: "Anuradhapura" },
-    { value: "Polonnaruwa", label: "Polonnaruwa" },
-    { value: "Badulla", label: "Badulla" },
-    { value: "Monaragala", label: "Monaragala" },
-    { value: "Ratnapura", label: "Ratnapura" },
+    { value: "Katunayake", label: "Katunayake" },
     { value: "Kegalle", label: "Kegalle" },
+    { value: "Kilinochchi", label: "Kilinochchi" },
+    { value: "Kurunegala", label: "Kurunegala" },
+    { value: "Mannar", label: "Mannar" },
+    { value: "Matale", label: "Matale" },
+    { value: "Matara", label: "Matara" },
+    { value: "Monaragala", label: "Monaragala" },
+    { value: "Moratuwa", label: "Moratuwa" },
+    { value: "Mullaitivu", label: "Mullaitivu" },
+    { value: "Negombo", label: "Negombo" },
+    { value: "Nuwara Eliya", label: "Nuwara Eliya" },
+    { value: "Panadura", label: "Panadura" },
+    { value: "Polonnaruwa", label: "Polonnaruwa" },
+    { value: "Puttalam", label: "Puttalam" },
+    { value: "Ratnapura", label: "Ratnapura" },
+    { value: "Trincomalee", label: "Trincomalee" },
+    { value: "Vavuniya", label: "Vavuniya" },
+    { value: "Wattala", label: "Wattala" },
   ];
 
   const languageOptions = [
@@ -136,38 +156,37 @@ const page =  () => {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: VendorFormData) => {
-    setLoading(true)
-    try{
-    const userId = user?.id;
+    setLoading(true);
+    try {
+      const userId = user?.id;
 
-    const payload = {
-      ...data,
-      userId,
-    };
-    const response = await axios.post('/api/create-vendor', payload);
-    console.log('Vendor created successfully:', response.data.message);
+      const payload = {
+        ...data,
+        userId,
+      };
+      const response = await axios.post("/api/create-vendor", payload);
+      console.log("Vendor created successfully:", response.data.message);
 
-    setLoading(false)
-    
-    window.location.href = '/dashboard/create-service';
-    }
-    catch (error){
-      console.error('Error submitting form:', error);
+      setLoading(false);
+
+      window.location.href = "/dashboard/create-service";
+    } catch (error) {
+      console.error("Error submitting form:", error);
     }
   };
 
-  
-
   return (
     <div
-      className={cn("w-full relative bg-background font-sans md:px-10 container mx-auto overflow-x-hidden")}
+      className={cn(
+        "w-full relative bg-background font-sans md:px-10 container mx-auto overflow-x-hidden"
+      )}
       ref={containerRef}
     >
-      {loading &&
-        <div className="w-full h-full bg-white z-20 text-priamry animate-spin">
+      {loading && (
+        <div className="w-full h-full bg-white z-20 text-primary animate-spin">
           <LoaderPinwheel />
         </div>
-      }
+      )}
 
       {Object.keys(errors).length > 0 && (
         <div className="px-10 py-2 bg-red-200 text-red-500 flex items-center gap-2 text-center justify-center">
@@ -176,7 +195,12 @@ const page =  () => {
         </div>
       )}
 
-      <div ref={ref} className={cn("relative mx-auto pb-20 overflow-x-hidden", {loading : 'hidden'})}>
+      <div
+        ref={ref}
+        className={cn("relative mx-auto pb-20 overflow-x-hidden", {
+          loading: "hidden",
+        })}
+      >
         <div className="absolute left-8 top-0 w-[2px]">
           <motion.div
             animate={{ height: timelineHeight }}
@@ -187,7 +211,7 @@ const page =  () => {
         <form onSubmit={handleSubmit(onSubmit)} className="overflow-y-hidden">
           {formStep === 1 && (
             <div ref={step1Ref}>
-              {/* Step 1 */}
+              {/* Step 1  */}
               <div
                 className={cn("flex justify-start pt-10 md:pt-40 md:gap-10")}
               >
@@ -205,7 +229,6 @@ const page =  () => {
                     Step 01: Basic Information
                   </h3>
 
-                  {/* content */}
                   <div className="pl-0 md:pl-10 lg:pl-0">
                     <div className="timeline-container">
                       <div className={inputContainerStyle}>
@@ -217,7 +240,7 @@ const page =  () => {
                           className={inputStyle}
                         />
                         <label htmlFor="userName" className={inputLabelStyle}>
-                          Enter your username *
+                          Username *
                         </label>
                         {errors.displayName && (
                           <p className="error-msg">
@@ -238,7 +261,7 @@ const page =  () => {
                           htmlFor="displayName"
                           className={inputLabelStyle}
                         >
-                          Enter display name *
+                          Display name *
                         </label>
                         {errors.displayName && (
                           <p className="error-msg">
@@ -256,7 +279,7 @@ const page =  () => {
                           className={inputStyle}
                         />
                         <label htmlFor="email" className={inputLabelStyle}>
-                          Enter e-mail address*
+                          E-mail Address*
                         </label>
                         {errors.email && (
                           <p className="error-msg">{errors.email.message}</p>
@@ -280,7 +303,7 @@ const page =  () => {
                       </div>
 
                       <div className="create-vendor-input-container items-center justify-center pt-10">
-                        <label className=" mb-2 text-black/70 font-medium">
+                        <label className=" mb-2 text-black/55 font-bold text-sm">
                           Profile Picture *
                         </label>
                         <div className="flex flex-col items-center justify-center">
@@ -346,7 +369,6 @@ const page =  () => {
                   <h3 className="lg:hidden block text-2xl mb-4 text-left font-bold text-neutral-500">
                     Step 02: Business Details
                   </h3>
-                  {/* Content */}
                   <div className="pl-0 md:pl-10 lg:pl-0">
                     <div className="timeline-container">
                       <div className={inputContainerStyle}>
@@ -361,7 +383,7 @@ const page =  () => {
                           htmlFor="businessName"
                           className={inputLabelStyle}
                         >
-                          Enter your business name *
+                          Business Name *
                         </label>
                         {errors.businessName && (
                           <p className="error-msg">
@@ -398,7 +420,7 @@ const page =  () => {
                           htmlFor="BusinessAddress"
                           className={inputLabelStyle}
                         >
-                          Enter your business address *
+                          Business Address *
                         </label>
                         {errors.BusinessAddress && (
                           <p className="error-msg">
@@ -424,7 +446,7 @@ const page =  () => {
                             hidden
                             className="text-black"
                           >
-                            Select your experience level *
+                            Experience Level *
                           </option>
                           {experienceOptions.map((option) => (
                             <option
@@ -452,7 +474,7 @@ const page =  () => {
                           className={inputStyle}
                         />
                         <label htmlFor="website" className={inputLabelStyle}>
-                          Website or portfolio link (optional)
+                          Website or Portfolio Link (optional)
                         </label>
                         {errors.website && (
                           <p className="error-msg">{errors.website.message}</p>
@@ -469,7 +491,7 @@ const page =  () => {
                           whileFocus={{ scale: 1.01 }}
                         >
                           <option value="" disabled hidden>
-                            Select your province *
+                            Province *
                           </option>
                           {provinceOptions.map((option) => (
                             <option key={option.value} value={option.value}>
@@ -492,7 +514,7 @@ const page =  () => {
                           whileFocus={{ scale: 1.01 }}
                         >
                           <option value="" disabled hidden>
-                            Select your city *
+                            City *
                           </option>
                           <option value="Colombo">Colombo</option>
                           {cityOptions.map((option) => (
@@ -539,7 +561,7 @@ const page =  () => {
                           htmlFor="businessPhone"
                           className={inputLabelStyle}
                         >
-                          {"Business Phone Number (07X XXX XXXX) *"}
+                          {"Enter your business phone number (07X XXX XXXX) *"}
                         </label>
                         {errors.businessPhone && (
                           <p className="error-msg">
@@ -586,7 +608,6 @@ const page =  () => {
                   <h3 className="lg:hidden block text-2xl md:text-3xl mb-4 text-left font-bold text-neutral-500">
                     Step 03: Additional Information
                   </h3>
-                  {/* Content */}
                   <div>
                     <div className="timeline-container">
                       <div className=" flex flex-col w-full ">
@@ -662,8 +683,8 @@ const page =  () => {
 
                       <div className={`${inputContainerStyle} mx-auto w-full`}>
                         <label className="px-2 pb-2 text-sm text-gray-500 origin-[0] font-medium">
-                          Upload Legal Documents (Business License,
-                          Certifications etc.)
+                          Legal Documents (Business License, Certifications
+                          etc.)
                         </label>
 
                         <div className="w-full flex flex-col items-center justify-center">
@@ -749,10 +770,9 @@ const page =  () => {
 
                       <div className={inputContainerStyle}>
                         <label className="px-2 text-sm text-gray-500 origin-[0] font-medium">
-                          Upload National ID Card * (NID)
+                          National ID Card * (NID)
                         </label>
                         <div className="flex flex-wrap gap-4 mt-3">
-                          {/* NIC Front */}
                           <div className="flex-1 min-w-[250px] max-w-[600px] h-fit">
                             <label
                               htmlFor="nic-front"
@@ -770,9 +790,7 @@ const page =  () => {
                                   <TooltipProvider>
                                     <Tooltip>
                                       <TooltipTrigger>
-                                        <div
-                                          className="text-black/60 font-base"
-                                        >
+                                        <div className="text-black/60 font-base">
                                           Selected File
                                         </div>
                                       </TooltipTrigger>
@@ -802,8 +820,6 @@ const page =  () => {
                               </p>
                             )}
                           </div>
-
-                          {/* NIC Back */}
                           <div className="flex-1 min-w-[250px] max-w-[500px] h-fit">
                             <label
                               htmlFor="nic-back"
@@ -821,9 +837,7 @@ const page =  () => {
                                   <TooltipProvider>
                                     <Tooltip>
                                       <TooltipTrigger>
-                                        <div
-                                          className="text-black/60 font-base"
-                                        >
+                                        <div className="text-black/60 font-base">
                                           Selected File
                                         </div>
                                       </TooltipTrigger>
@@ -876,7 +890,6 @@ const page =  () => {
                 </div>
               </div>
 
-              {/* end buttons */}
               <div className="flex gap-3 items-center justify-end py-10 px-4">
                 <button
                   type="button"
