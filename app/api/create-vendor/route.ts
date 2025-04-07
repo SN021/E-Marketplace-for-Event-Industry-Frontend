@@ -8,7 +8,7 @@ const supabase = createClient(
 );
 
 // 3) POST route for Clerk webhooks
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   try {
     const payload = await req.json();
 
