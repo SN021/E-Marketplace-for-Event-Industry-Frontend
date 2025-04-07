@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#222629] text-white px-6 md:px-20 py-16">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 border-b border-gray-700 pb-12">
+    <footer className="bg-[#222629] text-white  pt-16">
+      <div className="px-6 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 border-b border-gray-700 pb-12">
         <div>
           <div className="text-3xl font-bold text-primary tracking-wider mb-4">
             <span className="inline-block w-9 h-9 bg-primary text-white font-extrabold text-center rounded-sm mr-1">
@@ -84,10 +84,11 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="mt-8 flex justify-center text-xs text-white">
-        &copy; 2025 Venzor. All rights reserved.
-        <div className="absolute w-[600px] inset-x-0 bottom-0 h-10 bg-primary rounded-tr-[3rem]" />
-        <div className="absolute w-[10px] inset-x-0 bottom-0 h-10 bg-primary rounded-tl-[3rem]" />
+      <div className="mt-8 flex justify-between text-xs text-white">
+        <div className=" w-[500px]  h-10 bg-primary rounded-tr-[3rem]" />
+        <p className="text-center pt-3">&copy; 2025 Venzor. All rights reserved.</p>
+
+        <div className=" w-[500px]  h-10 bg-primary rounded-tl-[3rem]" />
       </div>
     </footer>
   );
