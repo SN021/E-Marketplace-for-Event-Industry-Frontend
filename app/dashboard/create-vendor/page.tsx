@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import ReactSelect from "react-select";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, Pencil, Plus, Upload, X } from "lucide-react";
+import { AlertCircle, LoaderPinwheel, Pencil, Plus, Upload, X } from "lucide-react";
 import {
   vendorFormSchema,
   VendorFormData,
@@ -18,8 +18,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import axios from 'axios';
+import { useUser } from "@clerk/nextjs";
 
-const page = () => {
+
+const page =  () => {
   // Timeline effect
   const ref = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -128,16 +131,44 @@ const page = () => {
     { value: "Sinhala", label: "Sinhala" },
     { value: "Tamil", label: "Tamil" },
   ];
-  const onSubmit = (data: VendorFormData) => {
-    console.log("Final Submission:", data);
-    // Send to backend here
+
+  const { isSignedIn, user, isLoaded } = useUser();
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async (data: VendorFormData) => {
+    setLoading(true)
+    try{
+    const userId = user?.id;
+
+    const payload = {
+      ...data,
+      userId,
+    };
+    const response = await axios.post('/api/create-vendor', payload);
+    console.log('Vendor created successfully:', response.data.message);
+
+    setLoading(false)
+    
+    window.location.href = '/dashboard/create-service';
+    }
+    catch (error){
+      console.error('Error submitting form:', error);
+    }
   };
+
+  
 
   return (
     <div
-      className="w-full relative bg-background font-sans md:px-10 container mx-auto overflow-x-hidden"
+      className={cn("w-full relative bg-background font-sans md:px-10 container mx-auto overflow-x-hidden")}
       ref={containerRef}
     >
+      {loading &&
+        <div className="w-full h-full bg-white z-20 text-priamry animate-spin">
+          <LoaderPinwheel />
+        </div>
+      }
+
       {Object.keys(errors).length > 0 && (
         <div className="px-10 py-2 bg-red-200 text-red-500 flex items-center gap-2 text-center justify-center">
           <AlertCircle />
@@ -145,7 +176,7 @@ const page = () => {
         </div>
       )}
 
-      <div ref={ref} className="relative mx-auto pb-20 overflow-x-hidden">
+      <div ref={ref} className={cn("relative mx-auto pb-20 overflow-x-hidden", {loading : 'hidden'})}>
         <div className="absolute left-8 top-0 w-[2px]">
           <motion.div
             animate={{ height: timelineHeight }}
@@ -739,12 +770,11 @@ const page = () => {
                                   <TooltipProvider>
                                     <Tooltip>
                                       <TooltipTrigger>
-                                        <Button
-                                          variant={"outline"}
+                                        <div
                                           className="text-black/60 font-base"
                                         >
                                           Selected File
-                                        </Button>
+                                        </div>
                                       </TooltipTrigger>
                                       <TooltipContent className="bg-white shadow-lg text-black text-sm font-medium">
                                         <p
@@ -791,12 +821,11 @@ const page = () => {
                                   <TooltipProvider>
                                     <Tooltip>
                                       <TooltipTrigger>
-                                        <Button
-                                          variant={"outline"}
+                                        <div
                                           className="text-black/60 font-base"
                                         >
                                           Selected File
-                                        </Button>
+                                        </div>
                                       </TooltipTrigger>
                                       <TooltipContent className="bg-white shadow-lg text-black text-sm font-medium">
                                         <p
