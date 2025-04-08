@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/tooltip";
 import axios from "axios";
 import { useUser } from "@clerk/nextjs";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const page = () => {
   // Timeline effect
@@ -154,9 +156,16 @@ const page = () => {
 
   const { isSignedIn, user, isLoaded } = useUser();
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const onSubmit = async (data: VendorFormData) => {
     setLoading(true);
+
+    if (!isLoaded || !isSignedIn) {
+      toast.error("You must be signed in to submit this form.");
+      return;
+    }
+
     try {
       const userId = user?.id;
 
@@ -165,13 +174,15 @@ const page = () => {
         userId,
       };
       const response = await axios.post("/api/create-vendor", payload);
-      console.log("Vendor created successfully:", response.data.message);
-
-      setLoading(false);
-
-      window.location.href = "/dashboard/create-service";
-    } catch (error) {
+      toast.success("Vendor profile created successfully!");
+      router.push("/dashboard/create-vendor/onboarding");
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message || "Failed to create vendor profile.";
+      toast.error(message);
       console.error("Error submitting form:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -891,19 +902,21 @@ const page = () => {
               </div>
 
               <div className="flex gap-3 items-center justify-end py-10 px-4">
-                <button
+                <Button
                   type="button"
-                  className="bg-primary ml-0 md:ml-6 px-4 py-2 rounded-[10px] font-semibold text-white duration-300 cursor-pointer "
                   onClick={() => {
                     setFormStep(1);
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
                 >
                   Back
-                </button>
-                <button className="bg-primary ml-0 md:ml-6 px-4 py-2 rounded-[10px] font-semibold text-white duration-300 ">
-                  Save & Continue
-                </button>
+                </Button>
+                <Button type="submit" disabled={loading}>
+                  {loading ? (
+                    <LoaderPinwheel className="animate-spin w-4 h-4 mr-2" />
+                  ) : null}
+                  {loading ? "Submitting..." : "Save & Continue"}
+                </Button>
               </div>
             </div>
           )}
