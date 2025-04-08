@@ -411,20 +411,20 @@ const page = () => {
                       <div className={inputContainerStyle}>
                         <input
                           type="text"
-                          {...register("BusinessAddress")}
-                          aria-invalid={!!errors.BusinessAddress}
+                          {...register("businessAddress")}
+                          aria-invalid={!!errors.businessAddress}
                           placeholder=""
                           className={inputStyle}
                         />
                         <label
-                          htmlFor="BusinessAddress"
+                          htmlFor="businessAddress"
                           className={inputLabelStyle}
                         >
                           Business Address *
                         </label>
-                        {errors.BusinessAddress && (
+                        {errors.businessAddress && (
                           <p className="error-msg">
-                            {errors.BusinessAddress.message}
+                            {errors.businessAddress.message}
                           </p>
                         )}
                       </div>

@@ -14,10 +14,13 @@ import {
 import clsx from "clsx";
 import {
   serviceOverviewSchema,
-  ServiceOverviewSchema,
+  ServiceOverview,
 } from "@/validation-schemas/create-service-form-schemas";
 import { Button } from "@/components/ui/button";
 import Select from "react-select";
+import { useUser } from "@clerk/nextjs";
+import axios from "axios";
+import { toast } from "sonner";
 
 const steps = [
   { label: "Service Overview" },
@@ -324,31 +327,44 @@ const eventServiceCategories = [
 
 const locationOptions = [
   { value: "islandwide", label: "Islandwide" },
+  { value: "Ampara", label: "Ampara" },
+  { value: "Anuradhapura", label: "Anuradhapura" },
+  { value: "Avissawella", label: "Avissawella" },
+  { value: "Badulla", label: "Badulla" },
+  { value: "Batticaloa", label: "Batticaloa" },
+  { value: "Beruwala", label: "Beruwala" },
+  { value: "Chilaw", label: "Chilaw" },
   { value: "Colombo", label: "Colombo" },
+  { value: "Dehiwala-Mount Lavinia", label: "Dehiwala-Mount Lavinia" },
+  { value: "Eravur", label: "Eravur" },
+  { value: "Galle", label: "Galle" },
   { value: "Gampaha", label: "Gampaha" },
+  { value: "Hambantota", label: "Hambantota" },
+  { value: "Hatton", label: "Hatton" },
+  { value: "Homagama", label: "Homagama" },
+  { value: "Jaffna", label: "Jaffna" },
+  { value: "Kalmunai", label: "Kalmunai" },
   { value: "Kalutara", label: "Kalutara" },
   { value: "Kandy", label: "Kandy" },
-  { value: "Matale", label: "Matale" },
-  { value: "Nuwara Eliya", label: "Nuwara Eliya" },
-  { value: "Galle", label: "Galle" },
-  { value: "Matara", label: "Matara" },
-  { value: "Hambantota", label: "Hambantota" },
-  { value: "Jaffna", label: "Jaffna" },
-  { value: "Mannar", label: "Mannar" },
-  { value: "Vavuniya", label: "Vavuniya" },
-  { value: "Mullaitivu", label: "Mullaitivu" },
-  { value: "Kilinochchi", label: "Kilinochchi" },
-  { value: "Batticaloa", label: "Batticaloa" },
-  { value: "Ampara", label: "Ampara" },
-  { value: "Trincomalee", label: "Trincomalee" },
-  { value: "Kurunegala", label: "Kurunegala" },
-  { value: "Puttalam", label: "Puttalam" },
-  { value: "Anuradhapura", label: "Anuradhapura" },
-  { value: "Polonnaruwa", label: "Polonnaruwa" },
-  { value: "Badulla", label: "Badulla" },
-  { value: "Monaragala", label: "Monaragala" },
-  { value: "Ratnapura", label: "Ratnapura" },
+  { value: "Katunayake", label: "Katunayake" },
   { value: "Kegalle", label: "Kegalle" },
+  { value: "Kilinochchi", label: "Kilinochchi" },
+  { value: "Kurunegala", label: "Kurunegala" },
+  { value: "Mannar", label: "Mannar" },
+  { value: "Matale", label: "Matale" },
+  { value: "Matara", label: "Matara" },
+  { value: "Monaragala", label: "Monaragala" },
+  { value: "Moratuwa", label: "Moratuwa" },
+  { value: "Mullaitivu", label: "Mullaitivu" },
+  { value: "Negombo", label: "Negombo" },
+  { value: "Nuwara Eliya", label: "Nuwara Eliya" },
+  { value: "Panadura", label: "Panadura" },
+  { value: "Polonnaruwa", label: "Polonnaruwa" },
+  { value: "Puttalam", label: "Puttalam" },
+  { value: "Ratnapura", label: "Ratnapura" },
+  { value: "Trincomalee", label: "Trincomalee" },
+  { value: "Vavuniya", label: "Vavuniya" },
+  { value: "Wattala", label: "Wattala" },
 ];
 
 export default function CreateServicePage() {
@@ -364,7 +380,7 @@ export default function CreateServicePage() {
     watch,
     setValue,
     formState: { errors },
-  } = useForm<ServiceOverviewSchema>({
+  } = useForm<ServiceOverview>({
     resolver: zodResolver(serviceOverviewSchema),
     defaultValues: {
       s_tags: [],
@@ -385,18 +401,37 @@ export default function CreateServicePage() {
     setSubcategories(matched ? matched.subcategories : []);
   }, [selectedCategory]);
 
-  const onSubmit = (data: ServiceOverviewSchema) => {
-    console.log("Form submitted", data);
-    setCurrentStep(1);
-  };
+    const handleChange = (selectedOptions: any) => {
+      setValue(
+        "serviceableAreas",
+        selectedOptions.map((option: any) => option.value),
+        { shouldValidate: true }
+      );
+    };
 
-  const handleChange = (selectedOptions: any) => {
-    setValue(
-      "serviceableAreas",
-      selectedOptions.map((option: any) => option.value),
-      { shouldValidate: true }
-    );
-  };
+
+ const { isSignedIn, user, isLoaded } = useUser();
+ const [loading, setLoading] = useState(false);
+
+ const onSubmit = async (data: ServiceOverview) => {
+  setLoading(true);
+   try {
+     const userId = user?.id;
+
+     const payload = {
+       ...data,
+       userId,
+     };
+     const response = await axios.post("/api/create-service", payload);
+     console.log("Service created successfully:", response.data.message);
+
+     setLoading(false);
+
+   } catch (error) {
+     console.error("Error submitting form:", error);
+     toast("Service has been created")
+   }
+ };
 
   return (
     <div className="w-full">
@@ -899,7 +934,7 @@ export default function CreateServicePage() {
                     className="md:w-[200px] font-medium"
                   >
                     Any Other Details{" "}
-                    <span className="text-gray-500">(Optional)</span>
+                    <span>(Optional)</span>
                   </label>
                   <div className="w-full">
                     <input
@@ -941,7 +976,8 @@ export default function CreateServicePage() {
 
                 <div>
                   <span className="font-semibold">Notice/Lead Period - </span>
-                  Set how much advance time you require for bookings. It ensures good planning for both sides.
+                  Set how much advance time you require for bookings. It ensures
+                  good planning for both sides.
                 </div>
 
                 <div>
