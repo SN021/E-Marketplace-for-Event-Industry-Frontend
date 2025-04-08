@@ -28,7 +28,6 @@ const steps = [
   { label: "Service Overview" },
   { label: "Service Description & Pricing Details" },
   { label: "Photos & Other Details" },
-  { label: "Publish" },
 ];
 
 const eventServiceCategories = [
@@ -961,7 +960,9 @@ export default function CreateServicePage() {
                 </div>
                 <div className="flex gap-3 items-center justify-center py-8">
                   <Button onClick={() => setCurrentStep(1)}>Back</Button>
-                  <Button onClick={() => setCurrentStep(3)}>Next</Button>
+                  <Button type="submit" disabled={loading}>
+                    {loading ? "Submitting..." : "Submit"}
+                  </Button>
                 </div>
               </div>
               <div className="w-full md:w-[380px] bg-[#FFF9EE] border-l-4 border-[#FF9F29] p-6 rounded-md text-sm text-gray-800 space-y-4">
@@ -993,20 +994,6 @@ export default function CreateServicePage() {
                   Mention special terms, travel fees, weekend availability, or
                   anything else clients should know. Keep it clear and relevant.
                 </div>
-              </div>
-            </div>
-          )}
-
-          {/* Form Content step 04 */}
-          {currentStep === 3 && (
-            <div>
-              <h2 className="text-lg font-semibold mb-4">Your Done Publish!</h2>
-
-              <div className="flex gap-3 items-center justify-center py-10 px-4">
-                <Button onClick={() => setCurrentStep(2)}>Back</Button>
-                <Button type="submit" disabled={loading}>
-                  {loading ? "Submitting..." : "Submit"}
-                </Button>
               </div>
             </div>
           )}
