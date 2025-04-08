@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import Select from "react-select";
 import { useUser } from "@clerk/nextjs";
 import axios from "axios";
+import { toast } from "sonner";
 
 const steps = [
   { label: "Service Overview" },
@@ -413,7 +414,6 @@ export default function CreateServicePage() {
  const [loading, setLoading] = useState(false);
 
  const onSubmit = async (data: ServiceOverview) => {
-  setCurrentStep(1);
   setLoading(true);
    try {
      const userId = user?.id;
@@ -429,6 +429,7 @@ export default function CreateServicePage() {
 
    } catch (error) {
      console.error("Error submitting form:", error);
+     toast("Service has been created")
    }
  };
 
