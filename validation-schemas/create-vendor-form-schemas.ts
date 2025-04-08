@@ -25,7 +25,7 @@ export const vendorFormSchema = z.object({
 
   businessName: z.string().min(1, "Business name is required"),
   brn: z.string().optional(),
-  BusinessAddress: z.string().min(1,"Business address is required"),
+  businessAddress: z.string().min(1,"Business address is required"),
   experience: z.string().min(1,"Select your experience level, required"),
   website: z.string().url("Invalid URL").or(z.literal("")).optional(),
   province: z.string().min(1,"Select your province"),

@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 
+//setup Supabase server client
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-// 3) POST route for Clerk webhooks
+//POST route for Clerk webhooks
 export async function POST(req: NextRequest) {
   try {
     const payload = await req.json();
@@ -20,14 +21,14 @@ export async function POST(req: NextRequest) {
 
 
     const id = data?.[0].id;
-    const vendor_username = payload.userName;
-    const vendor_display_name = payload.displayName;
+    const vendorUsername = payload.userName;
+    const vendorDisplayname = payload.displayName;
     const email = payload.email;
     const about = payload.about;
     const profilePicture = payload.profilePicture;
     const businessName = payload.businessName;
     const brn = payload.brn;
-    const businessAddress = payload.BusinessAddress;
+    const businessAddress = payload.businessAddress;
     const experience = payload.experience;
     const website = payload.website;
     const province = payload.province;
@@ -42,12 +43,13 @@ export async function POST(req: NextRequest) {
 
     const { error: insertError } = await supabase.from('vendor').insert([{
         id: id,
-        vendor_username: vendor_username,
-        display_name: vendor_display_name,
+        vendor_username: vendorUsername,
+        display_name: vendorDisplayname,
+        email: email,
         about: about,
         business_name: businessName,
         brn: brn,
-        Business_address: businessAddress,
+        business_address: businessAddress,
         experience: experience,
         website: website,
         province: province,

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const serviceOverviewSchema = z.object({
-  s_title: z.string().min(40, "Service title must be at least 40 characters.") .max(90, "Service title cannot exceed 90 characters."),
+  s_title: z.string().min(10, "Service title must be at least 40 characters.") .max(90, "Service title cannot exceed 90 characters."),
   s_category: z.string().min(1, "Service category is required."),
   s_subcategory: z.string().min(1, "Subcategory is required."),
   s_tags: z
@@ -60,4 +60,4 @@ export const serviceOverviewSchema = z.object({
 });
 
 
-export type ServiceOverviewSchema = z.infer<typeof serviceOverviewSchema>;
+export type ServiceOverview = z.infer<typeof serviceOverviewSchema>;
