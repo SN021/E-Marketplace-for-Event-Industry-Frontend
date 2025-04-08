@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useForm, useFormContext, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   AlertCircle,
@@ -21,7 +21,9 @@ import Select from "react-select";
 import { useUser } from "@clerk/nextjs";
 import axios from "axios";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
+//options for map function
 const steps = [
   { label: "Service Overview" },
   { label: "Service Description & Pricing Details" },
@@ -40,7 +42,7 @@ const eventServiceCategories = [
       },
       {
         value: "wedding_social_event_coordinators",
-        label: "Wedding & Social EventCoordinators",
+        label: "Wedding & Social Event Coordinators",
       },
       {
         value: "corporate_conference_organizers",
@@ -374,6 +376,7 @@ export default function CreateServicePage() {
   >([]);
   const [input, setInput] = useState("");
 
+  // Form data
   const {
     register,
     handleSubmit,
@@ -399,39 +402,45 @@ export default function CreateServicePage() {
       (cat) => cat.value === selectedCategory
     );
     setSubcategories(matched ? matched.subcategories : []);
-  }, [selectedCategory]);
+    setValue("s_subcategory", "");
+  }, [selectedCategory, setValue]);
 
-    const handleChange = (selectedOptions: any) => {
-      setValue(
-        "serviceableAreas",
-        selectedOptions.map((option: any) => option.value),
-        { shouldValidate: true }
-      );
-    };
+  const handleChange = (selectedOptions: any) => {
+    setValue(
+      "serviceableAreas",
+      selectedOptions.map((option: any) => option.value),
+      { shouldValidate: true }
+    );
+  };
+
+  const { user } = useUser();
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
 
- const { isSignedIn, user, isLoaded } = useUser();
- const [loading, setLoading] = useState(false);
 
- const onSubmit = async (data: ServiceOverview) => {
-  setLoading(true);
-   try {
-     const userId = user?.id;
 
-     const payload = {
-       ...data,
-       userId,
-     };
-     const response = await axios.post("/api/create-service", payload);
-     console.log("Service created successfully:", response.data.message);
+  const onSubmit = async (data: ServiceOverview) => {
+    setLoading(true);
+    try {
+      const userId = user?.id;
 
-     setLoading(false);
+      const payload = {
+        ...data,
+        userId,
+      };
+      const response = await axios.post("/api/create-service", payload);
+      console.log("Service created successfully:", response.data.message);
+      toast.success("Service has been created");
+      router.push("/dashboard");
 
-   } catch (error) {
-     console.error("Error submitting form:", error);
-     toast("Service has been created")
-   }
- };
+      setLoading(false);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Something went wrong");
+    
+    }
+  };
 
   return (
     <div className="w-full">
@@ -933,8 +942,7 @@ export default function CreateServicePage() {
                     htmlFor="other-details"
                     className="md:w-[200px] font-medium"
                   >
-                    Any Other Details{" "}
-                    <span>(Optional)</span>
+                    Any Other Details <span>(Optional)</span>
                   </label>
                   <div className="w-full">
                     <input
@@ -996,7 +1004,9 @@ export default function CreateServicePage() {
 
               <div className="flex gap-3 items-center justify-center py-10 px-4">
                 <Button onClick={() => setCurrentStep(2)}>Back</Button>
-                <Button type="submit">Submit</Button>
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Submitting..." : "Submit"}
+                </Button>
               </div>
             </div>
           )}

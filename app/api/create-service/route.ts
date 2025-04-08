@@ -12,12 +12,21 @@ const supabase = createClient(
 export async function POST(req: NextRequest) {
   try {
     const payload = await req.json();
-    
 
+// Check if user exists
     const { data, error } = await supabase
     .from('user')
     .select()
     .eq('clerk_user_id', payload.userId);
+
+    if (error) {
+      console.error('Supabase query error:', error);
+      return NextResponse.json({ message: 'Database error' }, { status: 500 });
+    }
+
+    if (!data || data.length === 0) {
+      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+    }
 
     const id = data?.[0].id;
     const serviceTitle= payload.s_title;
@@ -51,7 +60,7 @@ export async function POST(req: NextRequest) {
 
 
   if (insertError) {
-        console.error("Insert failed:", insertError.message);
+        console.error("Service insert error:", insertError.message);
         return NextResponse.json({ message: insertError.message }, { status: 500 });
     }
 
@@ -59,7 +68,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Success' }, { status: 200 });
 
   } catch (error) {
-    console.error('❌ Webhook error:', error);
+    console.error('Webhook error:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 

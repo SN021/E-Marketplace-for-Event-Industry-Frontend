@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 
+
 //setup Supabase server client
 const supabase = createClient(
   process.env.SUPABASE_URL!,
@@ -12,11 +13,20 @@ const supabase = createClient(
 export async function POST(req: NextRequest) {
   try {
     const payload = await req.json();
-
+// Check if user exists
     const { data, error } = await supabase
     .from('user')
     .select()
     .eq('clerk_user_id', payload.userId);
+
+if (error) {
+      console.error('Supabase query error:', error);
+      return NextResponse.json({ message: 'Database error' }, { status: 500 });
+    }
+
+    if (!data || data.length === 0) {
+      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+    }
 
 
 
@@ -60,6 +70,12 @@ export async function POST(req: NextRequest) {
         social_links: socialLinks,
     }]);
 
+    if (insertError) {
+        console.error('Vendor insert error:', insertError);
+        return NextResponse.json({ message: 'Failed to insert user' }, { status: 500 });
+    }
+
+
     const { error: updateError } = await supabase
         .from('user')
         .update({
@@ -67,16 +83,16 @@ export async function POST(req: NextRequest) {
         })
         .eq('id', id);
 
-    if (insertError) {
-        console.error('❌ Insert error:', insertError);
-        return NextResponse.json({ message: 'Failed to insert user' }, { status: 500 });
+
+    if (updateError) {
+      console.error('User update error:', updateError);
+      return NextResponse.json({ message: 'Failed to update user' }, { status: 500 });
     }
-
-
+  
     return NextResponse.json({ message: 'Success' }, { status: 200 });
 
   } catch (error) {
-    console.error('❌ Webhook error:', error);
+    console.error('Webhook error:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
