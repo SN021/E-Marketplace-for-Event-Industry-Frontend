@@ -11,12 +11,7 @@ const Navbar = () => {
     <div className="px-4 md:px-10 pt-2 fixed w-full z-50">
       <div className=" bg-[#171a1b]/85 backdrop-blur-md mx-auto h-20 border-b-[1px] rounded-2xl border-gray-500 text-white">
         <div className="h-full mx-auto px-5 flex items-center justify-between">
-          <div className="text-3xl font-bold text-primary tracking-wider mb-4">
-            <span className="inline-block w-9 h-9 bg-primary text-white font-extrabold text-center rounded-sm mr-1">
-              V
-            </span>
-            ENZOR
-          </div>
+          
 
           <div className="hidden md:flex items-center flex-1 mx-10">
             <div className="relative w-full max-w-xl">
