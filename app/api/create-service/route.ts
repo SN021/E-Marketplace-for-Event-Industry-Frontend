@@ -51,8 +51,8 @@ export async function POST(req: NextRequest) {
 
 
   if (insertError) {
-        console.error('❌ Insert error:', insertError);
-        return NextResponse.json({ message: 'Failed to insert service details' }, { status: 500 });
+        console.error("Insert failed:", insertError.message);
+        return NextResponse.json({ message: insertError.message }, { status: 500 });
     }
 
 
