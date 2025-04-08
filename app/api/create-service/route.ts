@@ -12,13 +12,14 @@ const supabase = createClient(
 export async function POST(req: NextRequest) {
   try {
     const payload = await req.json();
+    
 
     const { data, error } = await supabase
     .from('user')
     .select()
     .eq('clerk_user_id', payload.userId);
 
-    const id = data?.[0].user_id;
+    const id = data?.[0].id;
     const serviceTitle= payload.s_title;
     const serviceCategory = payload.s_category;
     const serviceSubcategory = payload.s_subcategory;
@@ -32,27 +33,27 @@ export async function POST(req: NextRequest) {
     const noticePeriod = payload.noticePeriod;
     const otherDetails = payload.otherDetails;
 
-    const { error: insertError } = await supabase.from('service').insert([{
+    const { error: insertError } = await supabase.from('services').insert([{
 
-    user_id: id,
-    service_title:serviceTitle,
-    category:serviceCategory,
-    subcategory:serviceSubcategory,
-    search_tags:searchTags,
-    description:serviceDescription,
-    staring_price:startingPrice,
-    price_features:staringPricefeature,
-    policies:cancellationRefundpolicy,
-    serviceable_area:serviceableAreas,
-    notice_period:noticePeriod,
-    other_details:otherDetails,
-}]);
+      user_id: id,
+      service_title:serviceTitle,
+      category:serviceCategory,
+      subcategory:serviceSubcategory,
+      search_tags:searchTags,
+      description:serviceDescription,
+      starting_price:startingPrice,
+      price_features:staringPricefeature,
+      policies:cancellationRefundpolicy,
+      serviceable_areas:serviceableAreas,
+      notice_period:noticePeriod,
+      other_details:otherDetails,
+  }]);
 
 
   if (insertError) {
-        console.error('❌ Insert error:', insertError);
-        return NextResponse.json({ message: 'Failed to insert service details' }, { status: 500 });
-    }
+      console.error('❌ Insert error:', insertError);
+      return NextResponse.json({ message: 'Failed to insert service details' }, { status: 500 });
+  }
 
 
     return NextResponse.json({ message: 'Success' }, { status: 200 });
