@@ -13,7 +13,7 @@ const supabase = createClient(
 export async function POST(req: NextRequest) {
   try {
     const payload = await req.json();
-// Check if user exists
+ // get user details
     const { data, error } = await supabase
     .from('user')
     .select()

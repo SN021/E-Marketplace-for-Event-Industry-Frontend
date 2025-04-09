@@ -89,10 +89,10 @@ const page = () => {
 
   //options for map function
   const experienceOptions = [
-    { value: "just-started", label: "just-started (0-6 months)" },
-    { value: "growing", label: "Growing (6 months-2 years)" },
-    { value: "established", label: "Established (2-5 years)" },
-    { value: "experienced", label: "Experienced (5+ years)" },
+    { value: "just-started (0-6 months)", label: "just-started (0-6 months)" },
+    { value: "growing (6 months-2 years)", label: "Growing (6 months-2 years)" },
+    { value: "established (2-5 years)", label: "Established (2-5 years)" },
+    { value: "experienced (5+ years)", label: "Experienced (5+ years)" },
   ];
 
   const provinceOptions = [
