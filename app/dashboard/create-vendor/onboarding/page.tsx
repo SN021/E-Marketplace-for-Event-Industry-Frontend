@@ -37,7 +37,7 @@ const page = () => {
       <Link href="/dashboard/create-service">
         <Button className="mt-10">Create Your First Service</Button>
       </Link>
-      <Link href="/dashboard">
+      <Link href="/dashboard/vendor-dashboard">
         <Button 
         variant="link"
         className="text-gray-500 mt-4"> Skip</Button>
