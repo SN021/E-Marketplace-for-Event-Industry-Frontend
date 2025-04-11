@@ -54,7 +54,6 @@ const VendorAccountInfo: React.FC = () => {
       <section className="flex-1 bg-white rounded-xl p-6 w-200 shadow-sm">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-xl font-semibold">Vendor Account Info</h1>
-          <Button>Preview Buyer POV</Button>
         </div>
 
         <form className="space-y-5">
