@@ -86,10 +86,10 @@ if (error) {
 
     if (updateError) {
       console.error('User update error:', updateError);
-      return NextResponse.json({ message: 'Failed to update user' }, { status: 500 });
+      return NextResponse.json({ message: 'Failed to insert user' }, { status: 500 });
     }
   
-    return NextResponse.json({ message: 'Success' }, { status: 200 });
+    return NextResponse.json({ message: 'User inserted successfully' }, { status: 200 });
 
   } catch (error) {
     console.error('Webhook error:', error);

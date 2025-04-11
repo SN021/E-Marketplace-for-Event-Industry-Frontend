@@ -14,7 +14,7 @@ export async function GET(req: Request) {
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-    // get user details
+  // Get user ID from 'user' table
     const { data: userData, error: userError } = await supabase
     .from("user")
     .select()
