@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
     }
 
 
-    return NextResponse.json({ message: 'Success' }, { status: 200 });
+    return NextResponse.json({ message: 'Service inserted successfully' }, { status: 200 });
 
   } catch (error) {
     console.error('Webhook error:', error);

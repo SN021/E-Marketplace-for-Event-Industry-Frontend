@@ -572,7 +572,7 @@ const page = () => {
                           htmlFor="businessPhone"
                           className={inputLabelStyle}
                         >
-                          {"Enter your business phone number (07X XXX XXXX) *"}
+                          {"Business Phone Number (07X XXX XXXX) *"}
                         </label>
                         {errors.businessPhone && (
                           <p className="error-msg">
