@@ -64,7 +64,7 @@ export async function PUT(req: NextRequest) {
       console.error('Vendor update error:', updateError);
       return NextResponse.json({ message: 'Failed to update vendor' }, { status: 500 });
     }
-  
+
     return NextResponse.json({ message: 'Vendor updated successfully' }, { status: 200 });
 
   } catch (error) {
