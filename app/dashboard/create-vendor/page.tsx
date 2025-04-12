@@ -203,6 +203,17 @@ const languageOptions = [
     try {
       const userId = user?.id;
 
+      
+
+      const payload = {
+        ...data,
+        userId,
+      };
+
+      
+
+      const response = await axios.post("/api/create-vendor", payload);
+
       const profilePicUrl = profilePicture?.[0]
         ? await uploadFile(profilePicture[0], "profile", userId)
         : null;
@@ -216,16 +227,6 @@ const languageOptions = [
         ? await uploadFile(nicBack[0], "nicBack", userId)
         : null;
 
-      const payload = {
-        ...data,
-        userId,
-        profilePicture: profilePicUrl,
-        legalDocuments: legalDocUrl,
-        nicFront: nicFrontUrl,
-        nicBack: nicBackUrl,
-      };
-
-      const response = await axios.post("/api/create-vendor", payload);
       toast.success("Vendor profile created successfully!");
       router.push("/dashboard/create-vendor/onboarding");
     } catch (error: any) {

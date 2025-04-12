@@ -18,7 +18,6 @@ const VendorAccountInfo: React.FC = () => {
   const fetchVendorData = async () => {
     try {
       const res = await api.get("/get-vendor");
-      console.log(res.data);
       setVendorData(res.data);
 
       const links = res.data?.social_links

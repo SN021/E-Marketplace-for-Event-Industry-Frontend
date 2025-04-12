@@ -13,13 +13,13 @@ const supabase = createClient(
 export async function POST(req: NextRequest) {
   try {
     const payload = await req.json();
- // get user details
+    // get user details
     const { data, error } = await supabase
-    .from('user')
-    .select()
-    .eq('clerk_user_id', payload.userId);
+      .from('user')
+      .select()
+      .eq('clerk_user_id', payload.userId);
 
-if (error) {
+    if (error) {
       console.error('Supabase query error:', error);
       return NextResponse.json({ message: 'Database error' }, { status: 500 });
     }
@@ -35,7 +35,6 @@ if (error) {
     const vendorDisplayname = payload.displayName;
     const email = payload.email;
     const about = payload.about;
-    const profilePicture = payload.profilePicture;
     const businessName = payload.businessName;
     const brn = payload.brn;
     const businessAddress = payload.businessAddress;
@@ -47,9 +46,6 @@ if (error) {
     const businessPhone = payload.businessPhone;
     const languages = payload.languages;
     const socialLinks = payload.socialLinks;
-    const legalDocuments = payload.legalDocuments;
-    const nicFront = payload.nicFront;
-    const nicBack = payload.nicBack;
 
     const { error: insertError } = await supabase.from('vendor').insert([{
         id: id,

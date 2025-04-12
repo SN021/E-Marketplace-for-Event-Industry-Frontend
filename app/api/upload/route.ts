@@ -39,6 +39,30 @@ export async function POST(req: NextRequest) {
       cacheControl: '3600',
       upsert: false,
     });
+  
+
+  if (type === "profile") {
+    console.log('saving profile picture');
+    const { data, error } = await supabase
+      .from('user')
+      .select()
+      .eq('clerk_user_id', userId);
+
+    const id = data?.[0].id;
+
+    const { error:updateError } = await supabase
+      .from("vendor")
+      .update({
+        profile_picture: filePath
+      })
+      .eq("id",id);
+
+     if (updateError) {
+      console.error('Profile picture update failed:', updateError);
+      return NextResponse.json({ error: 'Failed to update profile picture' }, { status: 500 });
+    }
+  }
+
 
   if (uploadError) {
     console.error("Upload error:", uploadError);
@@ -56,10 +80,7 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json(
-    {
-      signedUrl: signedUrlData?.signedUrl,
-      filePath, 
-    },
+    "Success",
     { status: 200 }
   );
 }
