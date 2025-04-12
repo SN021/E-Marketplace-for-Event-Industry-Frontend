@@ -110,8 +110,16 @@
 }
 
 /* Clerk UserButton root */
-.cl-userButton-root {
+/* .cl-userButton-root {
   @apply h-12 md:h-20;
+} */
+
+.cl-userButtonPopoverActionButton{
+  @apply text-black hover:scale-[101%] hover:text-black/80 duration-300 bg-background transition-transform hover:bg-background
+}
+
+.cl-userButtonPopoverCard{
+  @apply text-black bg-background
 }
 
 /* Clerk avatar box */

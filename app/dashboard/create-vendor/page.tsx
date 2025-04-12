@@ -82,20 +82,26 @@ const page = () => {
     },
   });
   const profilePicture = watch("profilePicture");
+  const legalDocuments = watch("legalDocuments");
+  const nicFront = watch("nicFront");
+  const nicBack = watch("nicBack");
   const { fields, append, remove } = useFieldArray({
     control,
     name: "socialLinks",
   });
 
   //options for map function
-  const experienceOptions = [
+const experienceOptions = [
     { value: "just-started (0-6 months)", label: "just-started (0-6 months)" },
-    { value: "growing (6 months-2 years)", label: "Growing (6 months-2 years)" },
+    {
+      value: "growing (6 months-2 years)",
+      label: "Growing (6 months-2 years)",
+    },
     { value: "established (2-5 years)", label: "Established (2-5 years)" },
     { value: "experienced (5+ years)", label: "Experienced (5+ years)" },
   ];
 
-  const provinceOptions = [
+const provinceOptions = [
     { value: "Central", label: "Central" },
     { value: "Eastern", label: "Eastern" },
     { value: "Northern", label: "Northern" },
@@ -107,7 +113,7 @@ const page = () => {
     { value: "Western", label: "Western" },
   ];
 
-  const cityOptions = [
+const cityOptions = [
     { value: "Ampara", label: "Ampara" },
     { value: "Anuradhapura", label: "Anuradhapura" },
     { value: "Avissawella", label: "Avissawella" },
@@ -148,7 +154,7 @@ const page = () => {
     { value: "Wattala", label: "Wattala" },
   ];
 
-  const languageOptions = [
+const languageOptions = [
     { value: "English", label: "English" },
     { value: "Sinhala", label: "Sinhala" },
     { value: "Tamil", label: "Tamil" },
@@ -157,6 +163,34 @@ const page = () => {
   const { isSignedIn, user, isLoaded } = useUser();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+
+  const uploadFile = async (
+    file: File,
+    type: string,
+    userId: string
+  ): Promise<string | null> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("type", type);
+    formData.append("userId", userId);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Upload failed");
+
+      const result = await res.json();
+      return result.signedUrl;
+    } catch (error) {
+      console.error(`Upload failed for ${type}:`, error);
+      toast.error(`Failed to upload ${type} file.`);
+      return null;
+    }
+  };
 
   const onSubmit = async (data: VendorFormData) => {
     setLoading(true);
@@ -169,11 +203,30 @@ const page = () => {
     try {
       const userId = user?.id;
 
+      
+
       const payload = {
         ...data,
         userId,
       };
+
+      
+
       const response = await axios.post("/api/create-vendor", payload);
+
+      const profilePicUrl = profilePicture?.[0]
+        ? await uploadFile(profilePicture[0], "profile", userId)
+        : null;
+      const legalDocUrl = legalDocuments?.[0]
+        ? await uploadFile(legalDocuments[0], "legal", userId)
+        : null;
+      const nicFrontUrl = nicFront?.[0]
+        ? await uploadFile(nicFront[0], "nicFront", userId)
+        : null;
+      const nicBackUrl = nicBack?.[0]
+        ? await uploadFile(nicBack[0], "nicBack", userId)
+        : null;
+
       toast.success("Vendor profile created successfully!");
       router.push("/dashboard/create-vendor/onboarding");
     } catch (error: any) {
