@@ -37,10 +37,10 @@ export async function POST(req: NextRequest) {
     const startingPrice = payload.basePrice;
     const staringPricefeature = payload.basePriceFeatures;
     const cancellationRefundpolicy = payload.cancellationPolicy;
-    const photoGallery = payload.photoGallery;
     const serviceableAreas = payload.serviceableAreas;
     const noticePeriod = payload.noticePeriod;
     const otherDetails = payload.otherDetails;
+    const photoGallery = payload.photoGalleryPaths;
 
     const { error: insertError } = await supabase.from('services').insert([{
 
@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
       serviceable_areas:serviceableAreas,
       notice_period:noticePeriod,
       other_details:otherDetails,
+      photo_gallery_paths:photoGallery,
   }]);
 
 
