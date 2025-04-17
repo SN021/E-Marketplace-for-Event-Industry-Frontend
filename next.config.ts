@@ -8,11 +8,6 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
 
-  api: {
-    bodyParser: {
-      sizeLimit: "10mb", 
-    },
-  },
 };
 
 export default nextConfig;
