@@ -19,7 +19,7 @@ export const ServiceCard = ({
 }: ServiceCardProps) => {
   console.log(imageUrl);
   return (
-    <div className="w-[250px] bg-white rounded-lg shadow-sm p-4 relative">
+    <div className=" bg-white rounded-lg shadow-sm p-4 relative">
       <img
         src={imageUrl}
         alt={title}

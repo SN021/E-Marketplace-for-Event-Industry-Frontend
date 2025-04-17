@@ -43,7 +43,7 @@ export const ServiceCarousel = ({ title }: ServiceCarouselProps) => {
       ) : services.length === 0 ? (
         <p className="text-gray-500 text-sm">No services found.</p>
       ) : (
-        <div className="flex gap-4 overflow-x-auto pb-2 justify-center">
+        <div className="grid grid-cols-4 gap-10 overflow-x-auto pb-2 justify-center container mx-auto">
           {services.map((service) => (
             <ServiceCard
               key={service.id}
@@ -53,6 +53,7 @@ export const ServiceCarousel = ({ title }: ServiceCarouselProps) => {
               imageUrl={service.imageUrl}
             />
           ))}
+
         </div>
       )}
     </section>
