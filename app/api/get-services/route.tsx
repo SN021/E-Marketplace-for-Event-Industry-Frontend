@@ -14,31 +14,6 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // Get internal user ID from Clerk ID
-    const { data: userData, error: userError } = await supabase
-      .from("user")
-      .select("id")
-      .eq("clerk_user_id", userId)
-      .maybeSingle();
-
-    if (userError || !userData) {
-      console.error("User fetch error:", userError);
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
-    const userIdFromDB = userData.id;
-
-    // const { data: vendorData, error: vendorError } = await supabase
-    //   .from("vendor")
-    //   .select("display_name")
-    //   .eq("id", userIdFromDB)
-    //   .maybeSingle();
-
-    // if (vendorError || !vendorData) {
-    //   console.error("Vendor fetch error:", vendorError);
-    //   return NextResponse.json({ error: "Vendor not found" }, { status: 404 });
-    // }
-
     const { data: serviceData, error: serviceError } = await supabase
       .from("services")
       .select("service_id, service_title, starting_price, photo_gallery_paths, user_id")

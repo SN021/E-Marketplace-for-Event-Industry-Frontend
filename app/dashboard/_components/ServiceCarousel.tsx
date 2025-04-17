@@ -24,7 +24,6 @@ export const ServiceCarousel = ({ title }: ServiceCarouselProps) => {
       try {
         const res = await fetch("/api/get-services");
         const json = await res.json();
-        console.log("Loaded Services:", json.services);
         setServices(json.services || []);
       } catch (error) {
         console.error("Failed to load services:", error);
