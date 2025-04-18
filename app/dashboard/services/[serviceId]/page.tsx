@@ -3,13 +3,14 @@ import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
-export default async function Page({ params }: { params: { serviceId: string } }) {
+export default async function Page({ params }: { params: Promise<{ serviceId: string }> }) {
+  const { serviceId } = await params;
   const headersList = await headers();
   const protocol = headersList.get("x-forwarded-proto") || "http";
   const host = headersList.get("host");
   const baseUrl = `${protocol}://${host}`;
 
-  const res = await fetch(`${baseUrl}/api/get-service-by-id?id=${params.serviceId}`, {
+  const res = await fetch(`${baseUrl}/api/get-service-by-id?id=${serviceId}`, {
     cache: "no-store",
   });
 
