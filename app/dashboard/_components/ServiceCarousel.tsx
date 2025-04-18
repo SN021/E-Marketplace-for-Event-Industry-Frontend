@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ServiceCard } from "./ServiceCard";
+import Link from "next/link";
 
 type Service = {
   id: string;
@@ -44,15 +45,18 @@ export const ServiceCarousel = ({ title }: ServiceCarouselProps) => {
       ) : (
         <div className="grid grid-cols-4 gap-10 overflow-x-auto pb-2 justify-center container mx-auto">
           {services.map((service) => (
-            <ServiceCard
-              key={service.id}
-              title={service.title}
-              seller={service.seller}
-              price={service.price.toString()}
-              imageUrl={service.imageUrl}
-            />
+            <Link key={service.id} href={`/services/${service.id}`}>
+              <div className="cursor-pointer">
+                <ServiceCard
+                  key={service.id}
+                  title={service.title}
+                  seller={service.seller}
+                  price={service.price.toString()}
+                  imageUrl={service.imageUrl}
+                />
+              </div>
+            </Link>
           ))}
-
         </div>
       )}
     </section>
