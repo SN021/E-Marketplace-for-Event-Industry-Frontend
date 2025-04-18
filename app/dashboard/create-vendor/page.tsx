@@ -176,7 +176,7 @@ const languageOptions = [
     formData.append("userId", userId);
 
     try {
-      const res = await fetch("/api/upload", {
+      const res = await fetch("/api/upload-file", {
         method: "POST",
         body: formData,
       });
@@ -202,15 +202,11 @@ const languageOptions = [
 
     try {
       const userId = user?.id;
-
-      
-
       const payload = {
         ...data,
         userId,
       };
 
-      
 
       const response = await axios.post("/api/create-vendor", payload);
 

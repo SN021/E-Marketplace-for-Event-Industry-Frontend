@@ -7,8 +7,13 @@
         "Pricefeature",
         "Refundpolicy",
         "Rxxxxxxxxx",
+        "aceternity",
+        "ajpladujozvygifecrfo",
+        "creativesmith",
+        "heroimage",
         "imageicon",
         "leed",
+        "mukarramhussain",
         "signedurl",
         "sonner"
     ],
@@ -52,5 +57,13 @@
         "Venzor",
         "videography",
         "Wattala"
-    ]
+    ],
+    "cSpell.customDictionaries": {
+        "custom-dictionary-workspace": {
+            "name": "custom-dictionary-workspace",
+            "path": "${workspaceFolder:frontend}/.cspell/custom-dictionary-workspace.txt",
+            "addWords": true,
+            "scope": "workspace"
+        }
+    }
 }

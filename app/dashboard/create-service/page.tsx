@@ -36,16 +36,16 @@ const eventServiceCategories = [
     label: "Event Planning & Coordination",
     subcategories: [
       {
-        value: "full_service_event_planners",
-        label: "Full-Service Event Planners",
+        value: "full_service_event_planning",
+        label: "Full-Service Event Planning",
       },
       {
-        value: "wedding_social_event_coordinators",
-        label: "Wedding & Social Event Coordinators",
+        value: "wedding_social_event_coordinating",
+        label: "Wedding & Social Event Coordinating",
       },
       {
-        value: "corporate_conference_organizers",
-        label: "Corporate & Conference Organizers",
+        value: "corporate_conference_organizing",
+        label: "Corporate & Conference Organizing",
       },
     ],
   },
@@ -68,10 +68,10 @@ const eventServiceCategories = [
     value: "catering_food_services",
     label: "Catering & Food Services",
     subcategories: [
-      { value: "bakery_cake_makers", label: "Bakery & Cake Makers" },
+      { value: "cake_bakery", label: "Cake & Bakery" },
       {
-        value: "caterers_gourmet_food_providers",
-        label: "Caterers & Gourmet Food Providers",
+        value: "caterers_gourmet_food_providing",
+        label: "Caterers & Gourmet Food Providing",
       },
       { value: "food_trucks_popups", label: "Food Trucks & Pop-Up Kitchens" },
       {
@@ -85,19 +85,19 @@ const eventServiceCategories = [
     label: "Decoration & Floral",
     subcategories: [
       {
-        value: "event_decorators_stylists",
-        label: "Event Decorators & Stylists",
+        value: "event_decorators_styling",
+        label: "Event Decorators & Styling",
       },
       {
         value: "florists_greenery_specialists",
         label: "Florists & Greenery Specialists",
       },
-      { value: "set_theme_designers", label: "Set & Theme Designers" },
+      { value: "set_theme_designing", label: "Set & Theme Designing" },
     ],
   },
   {
-    value: "entertainment_performers",
-    label: "Entertainment & Performers",
+    value: "entertainment_performs",
+    label: "Entertainment & Performs",
     subcategories: [
       { value: "musicians_djs_bands", label: "Musicians, DJs & Bands" },
       {
@@ -119,7 +119,7 @@ const eventServiceCategories = [
         label: "Professional Photography",
       },
       {
-        value: "videography_film_makers",
+        value: "videography_film_making",
         label: "Videography & Film Making",
       },
       {
@@ -419,27 +419,41 @@ export default function CreateServicePage() {
 
 
 
-  const onSubmit = async (data: ServiceOverview) => {
-    setLoading(true);
-    try {
-      const userId = user?.id;
+const onSubmit = async (data: ServiceOverview) => {
+  setLoading(true);
+  try {
+    const userId = user?.id;
+    const formData = new FormData();
+    data.photoGallery.forEach((file: File) => {
+      formData.append("images", file);
+    });
 
-      const payload = {
-        ...data,
-        userId,
-      };
-      const response = await axios.post("/api/create-service", payload);
-      console.log("Service created successfully:", response.data.message);
-      toast.success("Service has been created");
-      router.push("/dashboard");
+    const uploadRes = await fetch("/api/upload-service", {
+      method: "POST",
+      body: formData,
+    });
 
-      setLoading(false);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      toast.error("Something went wrong");
-    
-    }
-  };
+    const uploadJson = await uploadRes.json();
+
+    if (!uploadRes.ok) throw new Error(uploadJson.error);
+
+    const payload = {
+      ...data,
+      userId,
+      photoGalleryPaths: uploadJson.paths,
+    };
+
+    const response = await axios.post("/api/create-service", payload);
+    toast.success("Service has been created");
+    router.push("/dashboard");
+  } catch (error: any) {
+    console.error("Upload or submission failed:", error);
+    toast.error("Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="w-full">
