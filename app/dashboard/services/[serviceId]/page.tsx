@@ -1,9 +1,14 @@
-// app/dashboard/services/[serviceId]/page.tsx
 import { notFound } from "next/navigation";
 
-export default async function Page({ params }: { params: { serviceId: string } }) {
+export default async function Page({
+  params,
+}: {
+  params: { serviceId: string };
+}) {
+  const serviceId = params.serviceId;
+
   const res = await fetch(
-    `${process.env.SITE_URL || "http://localhost:3000"}/api/get-service-by-id?id=${params.serviceId}`,
+    `${process.env.SITE_URL || "http://localhost:3000"}/api/get-service-by-id?id=${serviceId}`,
     { cache: "no-store" }
   );
 
