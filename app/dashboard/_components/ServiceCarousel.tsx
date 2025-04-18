@@ -45,7 +45,7 @@ export const ServiceCarousel = ({ title }: ServiceCarouselProps) => {
       ) : (
         <div className="grid grid-cols-4 gap-10 overflow-x-auto pb-2 justify-center container mx-auto">
           {services.map((service) => (
-            <Link key={service.id} href={`/services/${service.id}`}>
+            <Link key={service.id} href={`/dashboard/services/${service.id}`}>
               <div className="cursor-pointer">
                 <ServiceCard
                   key={service.id}
