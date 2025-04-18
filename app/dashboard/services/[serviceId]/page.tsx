@@ -9,7 +9,7 @@ type Props = {
 };
 
 const fetchServiceDetails = async (id: string) => {
-  const res = await fetch(`${process.env.SITE_URL || "http://localhost:3000"}/api/get-service-id?id=${id}`, {
+  const res = await fetch(`${process.env.SITE_URL || "http://localhost:3000"}/api/get-service-by-id?id=${id}`, {
     cache: "no-store",
   });
 
