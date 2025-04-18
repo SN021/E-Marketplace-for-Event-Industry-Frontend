@@ -1,15 +1,14 @@
-// app/dashboard/services/[serviceId]/page.tsx
 import { notFound } from "next/navigation";
-import { Metadata } from "next";
 
-type Props = {
+// ✅ Fix the param typing for dynamic routes in App Router
+interface ServicePageProps {
   params: {
     serviceId: string;
   };
-};
+}
 
-const fetchServiceDetails = async (id: string) => {
-  const res = await fetch(`${process.env.SITE_URL || "http://localhost:3000"}/api/get-service-by-id?id=${id}`, {
+const fetchServiceDetails = async (serviceId: string) => {
+  const res = await fetch(`${process.env.SITE_URL || "http://localhost:3000"}/api/get-service-by-id?id=${serviceId}`, {
     cache: "no-store",
   });
 
@@ -17,7 +16,7 @@ const fetchServiceDetails = async (id: string) => {
   return res.json();
 };
 
-export default async function ServicePage({ params }: Props) {
+export default async function ServicePage({ params }: ServicePageProps) {
   const data = await fetchServiceDetails(params.serviceId);
 
   if (!data || data.error) return notFound();
