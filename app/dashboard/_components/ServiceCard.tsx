@@ -36,7 +36,7 @@ export const ServiceCard = ({
         </span>
       </div>
       <p className="mt-2 text-yellow-600 font-semibold text-sm">
-        Starts at Rs.{price}
+        Starts at Rs.{' '}{price}.00
       </p>
     </div>
   );

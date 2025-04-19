@@ -37,13 +37,13 @@ export const serviceOverviewSchema = z.object({
      z
       .instanceof(File)
       .refine((file) => file.size <= 5 * 1024 * 1024, {
-        message: "Each file must be less than 5MB",
+        message: "Each file must be less than 10MB",
       })
       .refine((file) => ["image/jpeg", "image/png", "image/webp"].includes(file.type), {
         message: "Only JPEG, PNG, or WEBP images are allowed",
       })
    )
-    .min(1, "Please upload at least 1 photo")
+    .min(2, "Please upload at least 2 photo")
     .max(4, "You can upload up to 4 photos"),
   serviceableAreas: z
     .array(z.string())

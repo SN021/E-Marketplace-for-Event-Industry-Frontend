@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Error fetching services" }, { status: 500 });
     }
 
-    // Generate signed URL for first image of each service
+    // signed URL for first image of each service
     const signedServices = await Promise.all(
       serviceData.map(async (service) => {
         let firstImage: string | null = null;
@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
     id: service.service_id,
     title: service.service_title,
     price: service.starting_price,
-    seller: service.display_name, // ✅ use the display_name from this specific service
+    seller: service.display_name,
     imageUrl: service.signedUrl || "/default-thumbnail.jpg",
   }));
 

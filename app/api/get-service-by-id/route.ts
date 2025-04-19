@@ -18,7 +18,20 @@ export async function GET(req: NextRequest) {
   try {
     const { data: service, error: serviceError } = await supabase
       .from("services")
-      .select("service_id, service_title, starting_price, photo_gallery_paths, user_id")
+      .select(`
+          service_id,
+          service_title,
+          starting_price,
+          photo_gallery_paths,
+          user_id,
+          description,
+          serviceable_areas,
+          notice_period,
+          other_details,
+          policies,
+          search_tags,
+          price_features
+        `)
       .eq("service_id", serviceId)
       .maybeSingle();
 
@@ -55,15 +68,36 @@ export async function GET(req: NextRequest) {
       .maybeSingle();
 
     const display_name = vendorData?.display_name || "Unknown Vendor";
+    let parsedTags: string[] = [];
+     try {
+       parsedTags = JSON.parse(service.search_tags || "[]");
+     } catch {
+       console.warn("Failed to parse tags for service:", serviceId);
+     }
 
-    return NextResponse.json({
-      service_id: service.service_id,
-      service_title: service.service_title,
-      starting_price: service.starting_price,
-      display_name,
-      photo_gallery: signedUrls,
-      user_id: service.user_id,
-    });
+     let parsedPriceFeatures: string[] = [];
+try {
+  parsedPriceFeatures = JSON.parse(service.price_features || "[]");
+} catch {
+  console.warn("Failed to parse price_features for service:", serviceId);
+}
+
+
+  return NextResponse.json({
+  service_id: service.service_id,
+  service_title: service.service_title,
+  starting_price: service.starting_price,
+  display_name,
+  photo_gallery: signedUrls,
+  user_id: service.user_id,
+  service_description: service.description,
+  servicable_areas: service.serviceable_areas,
+  notice_period: service.notice_period,
+  other_details: service.other_details,
+  cancellation_policy: service.policies,
+  tags: parsedTags,
+  price_features: parsedPriceFeatures,
+});
   } catch (err) {
     console.error("Unexpected error:", err);
     return NextResponse.json({ error: "Unexpected error" }, { status: 500 });

@@ -16,8 +16,11 @@ export async function POST(req: NextRequest) {
 // Check if user exists
     const { data, error } = await supabase
     .from('user')
-    .select()
+    .select("id, is_vendor")
     .eq('clerk_user_id', payload.userId);
+
+
+  
 
     if (error) {
       console.error('Supabase query error:', error);
@@ -26,6 +29,10 @@ export async function POST(req: NextRequest) {
 
     if (!data || data.length === 0) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
+    }
+  const user = data[0];
+   if (!user.is_vendor) {
+      return NextResponse.json({ message: 'Forbidden: Only vendors can create services' }, { status: 403 });
     }
 
     const id = data?.[0].id;
