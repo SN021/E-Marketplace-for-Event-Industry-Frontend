@@ -8,6 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from "@/component
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { link } from "fs";
+import Link from "next/link";
 
 
 export const CategoryBar = () => {
@@ -27,7 +28,6 @@ export const CategoryBar = () => {
   return (
     <div className="w-full bg-white shadow-md sticky top-24 z-50 py-2">
       <div className="relative flex items-center">
-        {/* Left Chevron */}
         <button
           onClick={() => scroll("left")}
           className="absolute left-0 z-10 h-full px-2 bg-gradient-to-r from-white to-transparent"
@@ -35,7 +35,6 @@ export const CategoryBar = () => {
           <ChevronLeft className="w-5 h-5 text-gray-500" />
         </button>
 
-        {/* Scrollable container */}
         <div
           ref={scrollContainerRef}
           className="flex overflow-x-auto scrollbar-none whitespace-nowrap px-8"
@@ -43,23 +42,19 @@ export const CategoryBar = () => {
           {categories.map((cat, idx) => (
             <DropdownMenu key={idx}>
               <DropdownMenuTrigger asChild>
-                <Button variant={"link"}>
-                  {cat.name}
-                </Button>
-                
+                <Button variant={"link"}>{cat.name}</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">
-                   {cat.subcategories.map((sub, i) => (
-                    <DropdownMenuItem key={i}>
-                      {sub}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
+                {cat.subcategories.map((sub, i) => (
+                  <DropdownMenuItem key={i}>
+                    <Link href="/">{sub}</Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
             </DropdownMenu>
           ))}
         </div>
 
-        {/* Right Chevron */}
         <button
           onClick={() => scroll("right")}
           className="absolute right-0 z-10 h-full px-2 bg-gradient-to-l from-white to-transparent"
