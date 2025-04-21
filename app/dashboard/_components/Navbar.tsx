@@ -3,9 +3,19 @@ import React, { useState } from "react";
 import { Search, Mail, Heart, Menu, X } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    router.push(`/dashboard/search?q=${encodeURIComponent(searchQuery.trim())}`);
+  };
+
 
   return (
     <div className="px-4 md:px-10 pt-2 fixed w-full z-50">
@@ -21,14 +31,18 @@ const Navbar = () => {
           </Link>
 
           <div className="hidden md:flex items-center flex-1 mx-10">
-            <div className="relative w-full max-w-xl">
+            <form onSubmit={handleSearch} className="relative w-full max-w-xl">
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search for the perfect vendors for your special event..."
                 className="w-full py-2 pl-4 pr-10 rounded-full bg-white text-sm text-gray-700 focus:outline-none"
               />
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary" />
-            </div>
+              <button type="submit">
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary" />
+              </button>
+            </form>
 
             <Link
               href=""
