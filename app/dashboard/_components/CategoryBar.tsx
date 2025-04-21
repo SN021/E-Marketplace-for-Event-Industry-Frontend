@@ -1,88 +1,75 @@
 "use client";
 
 import React from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { categories } from "@/data/categories";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
 
-const categories = [
-  {
-    name: "Event Planning & Coordination",
-    subcategories: [
-      "Full-Service Event Planning",
-      "Wedding & Social Event Coordinating",
-      "Corporate & Conference Organizing",
-    ],
-  },
-  {
-    name: "Venue & Location",
-    subcategories: [
-      "Event Venues & Halls",
-      "Outdoor & Unique Locations",
-      "Venue Management Services",
-    ],
-  },
-  {
-    name: "Catering & Food Services",
-    subcategories: [
-      "Bakery & Cake",
-      "Caterers & Gourmet Food Providing",
-      "Food Trucks & Pop-Up Kitchens" ,
-      "Dessert & Beverage Services",
-    ],
-  },
-  {
-    name: "Decoration & Floral",
-    subcategories: ["Stage Decor", "Table Centerpieces", "Floral Arches"],
-  },
-  {
-    name: "Entertainment & Performers",
-    subcategories: ["Live Bands", "DJ", "Cultural Acts"],
-  },
-  {
-    name: "Beauty & Grooming",
-    subcategories: ["Makeup", "Hair Styling", "Spa Services"],
-  },
-  {
-    name: "Photography & Videography",
-    subcategories: ["Cinematography", "Drone Shoots", "Albums"],
-  },
-  {
-    name: "Invitation, Stationery & Branding",
-    subcategories: ["Printed Invitations", "Digital Cards", "Logos"],
-  },
-  {
-    name: "Audio-Visual & Technology",
-    subcategories: ["Lighting", "LED Screens", "Projectors"],
-  },
-  {
-    name: "Transportation & Logistics",
-    subcategories: ["Shuttle Services", "Luxury Cars", "Vendor Transport"],
-  },
-];
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  );
+});
+ListItem.displayName = "ListItem";
 
 export const CategoryBar = () => {
-  return (
-    <div className="w-full bg-white shadow-md z-50">
-      <div className="flex overflow-x-auto hide-scrollbar whitespace-nowrap px-4">
-        {categories.map((cat, idx) => (
-          <div key={idx} className="relative group px-6 py-4 hover:bg-gray-100 cursor-pointer">
-            <span className="text-sm font-medium whitespace-nowrap">{cat.name}</span>
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const scroll = (direction: "left" | "right") => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, clientWidth } = scrollContainerRef.current;
+      const scrollAmount = clientWidth * 0.8;
+      const newScrollPosition =
+        direction === "left"
+          ? scrollLeft - scrollAmount
+          : scrollLeft + scrollAmount;
+      scrollContainerRef.current.scrollTo({
+        left: newScrollPosition,
+        behavior: "smooth",
+      });
+    }
+  };
 
-            {/* Dropdown */}
-            <div className="absolute left-0 top-full mt-2 hidden group-hover:block bg-white shadow-lg rounded-md min-w-[220px] z-50">
-              <ul className="py-2">
+  return (
+    <NavigationMenu className="w-full bg-white shadow-md sticky top-23 z-50">
+      <NavigationMenuList>
+        {categories.map((cat, idx) => (
+          <NavigationMenuItem key={idx}>
+            <NavigationMenuTrigger>{cat.name}</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                 {cat.subcategories.map((sub, i) => (
-                  <li
-                    key={i}
-                    className="px-4 py-2 hover:bg-gray-100 text-sm text-gray-700 cursor-pointer"
-                  >
-                    {sub}
-                  </li>
+                  <ListItem key={i} title={sub} />
                 ))}
               </ul>
-            </div>
-          </div>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
         ))}
-      </div>
-    </div>
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 };
