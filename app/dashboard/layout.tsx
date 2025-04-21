@@ -7,15 +7,16 @@ import { CategoryBar } from "./_components/CategoryBar";
 
 export default function DashboardLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <div className="">
+    <div className="w-full">
       <Navbar />
-      <CategoryBar/>
+      <CategoryBar />
       <div className="pt-24">{children}</div>
       <Footer />
     </div>
   );
 }
+

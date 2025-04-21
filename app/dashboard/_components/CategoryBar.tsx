@@ -4,72 +4,69 @@ import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { categories } from "@/data/categories";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import { cn } from "@/lib/utils";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { link } from "fs";
 
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  );
-});
-ListItem.displayName = "ListItem";
 
 export const CategoryBar = () => {
+  const router = useRouter();
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+
   const scroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
-      const { scrollLeft, clientWidth } = scrollContainerRef.current;
-      const scrollAmount = clientWidth * 0.8;
-      const newScrollPosition =
-        direction === "left"
-          ? scrollLeft - scrollAmount
-          : scrollLeft + scrollAmount;
-      scrollContainerRef.current.scrollTo({
-        left: newScrollPosition,
+      const scrollAmount = scrollContainerRef.current.clientWidth * 0.8;
+      scrollContainerRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
         behavior: "smooth",
       });
     }
   };
 
   return (
-    <NavigationMenu className="w-full bg-white shadow-md sticky top-23 z-50">
-      <NavigationMenuList>
-        {categories.map((cat, idx) => (
-          <NavigationMenuItem key={idx}>
-            <NavigationMenuTrigger>{cat.name}</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                {cat.subcategories.map((sub, i) => (
-                  <ListItem key={i} title={sub} />
-                ))}
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-        ))}
-      </NavigationMenuList>
-    </NavigationMenu>
+    <div className="w-full bg-white shadow-md sticky top-24 z-50 py-2">
+      <div className="relative flex items-center">
+        {/* Left Chevron */}
+        <button
+          onClick={() => scroll("left")}
+          className="absolute left-0 z-10 h-full px-2 bg-gradient-to-r from-white to-transparent"
+        >
+          <ChevronLeft className="w-5 h-5 text-gray-500" />
+        </button>
+
+        {/* Scrollable container */}
+        <div
+          ref={scrollContainerRef}
+          className="flex overflow-x-auto scrollbar-none whitespace-nowrap px-8"
+        >
+          {categories.map((cat, idx) => (
+            <DropdownMenu key={idx}>
+              <DropdownMenuTrigger asChild>
+                <Button variant={"link"}>
+                  {cat.name}
+                </Button>
+                
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                   {cat.subcategories.map((sub, i) => (
+                    <DropdownMenuItem key={i}>
+                      {sub}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+            </DropdownMenu>
+          ))}
+        </div>
+
+        {/* Right Chevron */}
+        <button
+          onClick={() => scroll("right")}
+          className="absolute right-0 z-10 h-full px-2 bg-gradient-to-l from-white to-transparent"
+        >
+          <ChevronRight className="w-5 h-5 text-gray-500" />
+        </button>
+      </div>
+    </div>
   );
 };

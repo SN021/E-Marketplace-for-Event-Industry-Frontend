@@ -1,5 +1,6 @@
 export const categories = [
   {
+    id: "event-planning",
     name: "Event Planning & Coordination",
     subcategories: [
       "Full-Service Event Planning",
@@ -8,6 +9,7 @@ export const categories = [
     ],
   },
   {
+    id: "venue-location",
     name: "Venue & Location",
     subcategories: [
       "Event Venues & Halls",
@@ -16,6 +18,7 @@ export const categories = [
     ],
   },
   {
+    id: "catering-food",
     name: "Catering & Food Services",
     subcategories: [
       "Cake & Bakery",
@@ -25,6 +28,7 @@ export const categories = [
     ],
   },
   {
+    id: "decoration-floral",
     name: "Decoration & Floral",
     subcategories: [
       "Event Decorators & Styling",
@@ -33,6 +37,7 @@ export const categories = [
     ],
   },
   {
+    id: "entertainment-performers",
     name: "Entertainment & Performers",
     subcategories: [
       "Musicians, DJs & Bands",
@@ -41,6 +46,7 @@ export const categories = [
     ],
   },
   {
+    id: "photography-videography",
     name: "Photography & Videography",
     subcategories: [
       "Professional Photography",
@@ -49,6 +55,7 @@ export const categories = [
     ],
   },
   {
+    id: "av-technology",
     name: "Audio-Visual & Event Technology",
     subcategories: [
       "AV Production & Lighting ",
@@ -58,6 +65,7 @@ export const categories = [
     ],
   },
   {
+    id: "transportation-logistics",
     name: "Transportation & Logistics",
     subcategories: [
       "Transportation Services & Car Rentals",
@@ -66,6 +74,7 @@ export const categories = [
     ],
   },
   {
+    id: "rentals-equipment",
     name: "Event Rentals & Equipment",
     subcategories: [
       "Furniture, Tents & Linens",
@@ -74,6 +83,7 @@ export const categories = [
     ],
   },
   {
+    id: "beauty-wellness",
     name: "Beauty, Grooming & Wellness",
     subcategories: [
       "Makeup Artists & Hair Stylists",
@@ -82,6 +92,7 @@ export const categories = [
     ],
   },
   {
+    id: "invitations-stationery",
     name: "Invitations & Stationery",
     subcategories: [
       "Custom Invitation Designing",
@@ -91,6 +102,7 @@ export const categories = [
     ],
   },
   {
+    id: "branding-marketing",
     name: "Branding & Marketing",
     subcategories: [
       "Event Branding & Signage",
@@ -101,6 +113,7 @@ export const categories = [
     ],
   },
   {
+    id: "security-crowd",
     name: "Security & Crowd Management",
     subcategories: [
       "Professional Security Personnel",
@@ -109,6 +122,7 @@ export const categories = [
     ],
   },
   {
+    id: "kids-family",
     name: "Kids' Parties & Family Events",
     subcategories: [
       "Birthday Party Planning",
@@ -117,6 +131,7 @@ export const categories = [
     ],
   },
   {
+    id: "cultural-themed",
     name: "Cultural & Themed Celebrations",
     subcategories: [
       "Traditional & Religious Event Planning",
@@ -125,6 +140,7 @@ export const categories = [
     ],
   },
   {
+    id: "corporate-merchandising",
     name: "Corporate Branding & Merchandising",
     subcategories: [
       "Branded Event Merchandise",
@@ -133,6 +149,7 @@ export const categories = [
     ],
   },
   {
+    id: "eco-sustainable",
     name: "Eco-Friendly & Sustainable Events",
     subcategories: [
       "Sustainable Decorate & Rentals",
@@ -141,6 +158,7 @@ export const categories = [
     ],
   },
   {
+    id: "support-services",
     name: "Additional Support Services",
     subcategories: [
       "Event Insurance & Legal Services",
