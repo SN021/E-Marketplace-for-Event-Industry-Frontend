@@ -6,11 +6,11 @@ import { CheckCircle } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 export default async function ServiceDetailPage({
-  servicedetailparams,
+  params,
 }: {
-  servicedetailparams: Promise<{ serviceId: string }>;
+  params: Promise<{ serviceId: string }>;
 }) {
-  const { serviceId } = await servicedetailparams;
+  const { serviceId } = await params;
   const headersList = await headers();
   const protocol = headersList.get("x-forwarded-proto") || "http";
   const host = headersList.get("host");
