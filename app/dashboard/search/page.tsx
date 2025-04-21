@@ -4,14 +4,16 @@ import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
-export default async function SearchPage(props: {
+export default async function SearchPage({
+  searchParams,
+}: {
   searchParams?: { q?: string };
 }) {
-  const query = props.searchParams?.q;
+  const query = searchParams?.q;
   if (!query) return notFound();
 
-  const headersList = await headers(); 
-  const host = headersList.get("host"); 
+  const headersList = await headers();
+  const host = headersList.get("host");
   const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
   const baseUrl = `${protocol}://${host}`;
 
