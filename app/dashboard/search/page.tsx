@@ -1,31 +1,62 @@
+'use client';
+
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { headers } from "next/headers";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export const dynamic = "force-dynamic";
+export default function SearchPage() {
+  const searchParams = useSearchParams();
+  const query = searchParams.get('q');
+  const [services, setServices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-export default async function SearchPage({
-  searchParams,
-}: {
-  searchParams?: { q?: string };
-}) {
-  const query = searchParams?.q;
-  if (!query) return notFound();
-
-  const headersList = await headers();
-  const host = headersList.get("host");
-  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
-  const baseUrl = `${protocol}://${host}`;
-
-  const res = await fetch(
-    `${baseUrl}/api/search?q=${encodeURIComponent(query)}`,
-    {
-      cache: "no-store",
+  useEffect(() => {
+    if (!query) {
+      setLoading(false);
+      setError(true);
+      return;
     }
-  );
 
-  if (!res.ok) return notFound();
-  const services = await res.json();
+    async function fetchSearchResults() {
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
+          cache: "no-store",
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch search results');
+        }
+        
+        const data = await res.json();
+        setServices(data);
+        setLoading(false);
+      } catch (err) {
+        console.error('Search error:', err);
+        setError(true);
+        setLoading(false);
+      }
+    }
+
+    fetchSearchResults();
+  }, [query]);
+
+  if (!query) {
+    return <div className="max-w-screen-xl mx-auto p-6">Search query is required</div>;
+  }
+
+  if (loading) {
+    return (
+      <div className="max-w-screen-xl mx-auto p-6 flex justify-center items-center min-h-[50vh]">
+        <div className="animate-pulse text-xl">Loading search results...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="max-w-screen-xl mx-auto p-6">Error loading search results</div>;
+  }
 
   return (
     <div className="max-w-screen-xl mx-auto p-6">
@@ -41,10 +72,7 @@ export default async function SearchPage({
               href={`/dashboard/services/${service.service_id}`}
               key={service.service_id}
             >
-              <div
-                key={service.service_id}
-                className="bg-white rounded-xl shadow p-4"
-              >
+              <div className="bg-white rounded-xl shadow p-4">
                 <img
                   src={service.photo_gallery_paths?.[0] || "/placeholder.jpg"}
                   alt={service.service_title}
