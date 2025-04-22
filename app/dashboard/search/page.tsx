@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
-export default function SearchPage() {
+// This will be our main search results component
+function SearchResults() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q');
   const [services, setServices] = useState<any[]>([]);
@@ -20,7 +21,6 @@ export default function SearchPage() {
 
     async function fetchSearchResults() {
       try {
-        // Only proceed if query is not null
         if (query) {
           const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
             cache: "no-store",
@@ -92,5 +92,23 @@ export default function SearchPage() {
         </div>
       )}
     </div>
+  );
+}
+
+// Loading fallback component
+function SearchLoading() {
+  return (
+    <div className="max-w-screen-xl mx-auto p-6 flex justify-center items-center min-h-[50vh]">
+      <div className="animate-pulse text-xl">Loading search results...</div>
+    </div>
+  );
+}
+
+// This is the main page component that wraps everything in Suspense
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<SearchLoading />}>
+      <SearchResults />
+    </Suspense>
   );
 }
