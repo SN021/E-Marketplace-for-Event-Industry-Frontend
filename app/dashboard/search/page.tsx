@@ -1,6 +1,5 @@
 'use client';
 
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -21,16 +20,19 @@ export default function SearchPage() {
 
     async function fetchSearchResults() {
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
-          cache: "no-store",
-        });
+        // Only proceed if query is not null
+        if (query) {
+          const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
+            cache: "no-store",
+          });
 
-        if (!res.ok) {
-          throw new Error('Failed to fetch search results');
+          if (!res.ok) {
+            throw new Error('Failed to fetch search results');
+          }
+          
+          const data = await res.json();
+          setServices(data);
         }
-        
-        const data = await res.json();
-        setServices(data);
         setLoading(false);
       } catch (err) {
         console.error('Search error:', err);
