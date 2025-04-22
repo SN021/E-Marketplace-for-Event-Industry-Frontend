@@ -94,8 +94,8 @@ const page = () => {
 const experienceOptions = [
     { value: "just-started (0-6 months)", label: "Just-started (0-6 months)" },
     {
-      value: "growing (6 months-2 years)",
-      label: "Growing (6 months-2 years)",
+      value: "growing (6-24 months)",
+      label: "Growing (6-24 months)",
     },
     { value: "established (2-5 years)", label: "Established (2-5 years)" },
     { value: "experienced (5+ years)", label: "Experienced (5+ years)" },

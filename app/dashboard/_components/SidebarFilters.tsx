@@ -1,18 +1,42 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { locationOptions } from "@/data/locations";
 import { ratingOptions } from "@/data/ratings";
 import { experienceOptions } from "@/data/experience";
 import { Button } from "@/components/ui/button";
 
-const ServiceFilters = () => {
+type SidebarFiltersProps = {
+  onApply: (filters: any) => void;
+};
+
+const ServiceFilters = ({ onApply }: SidebarFiltersProps) => {
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [minPrice, setMinPrice] = useState<number | null>(null);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const [experience, setExperience] = useState<string | null>(null);
   const [location, setLocation] = useState<string | null>(null);
-  const [selectedOffer, setSelectedOffer] = useState<string | null>(null);
+
+
+
+  const handleApply = () => {
+    onApply({
+      rating: selectedRating,
+      minPrice: minPrice ?? null,
+      maxPrice: maxPrice ?? null,
+      experience,
+      location,
+    });
+  };
+
+  const handleReset = () => {
+    setSelectedRating(null);
+    setMinPrice(null);
+    setMaxPrice(null);
+    setExperience(null);
+    setLocation(null);
+    onApply({});
+  };
 
   return (
     <div className="w-full p-4 bg-white border rounded-lg shadow-md space-y-4">
@@ -72,7 +96,7 @@ const ServiceFilters = () => {
       <div>
         <h3 className="text-lg font-semibold mb-2">Location</h3>
         <select
-          value={location || ""}
+          value={location ?? ""}
           onChange={(e) => setLocation(e.target.value)}
           className="w-full border p-2  rounded"
         >
@@ -84,7 +108,14 @@ const ServiceFilters = () => {
           ))}
         </select>
       </div>
-      <Button className="ml-16.5">Apply</Button>
+      <div className="flex gap-2 pt-2">
+        <Button onClick={handleApply} className="w-1/2">
+          Apply Filters
+        </Button>
+        <Button onClick={handleReset} className="w-1/2">
+          Reset
+        </Button>
+      </div>
     </div>
   );
 };

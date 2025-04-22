@@ -23,13 +23,10 @@ function SearchResults() {
 
     async function fetchSearchResults() {
       try {
-        if (query) {
-          const res = await fetch(
-            `/api/search?q=${encodeURIComponent(query)}`,
+          const res = await fetch(`/api/search?q=${encodeURIComponent(query ?? "")}`,
             {
               cache: "no-store",
-            }
-          );
+            });
 
           if (!res.ok) {
             throw new Error("Failed to fetch search results");
@@ -37,7 +34,6 @@ function SearchResults() {
 
           const data = await res.json();
           setServices(data);
-        }
         setLoading(false);
       } catch (err) {
         console.error("Search error:", err);
@@ -48,6 +44,35 @@ function SearchResults() {
 
     fetchSearchResults();
   }, [query]);
+
+
+
+const handleFilterApply = async (filters: any) => {
+  setLoading(true);
+  setError(false);
+  try {
+    const res = await fetch("/api/filter-services", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(filters),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data?.error || "Something went wrong");
+    }
+    setServices(data);
+  } catch (err) {
+    console.error("Filter error:", err);
+    setError(true);
+    setServices([]);
+  } finally {
+    setLoading(false);
+  } 
+};
+
+
+
+
 
   if (!query) {
     return (
@@ -75,11 +100,13 @@ function SearchResults() {
 
   return (
     <div className="container mx-auto">
-      <h1 className="text-2xl font-bold mb-6 pt-12">Search Results for "{query}"</h1>
+      <h1 className="text-2xl font-bold mb-6 pt-12">
+        Search Results for "{query}"
+      </h1>
 
       <div className="grid grid-cols-5 w-full gap-5 max-w-screen-xl mx-auto p-4">
         <div className="sticky">
-          <ServiceFilters />
+          <ServiceFilters onApply={handleFilterApply} />
         </div>
         <div className="col-span-4">
           {services.length === 0 ? (
@@ -96,7 +123,7 @@ function SearchResults() {
                   <div className="bg-white rounded-xl shadow p-4">
                     <img
                       src={
-                        service.photo_gallery_paths?.[0] || "/placeholder.jpg"
+                        service.signed_photo_urls?.[0] || "/placeholder.jpg"
                       }
                       alt={service.service_title}
                       className="w-full h-48 object-cover rounded-lg mb-3"
