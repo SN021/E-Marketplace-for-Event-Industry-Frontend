@@ -1,87 +1,66 @@
 "use client";
 
 import React from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { categories } from "@/data/categories";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { link } from "fs";
+import Link from "next/link";
 
-const categories = [
-  {
-    name: "Event Planning & Coordination",
-    subcategories: [
-      "Full-Service Event Planning",
-      "Wedding & Social Event Coordinating",
-      "Corporate & Conference Organizing",
-    ],
-  },
-  {
-    name: "Venue & Location",
-    subcategories: [
-      "Event Venues & Halls",
-      "Outdoor & Unique Locations",
-      "Venue Management Services",
-    ],
-  },
-  {
-    name: "Catering & Food Services",
-    subcategories: [
-      "Bakery & Cake",
-      "Caterers & Gourmet Food Providing",
-      "Food Trucks & Pop-Up Kitchens" ,
-      "Dessert & Beverage Services",
-    ],
-  },
-  {
-    name: "Decoration & Floral",
-    subcategories: ["Stage Decor", "Table Centerpieces", "Floral Arches"],
-  },
-  {
-    name: "Entertainment & Performers",
-    subcategories: ["Live Bands", "DJ", "Cultural Acts"],
-  },
-  {
-    name: "Beauty & Grooming",
-    subcategories: ["Makeup", "Hair Styling", "Spa Services"],
-  },
-  {
-    name: "Photography & Videography",
-    subcategories: ["Cinematography", "Drone Shoots", "Albums"],
-  },
-  {
-    name: "Invitation, Stationery & Branding",
-    subcategories: ["Printed Invitations", "Digital Cards", "Logos"],
-  },
-  {
-    name: "Audio-Visual & Technology",
-    subcategories: ["Lighting", "LED Screens", "Projectors"],
-  },
-  {
-    name: "Transportation & Logistics",
-    subcategories: ["Shuttle Services", "Luxury Cars", "Vendor Transport"],
-  },
-];
 
 export const CategoryBar = () => {
-  return (
-    <div className="w-full bg-white shadow-md z-50">
-      <div className="flex overflow-x-auto hide-scrollbar whitespace-nowrap px-4">
-        {categories.map((cat, idx) => (
-          <div key={idx} className="relative group px-6 py-4 hover:bg-gray-100 cursor-pointer">
-            <span className="text-sm font-medium whitespace-nowrap">{cat.name}</span>
+  const router = useRouter();
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
 
-            {/* Dropdown */}
-            <div className="absolute left-0 top-full mt-2 hidden group-hover:block bg-white shadow-lg rounded-md min-w-[220px] z-50">
-              <ul className="py-2">
+  const scroll = (direction: "left" | "right") => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = scrollContainerRef.current.clientWidth * 0.8;
+      scrollContainerRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  return (
+    <div className="w-full bg-white shadow-md sticky top-24 z-50 py-2">
+      <div className="relative flex items-center">
+        <button
+          onClick={() => scroll("left")}
+          className="absolute left-0 z-10 h-full px-2 bg-gradient-to-r from-white to-transparent"
+        >
+          <ChevronLeft className="w-5 h-5 text-gray-500" />
+        </button>
+
+        <div
+          ref={scrollContainerRef}
+          className="flex overflow-x-auto scrollbar-none whitespace-nowrap px-8"
+        >
+          {categories.map((cat, idx) => (
+            <DropdownMenu key={idx}>
+              <DropdownMenuTrigger asChild>
+                <Button variant={"link"}>{cat.name}</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
                 {cat.subcategories.map((sub, i) => (
-                  <li
-                    key={i}
-                    className="px-4 py-2 hover:bg-gray-100 text-sm text-gray-700 cursor-pointer"
-                  >
-                    {sub}
-                  </li>
+                  <DropdownMenuItem key={i}>
+                    <Link href="/">{sub}</Link>
+                  </DropdownMenuItem>
                 ))}
-              </ul>
-            </div>
-          </div>
-        ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ))}
+        </div>
+
+        <button
+          onClick={() => scroll("right")}
+          className="absolute right-0 z-10 h-full px-2 bg-gradient-to-l from-white to-transparent"
+        >
+          <ChevronRight className="w-5 h-5 text-gray-500" />
+        </button>
       </div>
     </div>
   );
