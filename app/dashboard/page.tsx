@@ -1,7 +1,6 @@
 import React from "react";
 import { HeroBanner } from "./_components/HeroBanner";
 import { ServiceCarousel } from "./_components/ServiceCarousel";
-import { CategoryBar } from "./_components/CategoryBar";
 
 export default function Dashboard() {
   return (

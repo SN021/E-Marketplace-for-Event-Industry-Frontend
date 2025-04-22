@@ -30,7 +30,8 @@ export async function GET(req: NextRequest) {
           other_details,
           policies,
           search_tags,
-          price_features
+          price_features,
+          discounts_and_offers
         `)
       .eq("service_id", serviceId)
       .maybeSingle();
@@ -97,6 +98,7 @@ try {
   cancellation_policy: service.policies,
   tags: parsedTags,
   price_features: parsedPriceFeatures,
+  discounts_and_offers: service.discounts_and_offers || "",
 });
   } catch (err) {
     console.error("Unexpected error:", err);

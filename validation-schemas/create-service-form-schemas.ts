@@ -57,6 +57,7 @@ export const serviceOverviewSchema = z.object({
     .string()
     .max(1000, "Too much detail! Keep it under 1000 characters")
     .optional(),
+  discountsAndOffers: z.string().optional(),
 });
 
 

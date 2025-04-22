@@ -16,7 +16,9 @@ export async function GET(req: NextRequest) {
   try {
     const { data: serviceData, error: serviceError } = await supabase
       .from("services")
-      .select("service_id, service_title, starting_price, photo_gallery_paths, user_id")
+      .select(
+        "service_id, service_title, starting_price, photo_gallery_paths, user_id, discounts_and_offers"
+      )
       .order("created_at", { ascending: false })
       .limit(12);
 
@@ -64,12 +66,13 @@ export async function GET(req: NextRequest) {
 
     // Format response
     const formatted = signedServices.map((service) => ({
-    id: service.service_id,
-    title: service.service_title,
-    price: service.starting_price,
-    seller: service.display_name,
-    imageUrl: service.signedUrl || "/default-thumbnail.jpg",
-  }));
+      id: service.service_id,
+      title: service.service_title,
+      price: service.starting_price,
+      seller: service.display_name,
+      imageUrl: service.signedUrl || "/default-thumbnail.jpg",
+      discount: service.discounts_and_offers || null,
+    }));
 
 
     return NextResponse.json({ services: formatted });

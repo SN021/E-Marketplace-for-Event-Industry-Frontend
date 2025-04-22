@@ -10,6 +10,7 @@ type Service = {
   price: number;
   seller: string;
   imageUrl: string;
+  discount?: string;
 };
 
 type ServiceCarouselProps = {
@@ -53,6 +54,7 @@ export const ServiceCarousel = ({ title }: ServiceCarouselProps) => {
                   seller={service.seller}
                   price={service.price.toString()}
                   imageUrl={service.imageUrl}
+                  discount={service.discount}
                 />
               </div>
             </Link>

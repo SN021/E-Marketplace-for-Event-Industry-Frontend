@@ -92,7 +92,7 @@ const page = () => {
 
   //options for map function
 const experienceOptions = [
-    { value: "just-started (0-6 months)", label: "just-started (0-6 months)" },
+    { value: "just-started (0-6 months)", label: "Just-started (0-6 months)" },
     {
       value: "growing (6 months-2 years)",
       label: "Growing (6 months-2 years)",
@@ -321,7 +321,7 @@ const languageOptions = [
                           htmlFor="displayName"
                           className={inputLabelStyle}
                         >
-                          Display name *
+                          Display Name *
                         </label>
                         {errors.displayName && (
                           <p className="error-msg">
