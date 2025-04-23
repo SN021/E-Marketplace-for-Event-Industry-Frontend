@@ -4,12 +4,15 @@ import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { categories } from "@/data/categories";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { link } from "fs";
 import Link from "next/link";
-
 
 export const CategoryBar = () => {
   const router = useRouter();
@@ -47,7 +50,13 @@ export const CategoryBar = () => {
               <DropdownMenuContent className="w-56">
                 {cat.subcategories.map((sub, i) => (
                   <DropdownMenuItem key={i}>
-                    <Link href="/">{sub}</Link>
+                    <Link
+                      href={`/dashboard/search?subcategory=${encodeURIComponent(
+                        sub
+                      )}`}
+                    >
+                      {sub}
+                    </Link>
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
