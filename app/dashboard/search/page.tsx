@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import ServiceFilters from "../_components/SidebarFilters";
 import { ServiceCard } from "../_components/ServiceCard";
+import { HashLoader } from "react-spinners";
 
 function SearchResults() {
   const searchParams = useSearchParams();
@@ -85,7 +86,7 @@ function SearchResults() {
   if (loading) {
     return (
       <div className="max-w-screen-xl mx-auto p-6 flex justify-center items-center min-h-[50vh]">
-        <div className="animate-pulse text-xl">Loading search results...</div>
+        <HashLoader color="#D39D55" />
       </div>
     );
   }
@@ -131,21 +132,6 @@ function SearchResults() {
                       discount={service.discount}
                     />
                   </div>
-                  {/* <div className="bg-white rounded-xl shadow p-4">
-                    <img
-                      src={
-                        service.signed_photo_urls?.[0] || "/placeholder.jpg"
-                      }
-                      alt={service.service_title}
-                      className="w-full h-48 object-cover rounded-lg mb-3"
-                    />
-                    <h2 className="font-semibold text-lg">
-                      {service.service_title}
-                    </h2>
-                    <p className="text-sm text-gray-600 line-clamp-3">
-                      {service.description}
-                    </p>
-                  </div> */}
                 </Link>
               ))}
             </div>

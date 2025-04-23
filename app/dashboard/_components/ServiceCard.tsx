@@ -20,7 +20,6 @@ export const ServiceCard = ({
   verified = true,
   discount,
 }: ServiceCardProps) => {
-  console.log(imageUrl);
   return (
     <div className=" bg-white rounded-lg shadow-sm p-4 relative">
       <img

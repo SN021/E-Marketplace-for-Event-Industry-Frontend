@@ -127,6 +127,26 @@
   @apply h-6 w-6;
 }
 
+.cl-headerTitle{
+  @apply text-zinc-800 font-bold;
+}
+
+.cl-internal-3gh7hq, .cl-internal-5d9djf {
+  @apply text-zinc-700;
+}
+
+.cl-badge{
+  @apply text-primary font-bold;
+}
+
+.cl-pageScrollBox{
+  @apply bg-background text-black ;
+}
+
+.cl-profilePage{
+  @apply text-zinc-700 font-medium
+}
+
 /* Primary button */
 .primary-btn {
   @apply bg-primary ml-0 md:ml-6 px-4 py-2 rounded-[10px] font-semibold hover:bg-white hover:text-black duration-300;

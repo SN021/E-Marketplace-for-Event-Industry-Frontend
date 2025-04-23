@@ -29,7 +29,7 @@ export const CategoryBar = () => {
   };
 
   return (
-    <div className="w-full bg-white shadow-md sticky top-24 z-50 py-2">
+    <div className="w-full bg-white shadow-md sticky top-24 z-30 py-2">
       <div className="relative flex items-center">
         <button
           onClick={() => scroll("left")}
