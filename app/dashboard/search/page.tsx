@@ -16,7 +16,7 @@ function SearchResults() {
   const subcategory = searchParams.get("subcategory");
 
   useEffect(() => {
-    if (!query) {
+    if (!query && !subcategory) {
       setLoading(false);
       setError(true);
       return;
@@ -24,12 +24,13 @@ function SearchResults() {
 
     async function fetchSearchResults() {
       try {
-        const res = await fetch(
-          `/api/search?q=${encodeURIComponent(query ?? "")}`,
-          {
-            cache: "no-store",
-          }
-        );
+        const params = new URLSearchParams();
+        if (query) params.append("q", query);
+        if (subcategory) params.append("subcategory", subcategory);
+
+        const res = await fetch(`/api/search?${params.toString()}`, {
+          cache: "no-store",
+        });
 
         if (!res.ok) {
           throw new Error("Failed to fetch search results");
@@ -46,7 +47,16 @@ function SearchResults() {
     }
 
     fetchSearchResults();
-  }, [query]);
+    setServices([]);
+  }, [query, subcategory]);
+
+  function formatSubcategoryLabel(slug: string): string {
+    return slug
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
+
 
   const handleFilterApply = async (filters: any) => {
     setLoading(true);
@@ -55,11 +65,7 @@ function SearchResults() {
       const res = await fetch("/api/filter-services", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...filters,
-          subcategory,
-          q: query,
-        }),
+        body: JSON.stringify(filters),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -102,7 +108,12 @@ function SearchResults() {
   return (
     <div className="container mx-auto">
       <h1 className="text-2xl font-bold mb-6 pt-12">
-        Search Results for {query ? `"${query}"` : `"${subcategory}"`}
+        Search Results for{" "}
+        {query
+          ? `"${query}"`
+          : subcategory
+          ? `"${formatSubcategoryLabel(subcategory)}"`
+          : ""}
       </h1>
 
       <div className="grid grid-cols-5 w-full gap-5 max-w-screen-xl mx-auto p-4">
@@ -112,7 +123,12 @@ function SearchResults() {
         <div className="col-span-4">
           {services.length === 0 ? (
             <p className="text-gray-500 text-center text-lg mt-10">
-              No results found for "{query}".
+              No results found for{" "}
+              {query
+                ? `"${query}"`
+                : subcategory
+                ? `"${formatSubcategoryLabel(subcategory)}"`
+                : ""}
             </p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

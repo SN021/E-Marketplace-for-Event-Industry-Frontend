@@ -8,9 +8,8 @@ const supabase = createClient(
 
 export async function GET(req: NextRequest) {
   const query = req.nextUrl.searchParams.get("q");
-  const subcategory = req.nextUrl.searchParams.get("subcategory"); // ✅ new
+  const subcategory = req.nextUrl.searchParams.get("subcategory"); 
 
-  // ✅ Now both q or subcategory are allowed
   if (!query && !subcategory) {
     return NextResponse.json({ error: "Missing query or subcategory" }, { status: 400 });
   }
@@ -19,14 +18,12 @@ export async function GET(req: NextRequest) {
     .from("services")
     .select("service_id, user_id, service_title, description, starting_price, subcategory, search_tags, photo_gallery_paths");
 
-  // ✅ Search by keyword if present
   if (query) {
     search = search.or(
       `service_title.ilike.%${query}%,description.ilike.%${query}%,search_tags.ilike.%${query}%`
     );
   }
 
-  // ✅ Add subcategory filtering if present
   if (subcategory) {
     search = search.ilike("subcategory", `%${subcategory}%`);
   }
@@ -38,7 +35,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // ✅ Safely parse photo_gallery_paths
   function safeParse(input: any) {
     try {
       const parsed = JSON.parse(input);
@@ -48,7 +44,6 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // ✅ Enrich each service with vendor name and signed URLs
   const parsedData = await Promise.all(
     data.map(async (item) => {
       const paths = safeParse(item.photo_gallery_paths);

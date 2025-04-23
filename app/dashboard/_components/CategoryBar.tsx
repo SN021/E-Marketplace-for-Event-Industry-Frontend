@@ -3,7 +3,6 @@
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { categories } from "@/data/categories";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,8 +10,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { link } from "fs";
 import Link from "next/link";
+import { eventServiceCategories } from "@/data/categoriesWithsubcategories";
 
 export const CategoryBar = () => {
   const router = useRouter();
@@ -42,20 +41,20 @@ export const CategoryBar = () => {
           ref={scrollContainerRef}
           className="flex overflow-x-auto scrollbar-none whitespace-nowrap px-8"
         >
-          {categories.map((cat, idx) => (
+          {eventServiceCategories.map((cat, idx) => (
             <DropdownMenu key={idx}>
               <DropdownMenuTrigger asChild>
-                <Button variant={"link"}>{cat.name}</Button>
+                <Button variant={"link"}>{cat.label}</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">
                 {cat.subcategories.map((sub, i) => (
                   <DropdownMenuItem key={i}>
                     <Link
                       href={`/dashboard/search?subcategory=${encodeURIComponent(
-                        sub
+                        sub.value
                       )}`}
                     >
-                      {sub}
+                      {sub.label}
                     </Link>
                   </DropdownMenuItem>
                 ))}
