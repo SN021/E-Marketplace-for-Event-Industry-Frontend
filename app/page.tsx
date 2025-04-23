@@ -1,22 +1,27 @@
+import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, SignInButton, SignOutButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
+import Link from "next/link";
 
 
 export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <div>
-        <SignedIn><UserButton/></SignedIn>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
         <SignedOut>
-          <SignInButton/> 
-          <SignUpButton/> 
+          <SignInButton />
+          <SignUpButton />
         </SignedOut>
       </div>
       <h1>
-        Hi baby ball
-
-        This is dev branch
+        Hi baby ball This is dev branch
       </h1>
+        <Link href="/dashboard">
+          <Button>Dashboard</Button>
+        </Link>
     </div>
   );
 }

@@ -51,6 +51,7 @@ export default async function Page({
             {data.service_description}
           </p>
         </section>
+
         <div>
           {/* Price Features Section */}
           <section className="bg-[#fcf9f1] p-6 rounded-xl shadow-md mx-auto mt-9.5 h-85">
@@ -84,6 +85,16 @@ export default async function Page({
             <Button> Request a Quotation</Button>
             <Button>Contact Vendor</Button>
           </div>
+        </div>
+
+        {/* Discounts & Offers (Optional) */}
+        <div>
+          {data.discounts_and_offers && (
+            <section className="mb-6">
+              <h2 className="text-xl font-semibold mb-2">Discounts & Offers</h2>
+              <p className="text-red-600">{data.discounts_and_offers}</p>
+            </section>
+          )}
         </div>
 
         {/* Serviceable Areas */}

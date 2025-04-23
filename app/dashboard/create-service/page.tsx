@@ -636,6 +636,29 @@ const onSubmit = async (data: ServiceOverview) => {
                     )}
                   </div>
                 </div>
+
+                <div className="flex flex-col md:flex-row gap-3">
+                  <label
+                    htmlFor="discounts-and-offers"
+                    className="md:w-[200px] font-medium"
+                  >
+                    Discounts & Offers <span>(Optional)</span>
+                  </label>
+                  <div className="w-full">
+                    <input
+                      type="text"
+                      {...register("discountsAndOffers")}
+                      placeholder="Type here..."
+                      className="p-2 border border-black rounded-sm w-full"
+                    />
+                    {errors.discountsAndOffers && (
+                      <p className="error-msg mt-1">
+                        {errors.discountsAndOffers.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
                 <div className="flex gap-3 items-center justify-center py-8">
                   <Button onClick={() => setCurrentStep(1)}>Back</Button>
                   <Button type="submit" disabled={loading}>
@@ -671,6 +694,11 @@ const onSubmit = async (data: ServiceOverview) => {
                   <span className="font-semibold">Any Other Details - </span>
                   Mention special terms, travel fees, weekend availability, or
                   anything else clients should know. Keep it clear and relevant.
+                </div>
+
+                <div>
+                  <span className="font-semibold">Discounts & Offers - </span>
+                  Mention seasonal offers, first-time deals, etc.
                 </div>
               </div>
             </div>

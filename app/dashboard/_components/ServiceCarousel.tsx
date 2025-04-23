@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ServiceCard } from "./ServiceCard";
 import Link from "next/link";
+import {HashLoader} from 'react-spinners';
 
 type Service = {
   id: string;
@@ -10,6 +11,7 @@ type Service = {
   price: number;
   seller: string;
   imageUrl: string;
+  discount?: string;
 };
 
 type ServiceCarouselProps = {
@@ -39,7 +41,9 @@ export const ServiceCarousel = ({ title }: ServiceCarouselProps) => {
     <section className="my-10">
       <h2 className="text-lg font-semibold mb-4">{title}</h2>
       {loading ? (
-        <p className="text-gray-500 text-sm">Loading services...</p>
+        <div className="flex items-center justify-center">
+          <HashLoader color="#D39D55" />
+        </div>
       ) : services.length === 0 ? (
         <p className="text-gray-500 text-sm">No services found.</p>
       ) : (
@@ -53,6 +57,7 @@ export const ServiceCarousel = ({ title }: ServiceCarouselProps) => {
                   seller={service.seller}
                   price={service.price.toString()}
                   imageUrl={service.imageUrl}
+                  discount={service.discount}
                 />
               </div>
             </Link>
