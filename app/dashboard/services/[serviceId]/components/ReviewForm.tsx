@@ -53,7 +53,6 @@ export function ReviewForm({
     }
 
     setLoading(true);
-    console.log(finalUserId)
     try {
       await axios.post("/api/create-service-review", {
         service_id: serviceId,

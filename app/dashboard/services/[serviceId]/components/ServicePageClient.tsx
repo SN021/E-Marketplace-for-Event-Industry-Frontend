@@ -14,9 +14,8 @@ export default function ServicePageClient({ data }: { data: any }) {
     const fetchUserData = async () => {
         try {
         const response = await axios.get("/api/get-user");
-        console.log("User API Response:", response.data); // 👈 add this
         const userData = response.data;
-        const id = userData[0]?.id; // 👈 fix this if needed
+        const id = userData[0]?.id; 
         setUserId(id);
         } catch (error) {
         console.error("Failed to fetch user data:", error);

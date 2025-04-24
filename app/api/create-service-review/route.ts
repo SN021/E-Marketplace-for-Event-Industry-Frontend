@@ -16,8 +16,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
-  console.log(user_id)
-
   const { data: existingReview, error: fetchError } = await supabase
     .from("service_rating")
     .select("rating_id")
