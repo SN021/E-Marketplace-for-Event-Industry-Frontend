@@ -10,7 +10,7 @@ type Review = {
   review: string;
   rating: number;
   created_at: string;
-  user_id: string;
+  userId: string;
   user: {
     first_name: string;
     last_name: string;
@@ -43,7 +43,7 @@ export function Reviews({
     <div className="mt-6 space-y-4">
       <h3 className="text-lg font-semibold border-b pb-2">Customer Reviews</h3>
       {reviews.map((r, i) => {
-        const isMine = r.user_id === currentUserId;
+        const isMine = r.userId === currentUserId;
 
         return (
           <div key={i} className="border rounded p-3 shadow-sm">

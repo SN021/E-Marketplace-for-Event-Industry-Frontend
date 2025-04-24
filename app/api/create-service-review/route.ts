@@ -8,28 +8,21 @@ const supabase = createClient(
 );
 
 export async function POST(req: NextRequest) {
-  const { userId } = await auth();
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-  const { data, error } = await supabase
-      .from('user')
-      .select()
-      .eq('clerk_user_id',userId);
 
-  const id = data?.[0].id;
   const body = await req.json();
-  const { service_id, rating, review } = body;
+  const { service_id, user_id, rating, review } = body;
 
-  if (!service_id || rating === undefined || review === undefined) {
+  if (!service_id || !user_id || rating === undefined || review === undefined) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
+
+  console.log(user_id)
 
   const { data: existingReview, error: fetchError } = await supabase
     .from("service_rating")
     .select("rating_id")
     .eq("service_id", service_id)
-    .eq("user_id", id)
+    .eq("user_id", user_id)
     .maybeSingle();
 
   if (fetchError) {
@@ -56,7 +49,7 @@ export async function POST(req: NextRequest) {
   } else {
     const { data, error } = await supabase
       .from("service_rating")
-      .insert({ service_id, id, rating, review })
+      .insert({ service_id, user_id, rating, review })
       .select("*")
       .maybeSingle();
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ReviewForm } from "./ReviewForm";
 import { Reviews } from "./Reviews";
 
@@ -15,6 +15,13 @@ export default function ServiceReviewsWrapper({
     review: string;
     rating: number;
   }>();
+
+  // Prevent premature render if userId is not ready
+  if (!userId) {
+    return (
+      <div className="text-sm text-gray-500 italic">Loading user reviews...</div>
+    );
+  }
 
   return (
     <div>

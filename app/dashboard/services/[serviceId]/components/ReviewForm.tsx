@@ -32,26 +32,37 @@ export function ReviewForm({
     setRating(existingReview?.rating || 5);
   }, [existingReview]);
 
+  const [finalUserId, setFinalUserId] = useState(userId);
+  
+
+  useEffect(() => {
+    if (userId) setFinalUserId(userId);
+  }, [userId]);
+
   const handleSubmit = async () => {
-    if (!userId) {
-      setError("User ID is missing, please sign in again.");
+    setError(null);
+
+    if (!finalUserId) {
+      setError("User ID missing — please wait...");
       return;
     }
 
-    setError(null);
-    setLoading(true);
+    if (review.trim().length === 0) {
+      setError("Please enter a review before submitting.");
+      return;
+    }
 
+    setLoading(true);
+    console.log(finalUserId)
     try {
-      await axios.post("/api/create-service-reviews", {
+      await axios.post("/api/create-service-review", {
         service_id: serviceId,
-        user_id: userId,
+        user_id: finalUserId,
         review,
         rating,
       });
 
-      if (onSubmitSuccess) {
-        onSubmitSuccess({ review, rating });
-      }
+      onSubmitSuccess?.({ review, rating });
     } catch (err: any) {
       console.error("Review submit error:", err);
       setError("Something went wrong. Please try again.");
@@ -59,6 +70,7 @@ export function ReviewForm({
       setLoading(false);
     }
   };
+
 
 
   return (
@@ -94,7 +106,7 @@ export function ReviewForm({
 
       <Button
         onClick={handleSubmit}
-        disabled={loading || review.trim().length === 0}
+        disabled={loading || review.trim().length === 0 || !userId}
       >
         {loading
           ? "Submitting..."
@@ -102,6 +114,7 @@ export function ReviewForm({
           ? "Update Review"
           : "Submit Review"}
       </Button>
+
       {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
     </div>
   );
