@@ -4,5 +4,4 @@ export const ratingOptions = [
   { label: "3 Stars", value: 3 },
   { label: "2 Stars", value: 2 },
   { label: "1 Star", value: 1 },
-  { label: "0 Stars", value: 0 },
 ];

@@ -1,7 +1,11 @@
+
 import { Button } from "@/components/ui/button";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { CheckCircle } from "lucide-react";
+import ServiceReviewsWrapper from "./components/ServiceReviewsWrapper";
+
+
 
 export const dynamic = "force-dynamic";
 
@@ -17,12 +21,25 @@ export default async function Page({
   const baseUrl = `${protocol}://${host}`;
 
   const res = await fetch(`${baseUrl}/api/get-service-by-id?id=${serviceId}`, {
+    headers: {
+      cookie: headersList.get("cookie") || "",
+    },
     cache: "no-store",
   });
 
   if (!res.ok) return notFound();
   const data = await res.json();
   if (!data || data.error) return notFound();
+
+  const userRes = await fetch(`${baseUrl}/api/get-user`, {
+    headers: { cookie: headersList.get("cookie") || "" },
+    cache: "no-store",
+  });
+
+  if (!userRes.ok) return notFound();
+  const userData = await userRes.json();
+  const userId = userData.id;
+  console.log(userRes);
 
   return (
     <div className="p-6 max-w-screen-xl mx-auto">
@@ -139,16 +156,10 @@ export default async function Page({
           ))}
         </div>
 
-        {/* Reviews Placeholder */}
-        <section className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">Reviews</h2>
-          <p className="text-gray-500 italic mb-4">
-            Review system coming soon...
-          </p>
-          <div className="flex gap-4">
-            <Button>Write a Review</Button>
-          </div>
-        </section>
+        <div>
+          <h2 className="text-xl font-semibold mb-2">Rating & Reviews</h2>
+          <ServiceReviewsWrapper serviceId={data.service_id} userId={userId} />
+        </div>
       </div>
     </div>
   );
