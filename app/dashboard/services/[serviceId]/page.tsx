@@ -4,25 +4,25 @@ import ServicePageClient from "./components/ServicePageClient";
 
 export const dynamic = "force-dynamic";
 
-export default async function Page({
-  params,
-}: {
-  params: { serviceId: string };
-}) {
-  const headersList = headers(); // ❗ No await needed here
-  const protocol = (await headersList).get("x-forwarded-proto") || "http";
-  const { serviceId } = params;
-  const host = (await headersList).get("host");
-  const baseUrl = `${protocol}://${host}`;
+export default async function Page(
+  props: { params: Promise<{ serviceId: string }> }
+) {
+  const { serviceId } = await props.params;
 
-  const res = await fetch(`${baseUrl}/api/get-service-by-id?id=${serviceId}`, {
-    headers: {
-      cookie: (await headersList).get("cookie") || "",
-    },
-    cache: "no-store",
-  });
+  const hdrs     = await headers();
+  const protocol = hdrs.get("x-forwarded-proto") || "http";
+  const host     = hdrs.get("host");
+  const baseUrl  = `${protocol}://${host}`;
 
+  const res = await fetch(
+    `${baseUrl}/api/get-service-by-id?id=${serviceId}`,
+    {
+      headers: { cookie: hdrs.get("cookie") || "" },
+      cache: "no-store",
+    }
+  );
   if (!res.ok) return notFound();
+
   const data = await res.json();
   if (!data || data.error) return notFound();
 
