@@ -2,11 +2,14 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import ServicePageClient from "./components/ServicePageClient";
 
-
 export const dynamic = "force-dynamic";
 
-export default async function Page({ params }: { params: { serviceId: string } }) {
-  const headersList = headers();
+export default async function Page({
+  params,
+}: {
+  params: { serviceId: string };
+}) {
+  const headersList = headers(); // ❗ No await needed here
   const protocol = (await headersList).get("x-forwarded-proto") || "http";
   const { serviceId } = params;
   const host = (await headersList).get("host");
