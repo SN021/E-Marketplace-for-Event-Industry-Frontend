@@ -14,12 +14,9 @@ export default function Dashboard() {
     };
 
     if (document.readyState === 'complete') {
-      // If the page is already loaded, trigger the handler immediately
       handleLoad();
     } else {
-      // Otherwise, add event listener for the load event
       window.addEventListener('load', handleLoad);
-      // Clean up the event listener on component unmount
       return () => window.removeEventListener('load', handleLoad);
     }
   }, []);
