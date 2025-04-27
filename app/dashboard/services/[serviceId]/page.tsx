@@ -6,10 +6,9 @@ import ServicePageClient from "./components/ServicePageClient";
 export const dynamic = "force-dynamic";
 
 export default async function Page({ params }: { params: { serviceId: string } }) {
-  const { serviceId } = params;
-
   const headersList = headers();
   const protocol = (await headersList).get("x-forwarded-proto") || "http";
+  const { serviceId } = params;
   const host = (await headersList).get("host");
   const baseUrl = `${protocol}://${host}`;
 

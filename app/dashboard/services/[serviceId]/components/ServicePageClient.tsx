@@ -63,7 +63,10 @@ export default function ServicePageClient({ data }: { data: any }) {
               Base Price
             </h2>
             <p className="text-center text-3xl font-bold text-gray-900 mb-4">
-              LKR <span className="text-4xl">{data.starting_price?.toLocaleString()}</span>
+              LKR{" "}
+              <span className="text-4xl">
+                {data.starting_price?.toLocaleString()}
+              </span>
             </p>
 
             <div className="border-t border-gray-200 my-4" />
@@ -140,11 +143,20 @@ export default function ServicePageClient({ data }: { data: any }) {
 
         {/* Reviews */}
         <div>
-          <h2 className="text-xl font-semibold mb-2">Rating & Reviews</h2>
-            {!loadingUser && userId && (
-                <ServiceReviewsWrapper serviceId={data.service_id} userId={userId} />
+          <h2 className="text-xl font-semibold mb-2">
+            Rating & Reviews
+            {typeof data.averageRating === "number" && (
+              <span className="ml-3 text-lg">
+                {data.averageRating.toFixed(1)} ⭐
+              </span>
             )}
-
+          </h2>
+          {!loadingUser && userId && (
+            <ServiceReviewsWrapper
+              serviceId={data.service_id}
+              userId={userId}
+            />
+          )}
         </div>
       </div>
     </div>

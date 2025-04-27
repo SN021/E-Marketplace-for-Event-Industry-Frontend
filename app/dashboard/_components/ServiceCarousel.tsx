@@ -6,12 +6,14 @@ import Link from "next/link";
 import {HashLoader} from 'react-spinners';
 
 type Service = {
+  serviceId: string;
   id: string;
   title: string;
   price: number;
   seller: string;
   imageUrl: string;
   discount?: string;
+  averageRating:number;
 };
 
 type ServiceCarouselProps = {
@@ -53,11 +55,13 @@ export const ServiceCarousel = ({ title }: ServiceCarouselProps) => {
               <div className="cursor-pointer">
                 <ServiceCard
                   key={service.id}
+                  serviceId={service.id}
                   title={service.title}
                   seller={service.seller}
                   price={service.price.toString()}
                   imageUrl={service.imageUrl}
                   discount={service.discount}
+                  averageRating ={service.averageRating}
                 />
               </div>
             </Link>

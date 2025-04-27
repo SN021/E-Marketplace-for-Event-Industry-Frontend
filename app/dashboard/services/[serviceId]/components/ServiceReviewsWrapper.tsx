@@ -16,7 +16,6 @@ export default function ServiceReviewsWrapper({
     rating: number;
   }>();
 
-  // Prevent premature render if userId is not ready
   if (!userId) {
     return (
       <div className="text-sm text-gray-500 italic">Loading user reviews...</div>

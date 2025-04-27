@@ -43,7 +43,7 @@ export function ReviewForm({
     setError(null);
 
     if (!finalUserId) {
-      setError("User ID missing — please wait...");
+      setError("User ID missing, please wait...");
       return;
     }
 
@@ -57,14 +57,18 @@ export function ReviewForm({
       await axios.post("/api/create-service-review", {
         service_id: serviceId,
         user_id: finalUserId,
-        review,
+        review: review.trim(),
         rating,
       });
 
       onSubmitSuccess?.({ review, rating });
+       window.location.reload();
     } catch (err: any) {
-      console.error("Review submit error:", err);
-      setError("Something went wrong. Please try again.");
+        if (err.response?.status === 409) {
+          setError("You have already submitted a review for this service.");
+        } else {
+          setError("Something went wrong. Please try again.");
+        }
     } finally {
       setLoading(false);
     }
@@ -105,7 +109,7 @@ export function ReviewForm({
 
       <Button
         onClick={handleSubmit}
-        disabled={loading || review.trim().length === 0 || !userId}
+        disabled={loading || !userId}
       >
         {loading
           ? "Submitting..."
@@ -114,7 +118,7 @@ export function ReviewForm({
           : "Submit Review"}
       </Button>
 
-      {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
+      {error && <p className="error-msg">{error}</p>}
     </div>
   );
 }

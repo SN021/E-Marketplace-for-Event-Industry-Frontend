@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     const { data: serviceData, error: serviceError } = await supabase
       .from("services")
       .select(
-        "service_id, service_title, starting_price, photo_gallery_paths, user_id, discounts_and_offers"
+        "service_id, service_title, starting_price, photo_gallery_paths, user_id, discounts_and_offers,average_rating"
       )
       .order("created_at", { ascending: false })
       .limit(12);
@@ -72,6 +72,7 @@ export async function GET(req: NextRequest) {
       seller: service.display_name,
       imageUrl: service.signedUrl || "/default-thumbnail.jpg",
       discount: service.discounts_and_offers || null,
+      averageRating : service.average_rating || 0,
     }));
 
 
