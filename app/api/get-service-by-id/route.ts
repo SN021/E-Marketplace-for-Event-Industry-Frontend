@@ -18,21 +18,7 @@ export async function GET(req: NextRequest) {
   try {
     const { data: service, error: serviceError } = await supabase
       .from("services")
-      .select(`
-          service_id,
-          service_title,
-          starting_price,
-          photo_gallery_paths,
-          user_id,
-          description,
-          serviceable_areas,
-          notice_period,
-          other_details,
-          policies,
-          search_tags,
-          price_features,
-          discounts_and_offers
-        `)
+      .select(`*`)
       .eq("service_id", serviceId)
       .maybeSingle();
 
@@ -61,7 +47,7 @@ export async function GET(req: NextRequest) {
       console.warn("Failed to parse or sign images for service:", serviceId);
     }
 
-    // Fetch vendor name
+   
     const { data: vendorData } = await supabase
       .from("vendor")
       .select("display_name")
@@ -99,6 +85,7 @@ try {
   tags: parsedTags,
   price_features: parsedPriceFeatures,
   discounts_and_offers: service.discounts_and_offers || "",
+  averageRating: service.average_rating || 0,
 });
   } catch (err) {
     console.error("Unexpected error:", err);

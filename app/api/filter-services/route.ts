@@ -7,16 +7,32 @@ const supabase = createClient(
 );
 
 export async function POST(req: NextRequest) {
-  const { rating, minPrice, maxPrice, experience, location } = await req.json();
+  const { rating, minPrice, maxPrice, experience, location, query, subcategory, sortOrder, page = 1, limit = 12 } = await req.json();
 
-  let query = supabase.from("services").select("*");
+  let serviceQuery = supabase.from("services").select("*");
 
-  if (minPrice != null) query = query.gte("starting_price", minPrice);
-  if (maxPrice != null) query = query.lte("starting_price", maxPrice);
+  if (minPrice != null) serviceQuery = serviceQuery.gte("starting_price", minPrice);
+  if (maxPrice != null) serviceQuery = serviceQuery.lte("starting_price", maxPrice);
+    if (query) {
+    serviceQuery = serviceQuery.or(
+      `service_title.ilike.%${query}%,description.ilike.%${query}%,search_tags.ilike.%${query}%,description.ilike.%${query}%`
+    );
+  }
+  if (subcategory) {serviceQuery = serviceQuery.eq("subcategory", subcategory);}
+  if (sortOrder === "asc") {serviceQuery = serviceQuery.order("starting_price", { ascending: true });} 
+  else 
+  if (sortOrder === "desc") {serviceQuery = serviceQuery.order("starting_price", { ascending: false });}
 
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
+  serviceQuery = serviceQuery.range(from, to);
 
-  const { data: services, error } = await query;
+  const { data: services, error } = await serviceQuery;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  if (!services || services.length === 0) {
+    return NextResponse.json([]);
+  }
 
   const serviceIds = services.map((s) => s.service_id);
   const userIds = services.map((s) => s.user_id);
@@ -28,17 +44,12 @@ export async function POST(req: NextRequest) {
 
   if (vendorError) return NextResponse.json({ error: vendorError.message }, { status: 500 });
 
-  const { data: ratings, error: ratingError } = await supabase
-    .from("service_rating")
-    .select("service_id, rating")
-    .in("service_id", serviceIds);
 
-  if (ratingError) return NextResponse.json({ error: ratingError.message }, { status: 500 });
 
   const enriched = await Promise.all(
     services.map(async (service) => {
       const vendorInfo = vendors.find((v) => v.id === service.user_id);
-      const ratingInfo = ratings.find((r) => r.service_id === service.service_id);
+
 
       let paths: string[] = [];
       try {
@@ -74,34 +85,45 @@ export async function POST(req: NextRequest) {
       return {
         ...service,
         vendor: vendorInfo || {},
-        service_rating: ratingInfo || {},
         signed_photo_urls: signedPhotos.filter(Boolean),
         display_name,
       };
     })
   );
 
- 
   const filtered = enriched.filter((item) => {
     const vendorExperience = item.vendor?.experience?.toLowerCase() || "";
-    const selectedExperience = experience?.toLowerCase() || "";
+    const experienceMatch = 
+    !experience || experience.length === 0 ||
+    (Array.isArray(experience)
+      ? experience.some((exp: string) => vendorExperience.includes(exp.toLowerCase()))
+      : vendorExperience.includes((experience as string).toLowerCase()));
 
-    const ratingMatch = !rating || (item.service_rating?.rating ?? 0) >= rating;
-    const experienceMatch = !experience || vendorExperience.includes(selectedExperience);
 
-   
+    const ratingMatch =
+      rating == null ||
+      (item.average_rating != null && item.average_rating >= rating);
+
+
     let locationMatch = true;
-    if (location) {
+    if (location && location.length > 0) {
       try {
         const parsedAreas = JSON.parse(item.serviceable_areas || "[]");
-        locationMatch =
-          Array.isArray(parsedAreas) &&
-          (parsedAreas.includes(location) || parsedAreas.includes("Islandwide"));
+        if (Array.isArray(parsedAreas)) {
+          locationMatch =
+            parsedAreas.includes("islandwide") ||
+            parsedAreas.some((area: string) =>
+              location.includes(area)
+            );
+        } else {
+          locationMatch = false;
+        }
       } catch (err) {
         console.warn("Invalid serviceable_areas JSON:", item.serviceable_areas);
         locationMatch = false;
       }
     }
+
 
     return ratingMatch && experienceMatch && locationMatch;
   });

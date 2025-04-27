@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Search, Mail, Heart, Menu, X } from "lucide-react";
+import { Search, Mail, Heart, Menu, X, Settings } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -73,7 +73,8 @@ const Navbar = () => {
 
           <ul className="hidden md:flex items-center gap-6 text-sm font-semibold">
             <li><Link href=""><Mail className="nav-a" /></Link></li>
-            <li><Link href=""><Heart className="nav-a" /></Link></li>
+            <li><Link href="/dashboard/service-saved"><Heart className="nav-a" /></Link></li>
+            <li><Link href=""><Settings className="nav-a" /></Link></li>
             <li><UserButton /></li>
           </ul>
 
