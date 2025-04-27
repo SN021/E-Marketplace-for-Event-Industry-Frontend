@@ -11,7 +11,7 @@ export default async function Page(
   const { serviceId } = await props.params;
 
   // 2. Call headers() synchronously
-  const hdrs     = headers();
+  const hdrs     = await headers();
   const protocol = hdrs.get("x-forwarded-proto") || "http";
   const host     = hdrs.get("host");
   const baseUrl  = `${protocol}://${host}`;
