@@ -17,7 +17,7 @@ export default function Home() {
         </SignedOut>
       </div>
       <h1>
-        Hi baby ball This is dev branch
+       Landing Page
       </h1>
         <Link href="/dashboard">
           <Button>Dashboard</Button>
