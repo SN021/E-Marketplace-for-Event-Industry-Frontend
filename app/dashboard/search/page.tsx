@@ -127,9 +127,10 @@ const handleFilterApply = async (newFilters?: any, page = 1) => {
       }
     }
 
-    if (newFilters) {
-      setFilters(newFilters);
-    }
+  if (newFilters) {
+    setFilters(newFilters); 
+  }
+
     setCurrentPage(page);
   } catch (err) {
     console.error("Filter error:", err);
@@ -179,12 +180,14 @@ const handleFilterApply = async (newFilters?: any, page = 1) => {
           ? `"${formatSubcategoryLabel(subcategory)}"`
           : ""}
       </h1>
-
+      
       {(filters.rating ||
         filters.minPrice ||
         filters.maxPrice ||
         (filters.experience && filters.experience.length > 0) ||
         (filters.location && filters.location.length > 0)) && (
+        <div className="mb-6">
+        <h2 className="text-gray-500 mb-2">Active Filters</h2> 
         <div className="text-sm text-gray-600 mb-6 space-x-2">
           {filters.rating && (
             <span className="inline-block bg-gray-200 px-2 py-1 rounded">
@@ -208,6 +211,7 @@ const handleFilterApply = async (newFilters?: any, page = 1) => {
               Location: {filters.location.join(", ")}
             </span>
           )}
+        </div>
         </div>
       )}
 
