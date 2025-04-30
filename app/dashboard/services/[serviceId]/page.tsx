@@ -25,6 +25,8 @@ export default async function Page(
 
   const data = await res.json();
   if (!data || data.error) return notFound();
+  
+  console.log(data)
 
   return <ServicePageClient data={data} />;
 }
