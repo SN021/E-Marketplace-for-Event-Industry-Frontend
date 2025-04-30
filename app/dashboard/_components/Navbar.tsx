@@ -10,7 +10,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [userType, setUserType] = useState("user");
-  const router = useRouter();
+  const router = useRouter(); 
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,7 +72,7 @@ const Navbar = () => {
           </div>
 
           <ul className="hidden md:flex items-center gap-6 text-sm font-semibold">
-            <li><Link href=""><Mail className="nav-a" /></Link></li>
+            <li><Link href="/dashboard/chat/all-chats"><Mail className="nav-a" /></Link></li>
             <li><Link href="/dashboard/service-saved"><Heart className="nav-a" /></Link></li>
             <li><Link href=""><Settings className="nav-a" /></Link></li>
             <li><UserButton /></li>
