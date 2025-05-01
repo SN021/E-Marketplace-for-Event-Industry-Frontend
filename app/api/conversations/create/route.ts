@@ -1,34 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuth } from "@clerk/nextjs/server";
-import { createClient } from "@/lib/supabase"; // adjust this if needed
+import { auth } from "@clerk/nextjs/server";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY! 
+);
+
 
 export async function POST(request: NextRequest) {
-  const supabase = createClient();
-  const { userId } = getAuth(request);
+
+  const { userId } = await auth();
+  console.log(userId)
 
   if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const { data: UserDate, error: UserError } = await supabase
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+  
+  const { data: userData, error: userError } = await supabase
     .from("user")
     .select()
     .eq("clerk_user_id", userId);
 
-  if (UserError) {
-    console.error("Supabase query error:", UserError);
-    return NextResponse.json({ message: "Database error" }, { status: 500 });
-  }
-
-  if (!UserDate || UserDate.length === 0) {
-    return NextResponse.json({ message: "User not found" }, { status: 404 });
-  }
-
-  const id = UserDate?.[0].id;
+  console.log(userData);
+  const id = userData?.[0].id;
 
   const body = await request.json();
-
-  console.log(body)
 
   const { vendorId, serviceId, initialMessage } = body;
 
@@ -77,7 +74,7 @@ export async function POST(request: NextRequest) {
 
   const { error: msgErr } = await supabase.from("messages").insert({
     conversation_id: newConv.id,
-    sender_id: userId,
+    sender_id: id,
     content: initialMessage,
     message_type: "text",
   });

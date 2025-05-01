@@ -10,7 +10,6 @@ const supabase = createClient(
 export async function PUT(req: NextRequest) {
   try {
     const payload = await req.json();
-    console.log("Incoming payload:", payload);
 
  if (!payload?.userId) {
       return NextResponse.json({ error: "Missing userId" }, { status: 400 });

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { CheckCircle } from "lucide-react";
+import { ArrowLeftIcon, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ServiceReviewsWrapper from "./ServiceReviewsWrapper";
 import { QuotationRequestForm } from "./QRForm";
@@ -40,7 +40,16 @@ export default function ServicePageClient({ data }: { data: any }) {
     <div>
       {/* Quotation Request Form */}
       {showQRForm && (
-        <div ref={formRef} className="relative w-full h-full backdrop:blur-3xl flex items-center justify-center bg-black/50 overflow-y-clip">
+        <div ref={formRef} className="container mx-auto py-10">
+          <Button
+            className="mb-5 "
+            variant={"destructive"}
+            onClick={() => {
+              setShowQRForm(false)
+            }}          
+          >
+            <ArrowLeftIcon /> <span>Back</span>
+          </Button>
           <QuotationRequestForm
             vendorId={data.user_id}
             serviceId={data.service_id}

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import axios from "axios";
 
 export default function ConversationsPage() {
   const { user, isLoaded } = useUser();
@@ -12,13 +13,16 @@ export default function ConversationsPage() {
     if (!isLoaded || !user) return;
 
     const fetchConvos = async () => {
-      const res = await fetch("/api/conversations/get");
-      const json = await res.json();
-      setConversations(json.conversations || []);
+      try {
+        const res = await axios.get("/api/conversations/get");
+        setConversations(res.data.conversations || []);
+      } catch (error) {
+        console.error("Failed to fetch conversations:", error);
+        setConversations([]); // fallback in case of failure
+      }
     };
 
     fetchConvos();
-    console.log(conversations)
   }, [isLoaded, user]);
 
   if (!isLoaded || !user) return <div>Loading...</div>;
