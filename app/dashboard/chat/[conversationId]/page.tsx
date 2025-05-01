@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
+import { Button } from "@/components/ui/button";
 
 export default function ChatPage() {
   const { user, isLoaded } = useUser();
@@ -99,22 +100,35 @@ export default function ChatPage() {
   if (!isLoaded || !user) return <div>Loading...</div>;
 
   return (
-    <main className="p-4 max-w-xl mx-auto">
-      <h2 className="text-xl font-bold mb-4">💬 Live Chat</h2>
+    <main className="p-4 max-w-2xl mx-auto">
+      <h2 className="text-xl font-bold mb-4">Live Chat</h2>
 
-      <div className="border h-64 overflow-y-auto p-2 mb-4 bg-white rounded shadow flex flex-col">
+      <div className="border h-96 overflow-y-auto p-4 mb-4 bg-white rounded shadow flex flex-col space-y-2">
         {messages.map((msg, index) => {
           const isSelf = msg.sender_id === userId;
           return (
             <div
               key={index}
-              className={`mb-2 max-w-[70%] px-3 py-2 rounded-lg text-sm whitespace-pre-wrap ${
-                isSelf
-                  ? "ml-auto bg-blue-100 text-right"
-                  : "mr-auto bg-gray-100 text-left"
-              }`}
+              className={`flex flex-col ${
+                isSelf ? "items-end" : "items-start"
+              } text-sm`}
             >
-              <ReactMarkdown>{msg.content}</ReactMarkdown>
+              <div
+                className={`max-w-[75%] px-4 py-2 rounded-2xl shadow-sm whitespace-pre-wrap ${
+                  isSelf
+                    ? "bg-primary/80 text-white rounded-br-none"
+                    : "bg-gray-100 text-gray-800 rounded-bl-none"
+                }`}
+              >
+                <ReactMarkdown>{msg.content}</ReactMarkdown>
+              </div>
+              <span className="text-xs text-gray-400 mt-1">
+                {isSelf ? "You" : "Other"} ·{" "}
+                {new Date(msg.created_at).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
             </div>
           );
         })}
@@ -128,12 +142,7 @@ export default function ChatPage() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type your message..."
         />
-        <button
-          className="bg-blue-600 text-white px-4 rounded"
-          onClick={handleSend}
-        >
-          Send
-        </button>
+        <Button onClick={handleSend}>Send</Button>
       </div>
     </main>
   );

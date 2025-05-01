@@ -18,7 +18,7 @@ export default function ConversationsPage() {
         setConversations(res.data.conversations || []);
       } catch (error) {
         console.error("Failed to fetch conversations:", error);
-        setConversations([]); // fallback in case of failure
+        setConversations([]); 
       }
     };
 
