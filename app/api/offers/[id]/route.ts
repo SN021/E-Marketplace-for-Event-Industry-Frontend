@@ -6,11 +6,9 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+export async function GET(req: NextRequest) {
+  const url = req.nextUrl;
+  const id = url.pathname.split("/").slice(-1)[0]; 
 
   const { data: offer, error } = await supabase
     .from("offers")
