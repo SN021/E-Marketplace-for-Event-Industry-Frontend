@@ -56,8 +56,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ signedUrl: null }, { status: 200 });
   }
 
-  console.log("Trying to sign path:", filePath);
-
   const { data: signedUrlData, error: signedUrlError } = await supabase.storage
     .from('vendor-assets')
     .createSignedUrl(filePath, 60 * 60);
