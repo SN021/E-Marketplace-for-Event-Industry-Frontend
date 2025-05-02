@@ -7,31 +7,63 @@ import { createClient } from "@/lib/supabase";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { OfferForm } from "./_components/OfferForm";
+import { OfferBubble } from "./_components/OfferBubble";
 
 export default function ChatPage() {
   const { user, isLoaded } = useUser();
   const params = useParams();
-  const conversationId = params.conversationId as string;
+
+  const conversationId = (() => {
+    if (!params?.conversationId) return null;
+    return Array.isArray(params.conversationId)
+      ? params.conversationId[0]
+      : params.conversationId;
+  })();
   const supabase = createClient();
 
   const [input, setInput] = useState("");
   const [userId, setUserId] = useState("");
+  const [convVendor, setConvVendor] = useState("");
+  const [convClient, setConvClient] = useState("");
+  const [isVendor, setIsVendor] = useState(false);
   const [messages, setMessages] = useState<any[]>([]);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (!conversationId) return;
+
     const fetchUserData = async () => {
       try {
         const response = await axios.get("/api/get-user");
         const userData = response.data;
         const id = userData[0]?.id;
+        const vendorStatus = userData[0]?.is_vendor;
+
+        const conversationResponse = await axios.get(
+          `/api/conversations/${conversationId}`
+        );
+
+        const conversationData = conversationResponse.data.conversation;
+        setConvClient(conversationData.client_id);
+        setConvVendor(conversationData.vendor_id);
+        if (vendorStatus) setIsVendor(true);
         setUserId(id);
       } catch (error) {
-        console.error("Failed to fetch user data:", error);
+        console.error("Failed to fetch user data or conversation:", error);
       }
     };
+
     fetchUserData();
-  }, []);
+  }, [conversationId]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -106,6 +138,15 @@ export default function ChatPage() {
       <div className="border h-96 overflow-y-auto p-4 mb-4 bg-white rounded shadow flex flex-col space-y-2">
         {messages.map((msg, index) => {
           const isSelf = msg.sender_id === userId;
+
+          if (msg.message_type === "offer") {
+            const raw = msg.content;
+            const offerId = raw.replace(/^Offer:\s*/, "");
+            return (
+              <OfferBubble key={index} offerId={offerId} isSelf={isSelf} />
+            );
+          }
+
           return (
             <div
               key={index}
@@ -142,7 +183,27 @@ export default function ChatPage() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type your message..."
         />
-        <Button onClick={handleSend}>Send</Button>
+        <div className="flex gap-5">
+          <Button onClick={handleSend}>Send</Button>
+          {convVendor === userId && conversationId && (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant={"outline"}>Offer</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Create an Offer</DialogTitle>
+                </DialogHeader>
+                <div>
+                  <OfferForm
+                    conversationId={conversationId}
+                    vendorId={convVendor}
+                  />
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
+        </div>
       </div>
     </main>
   );
