@@ -1,7 +1,9 @@
+"use client";
+
 import { Star, CheckCircle, Heart } from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
-
+import Link from "next/link";
 
 type ServiceCardProps = {
   serviceId: string;
@@ -12,6 +14,7 @@ type ServiceCardProps = {
   averageRating?: number;
   verified?: boolean;
   discount?: string;
+  href?: string;
 };
 
 export const ServiceCard = ({
@@ -23,40 +26,51 @@ export const ServiceCard = ({
   verified = true,
   discount,
   averageRating,
+  href = "#",
 }: ServiceCardProps) => {
   const [isSaved, setIsSaved] = useState(false);
 
   const toggleSave = async () => {
     try {
       setIsSaved((prev) => !prev);
-
-      await axios.post("/api/save", {
+      await axios.post("/api/service-save", {
         service_id: serviceId,
       });
+      alert(isSaved ? "Removed from saved" : "Saved successfully");
     } catch (err) {
       console.error("Failed to toggle save:", err);
     }
   };
 
   return (
-    <div className="w-[350px] h-[360px] bg-white rounded-lg shadow-sm p-4 relative flex flex-col justify-between">
+    <Link
+      href={href}
+      className="block w-full max-w-[320px] sm:max-w-full h-[360px] bg-white rounded-lg shadow-sm p-4 relative flex flex-col justify-between hover:shadow-md transition"
+    >
       <img
         src={imageUrl}
         alt={title}
-        className="w-full h-[160px] object-cover rounded"
+        className="w-full h-[150px] object-cover rounded"
       />
 
       <Heart
-        onClick={toggleSave}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          toggleSave();
+        }}
         className={`absolute bottom-3 right-3 w-5 h-5 cursor-pointer transition ${
           isSaved ? "text-yellow-500" : "text-gray-400 hover:text-yellow-500"
         }`}
       />
 
-      <h3 className="text-sm font-semibold mt-3"> {title}</h3>
+      <h3 className="text-sm font-semibold mt-3 break-words line-clamp-2">
+        {title}
+      </h3>
+
       <p className="text-xs text-gray-500 flex items-center gap-1">
         by {seller}
-        {verified && <CheckCircle className="w-4 h-4 text-green-600" />}{" "}
+        {verified && <CheckCircle className="w-4 h-4 text-green-600" />}
       </p>
 
       <div className="flex items-center gap-1 mt-1">
@@ -65,10 +79,12 @@ export const ServiceCard = ({
           {averageRating?.toFixed(1)}
         </span>
       </div>
-      <p className="mt-2  font-semibold text-sm">Starts at Rs. {price}.00</p>
+
+      <p className="mt-2 font-semibold text-sm">Starts at Rs. {price}.00</p>
+
       {discount && (
-        <p className="mt-1 text-sm text-yellow-500 font-medium"> {discount}</p>
+        <p className="mt-1 text-sm text-yellow-500 font-medium">{discount}</p>
       )}
-    </div>
+    </Link>
   );
 };

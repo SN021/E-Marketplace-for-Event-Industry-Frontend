@@ -16,7 +16,7 @@ const Navbar = () => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
     router.push(`/dashboard/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    setIsMobileMenuOpen(false); // close menu on mobile after search
+    setIsMobileMenuOpen(false); 
   };
 
   useEffect(() => {
@@ -24,11 +24,9 @@ const Navbar = () => {
       try {
         const response = await axios.get("/api/get-user");
         const userData = response.data;
-        const isVendor = userData[0]?.is_vendor;
-
-        if (isVendor) {
-          setUserType("vendor");
-        }
+        const role = userData[0]?.role;        
+        setUserType(role);
+        
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
@@ -99,6 +97,15 @@ const Navbar = () => {
               </button>
             </Link>
           )}
+
+          {userType === "admin" && (
+            <Link href="/admin/users">
+              <button className="primary-btn hidden md:block">
+                Admin Dashboard
+              </button>
+            </Link>
+          )}
+
           {userType === "user" && (
             <Link href="/dashboard/create-vendor">
               <button className="primary-btn hidden md:block">
@@ -155,6 +162,12 @@ const Navbar = () => {
             {userType === "vendor" && (
               <Link href="/dashboard/vendor-dashboard">
                 <button className="primary-btn w-full">Vendor Dashboard</button>
+              </Link>
+            )}
+
+            {userType === "admin" && (
+              <Link href="/admin/users">
+                <button className="primary-btn w-full">Admin Dashboard</button>
               </Link>
             )}
 

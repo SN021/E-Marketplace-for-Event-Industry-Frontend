@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { eventServiceCategories } from "@/data/categoriesWithsubcategories";
 import { locationOptions } from "@/data/locations";
+import { motion } from "motion/react";
 
 //options for map function
 const steps = [
@@ -38,6 +39,40 @@ export default function CreateServicePage() {
     { value: string; label: string }[]
   >([]);
   const [input, setInput] = useState("");
+  const [status, setStatus] = useState<
+    "checking" | "applied" | "forbidden" | "allowed"
+  >("checking");
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get("/api/get-user");
+        const user = response.data?.[0];
+
+        if (!user || !user.role) {
+          console.warn("User data or role not found.");
+          return;
+        }
+
+        if (user.role === "user") {
+          setStatus("forbidden");
+          return;
+        }
+
+        setStatus("allowed");
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    if (status === "forbidden") {
+      window.location.href = "/forbidden";
+    }
+  }, [status]);
 
   // Form data
   const {
@@ -58,7 +93,15 @@ export default function CreateServicePage() {
 
   const selectedCategory = watch("s_category");
   const photoGallery = watch("photoGallery");
-  const selected = watch("serviceableAreas"); //const selected = watch("serviceableAreas") || [] this is also correct or add it in to the default
+  const selected = watch("serviceableAreas");
+
+  const inputContainerStyle = "relative z-0 w-full mb-6 group ";
+  const inputStyle =
+    "block shadow py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 hover:border-gray-400 duration-300 hover:shadow-md appearance-none focus:outline-none focus:ring-0 focus:border-[#D39D55] peer";
+  const inputLabelStyle =
+    "absolute px-2 text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 font-medium";
+  const selectStyle =
+    "block appearance-none w-full shadow bg-white border-b border-gray-300 hover:border-gray-400 py-2.5 px-2 leading-tight focus:outline-none focus:border-primary transition-colors text-sm text-gray-500 font-medium duration-300 hover:shadow-md";
 
   useEffect(() => {
     const matched = eventServiceCategories.find(
@@ -80,44 +123,40 @@ export default function CreateServicePage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  const onSubmit = async (data: ServiceOverview) => {
+    setLoading(true);
+    try {
+      const userId = user?.id;
+      const formData = new FormData();
+      data.photoGallery.forEach((file: File) => {
+        formData.append("images", file);
+      });
 
+      const uploadRes = await fetch("/api/upload-service", {
+        method: "POST",
+        body: formData,
+      });
 
+      const uploadJson = await uploadRes.json();
 
-const onSubmit = async (data: ServiceOverview) => {
-  setLoading(true);
-  try {
-    const userId = user?.id;
-    const formData = new FormData();
-    data.photoGallery.forEach((file: File) => {
-      formData.append("images", file);
-    });
+      if (!uploadRes.ok) throw new Error(uploadJson.error);
 
-    const uploadRes = await fetch("/api/upload-service", {
-      method: "POST",
-      body: formData,
-    });
+      const payload = {
+        ...data,
+        userId,
+        photoGalleryPaths: uploadJson.paths,
+      };
 
-    const uploadJson = await uploadRes.json();
-
-    if (!uploadRes.ok) throw new Error(uploadJson.error);
-
-    const payload = {
-      ...data,
-      userId,
-      photoGalleryPaths: uploadJson.paths,
-    };
-
-    const response = await axios.post("/api/create-service", payload);
-    toast.success("Service has been created");
-    router.push("/dashboard");
-  } catch (error: any) {
-    console.error("Upload or submission failed:", error);
-    toast.error("Something went wrong");
-  } finally {
-    setLoading(false);
-  }
-};
-
+      const response = await axios.post("/api/create-service", payload);
+      toast.success("Service has been created");
+      router.push("/dashboard");
+    } catch (error: any) {
+      console.error("Upload or submission failed:", error);
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-full">
@@ -176,45 +215,41 @@ const onSubmit = async (data: ServiceOverview) => {
         </div>
       </nav>
 
-      {/* Form Content step 01 */}
       <div className="max-w-full px-4 py-6 ">
         <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Form Content step 01 */}
           {currentStep === 0 && (
-            <div className="flex flex-row gap-6 ">
-              <div className="flex-1 space-y-6 px-20 py-10">
-                <div className="flex flex-col md:flex-row items-start gap-3">
-                  <label
-                    htmlFor="service-title"
-                    className="md:w-[150px] font-medium"
-                  >
+            <div className="flex flex-col md:flex-row md:divide-x bg-white rounded-md shadow-md md:divide-gray-300 ">
+              {/* Form Section */}
+              <div className="flex-1 items-center justify-center px-5 md:px-15 lg:px-24 py-10 space-y-6 ">
+                {/* Service Title */}
+                <div className={inputContainerStyle}>
+                  <input
+                    type="text"
+                    id="service-title"
+                    {...register("s_title")}
+                    aria-invalid={!!errors.s_title}
+                    placeholder=""
+                    className={inputStyle}
+                  />
+                  <label htmlFor="service-title" className={inputLabelStyle}>
                     Service Title <span className="text-red-500">*</span>
                   </label>
-                  <div className="w-full">
-                    <input
-                      type="text"
-                      {...register("s_title")}
-                      aria-invalid={!!errors.s_title}
-                      placeholder="E.g. Elegant Custom Cakes for Every Occasion | Made to Wow"
-                      className="p-2 border border-black rounded-sm w-full"
-                    />
-                    {errors.s_title && (
-                      <p className="error-msg">{errors.s_title.message}</p>
-                    )}
-                  </div>
+                  {errors.s_title && (
+                    <p className="error-msg">{errors.s_title.message}</p>
+                  )}
                 </div>
 
-                <div className="flex flex-col md:flex-row items-start gap-3">
-                  <label
-                    htmlFor="service-category"
-                    className="md:w-[150px] font-medium"
-                  >
-                    Service Category <span className="text-red-500">*</span>
-                  </label>
+                {/* Service Category + Subcategory */}
+                <div className={inputContainerStyle}>
                   <div className="flex flex-col md:flex-row gap-2 w-full">
-                    <select
+                    <motion.select
                       {...register("s_category")}
                       aria-invalid={!!errors.s_category}
-                      className="w-full border p-2 rounded-sm"
+                      className={selectStyle}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ duration: 0.1, ease: "easeOut" }}
+                      whileFocus={{ scale: 1.01 }}
                       defaultValue=""
                     >
                       <option value="" disabled hidden>
@@ -225,12 +260,15 @@ const onSubmit = async (data: ServiceOverview) => {
                           {option.label}
                         </option>
                       ))}
-                    </select>
+                    </motion.select>
 
-                    <select
+                    <motion.select
                       {...register("s_subcategory")}
                       aria-invalid={!!errors.s_subcategory}
-                      className="w-full border p-2 rounded-sm"
+                      className={selectStyle}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ duration: 0.1, ease: "easeOut" }}
+                      whileFocus={{ scale: 1.01 }}
                       defaultValue=""
                     >
                       <option value="" disabled hidden>
@@ -241,25 +279,46 @@ const onSubmit = async (data: ServiceOverview) => {
                           {option.label}
                         </option>
                       ))}
-                    </select>
+                    </motion.select>
                   </div>
                 </div>
-                {(errors.s_category || errors.s_subcategory) && (
-                  <div className="error-msg">
-                    {errors.s_category?.message && (
-                      <p>{errors.s_category.message}</p>
-                    )}
-                    {errors.s_subcategory?.message && (
-                      <p>{errors.s_subcategory.message}</p>
-                    )}
-                  </div>
-                )}
 
+                {/* Search Tags */}
                 <div className="flex flex-col md:flex-row items-start gap-3">
-                  <label className="md:w-[150px] font-medium">
-                    Search Tags <span className="text-red-500">*</span>
-                  </label>
-                  <div className="flex-1 space-y-2">
+                  <div className={inputContainerStyle}>
+                    {/* Input Field */}
+                    <input
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === ",") {
+                          e.preventDefault();
+                          const cleaned = input.trim().toLowerCase();
+                          const currentTags = watch("s_tags") || [];
+                          if (
+                            cleaned &&
+                            /^[a-zA-Z0-9]+$/.test(cleaned) &&
+                            !currentTags.includes(cleaned) &&
+                            currentTags.length < 6
+                          ) {
+                            setValue("s_tags", [...currentTags, cleaned]);
+                            setInput("");
+                          }
+                        }
+                      }}
+                      placeholder=""
+                      className={inputStyle}
+                    />
+                    <label className={inputLabelStyle}>
+                      Search Tags <span className="text-red-500">*</span>
+                    </label>
+
+                    <p className="text-xs text-gray-600">
+                      {watch("s_tags")?.length || 0}/6 tags maximum. Use letters
+                      and numbers only. Type and press Enter...
+                    </p>
+
+                    {/* Tag List */}
                     <div className="flex flex-wrap gap-2">
                       {(watch("s_tags") || []).map(
                         (tag: string, index: number) => (
@@ -284,32 +343,6 @@ const onSubmit = async (data: ServiceOverview) => {
                       )}
                     </div>
 
-                    <input
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === ",") {
-                          e.preventDefault();
-                          const cleaned = input.trim().toLowerCase();
-                          const currentTags = watch("s_tags") || [];
-                          if (
-                            cleaned &&
-                            /^[a-zA-Z0-9]+$/.test(cleaned) &&
-                            !currentTags.includes(cleaned) &&
-                            currentTags.length < 6
-                          ) {
-                            setValue("s_tags", [...currentTags, cleaned]);
-                            setInput("");
-                          }
-                        }
-                      }}
-                      placeholder="Type and press Enter..."
-                      className="border border-gray-300 rounded p-2 w-full max-w-md"
-                    />
-                    <p className="text-xs text-gray-600">
-                      {watch("s_tags")?.length || 0}/6 tags maximum. Use letters
-                      and numbers only.
-                    </p>
                     {errors.s_tags && (
                       <p className="error-msg">
                         {errors.s_tags.message as string}
@@ -318,12 +351,14 @@ const onSubmit = async (data: ServiceOverview) => {
                   </div>
                 </div>
 
+                {/* Next Button */}
                 <div className="flex items-center justify-center py-6">
                   <Button onClick={() => setCurrentStep(1)}>Next</Button>
                 </div>
               </div>
 
-              <div className=" w-full md:w-[380px] bg-[#FFF9EE] border-l-4 border-[#FF9F29] p-6 rounded-md text-sm text-gray-800 space-y-4">
+              {/* Note Section */}
+              <div className="w-full md:max-w-sm px-6 py-10 bg-[#FFF9EE] space-y-4 text-sm text-gray-800">
                 <div className="flex items-center gap-2 text-[#FF9F29] font-semibold text-base">
                   <TriangleAlert className="w-5 h-5" />
                   Note:
@@ -334,7 +369,7 @@ const onSubmit = async (data: ServiceOverview) => {
                   Make it clear, specific, and engaging. It should instantly
                   tell potential clients what service is offered while grabbing
                   their attention. You can refine it later or create multiple
-                  services for different services (max of 5 service lists).
+                  services (max 5).
                 </div>
 
                 <div>
@@ -348,7 +383,7 @@ const onSubmit = async (data: ServiceOverview) => {
                   <span className="font-semibold">Search Tags - </span>
                   These improve discoverability by aligning with what potential
                   clients are searching for. Use relevant keywords that reflect
-                  the service and industry trends.
+                  your service and industry trends.
                 </div>
               </div>
             </div>
@@ -356,115 +391,107 @@ const onSubmit = async (data: ServiceOverview) => {
 
           {/* Form Content step 02 */}
           {currentStep === 1 && (
-            <div className="flex flex-col md:flex-row gap-6 w-full">
-              <div className="flex-1 space-y-6 px-20 py-10">
-                <div className="flex flex-col md:flex-row gap-3">
+            <div className="flex flex-col md:flex-row md:divide-x bg-white rounded-md shadow-md md:divide-gray-300 ">
+              <div className="flex-1 items-center justify-center px-5 md:px-15 lg:px-24 py-10 space-y-6">
+                <div className={inputContainerStyle}>
+                  <textarea
+                    {...register("fullDescription")}
+                    aria-invalid={!!errors.fullDescription}
+                    placeholder=""
+                    className={inputStyle}
+                  />
                   <label
                     htmlFor="service-description"
-                    className="md:w-[200px] font-medium"
+                    className={inputLabelStyle}
                   >
                     Service Description <span className="text-red-500">*</span>{" "}
                   </label>
-                  <div className="w-full">
-                    <textarea
-                      {...register("fullDescription")}
-                      aria-invalid={!!errors.fullDescription}
-                      placeholder="Enter a full description about the vendor and what he does..."
-                      className="min-h-[120px] p-2 border border-black rounded-sm w-full"
-                    ></textarea>
-                    {errors.fullDescription && (
-                      <p className="error-msg">
-                        {errors.fullDescription.message}
-                      </p>
-                    )}
-                  </div>
+                  {errors.fullDescription && (
+                    <p className="error-msg">
+                      {errors.fullDescription.message}
+                    </p>
+                  )}
                 </div>
-                <div className="flex flex-col md:flex-row gap-3">
-                  <label
-                    htmlFor="base-price"
-                    className="md:w-[200px] font-medium"
-                  >
+                <div className={inputContainerStyle}>
+                  <input
+                    type="number"
+                    {...register("basePrice", { valueAsNumber: true })}
+                    aria-invalid={!!errors.basePrice}
+                    placeholder=""
+                    className={inputStyle}
+                  />
+                  <label htmlFor="base-price" className={inputLabelStyle}>
                     Starting Price (LKR) <span className="text-red-500">*</span>
                   </label>
-                  <div className="w-full">
-                    <input
-                      type="number"
-                      {...register("basePrice", { valueAsNumber: true })}
-                      aria-invalid={!!errors.basePrice}
-                      placeholder="E.g. 5000.00"
-                      className="w-full max-w-md border rounded p-2"
-                    />
-                    {errors.basePrice && (
-                      <p className="error-msg">{errors.basePrice.message}</p>
+                  {errors.basePrice && (
+                    <p className="error-msg">{errors.basePrice.message}</p>
+                  )}
+                </div>
+
+                <div className="w-full flex flex-col gap-4">
+                  {[0, 1, 2, 3].map((index) => (
+                    <div key={index} className={inputContainerStyle}>
+                      <input
+                        type="text"
+                        placeholder=""
+                        {...register(`basePriceFeatures.${index}` as const)}
+                        className={inputStyle}
+                      />
+                      <label
+                        htmlFor="base-price-features"
+                        className={inputLabelStyle}
+                      >
+                        {`Feature ${index + 1}${
+                          index < 2 ? " (required)" : " (optional)"
+                        }`}
+                        <span className="text-red-500">*</span>
+                      </label>
+                      {errors.basePriceFeatures &&
+                        Array.isArray(errors.basePriceFeatures) &&
+                        errors.basePriceFeatures[index] && (
+                          <p className="error-msg">
+                            {errors.basePriceFeatures[index]?.message}
+                          </p>
+                        )}
+                    </div>
+                  ))}
+                  {errors.basePriceFeatures &&
+                    !Array.isArray(errors.basePriceFeatures) &&
+                    typeof errors.basePriceFeatures.message === "string" && (
+                      <p className="error-msg">
+                        {errors.basePriceFeatures.message}
+                      </p>
                     )}
-                  </div>
                 </div>
-                <div className="flex flex-col md:flex-row gap-3">
-                  <label
-                    htmlFor="base-price-features"
-                    className="md:w-[200px] font-medium"
-                  >
-                    Starting Price Features{" "}
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <div className="w-full flex flex-col gap-4">
-                    {[0, 1, 2, 3].map((index) => (
-                      <div key={index} className="flex flex-col">
-                        <input
-                          type="text"
-                          placeholder={`Feature ${index + 1}${
-                            index < 2 ? " (required)" : " (optional)"
-                          }`}
-                          {...register(`basePriceFeatures.${index}` as const)}
-                          className="border rounded-sm p-2 w-full"
-                        />
-                        {errors.basePriceFeatures &&
-                          Array.isArray(errors.basePriceFeatures) &&
-                          errors.basePriceFeatures[index] && (
-                            <p className="error-msg">
-                              {errors.basePriceFeatures[index]?.message}
-                            </p>
-                          )}
-                      </div>
-                    ))}
-                    {errors.basePriceFeatures &&
-                      !Array.isArray(errors.basePriceFeatures) &&
-                      typeof errors.basePriceFeatures.message === "string" && (
-                        <p className="error-msg">
-                          {errors.basePriceFeatures.message}
-                        </p>
-                      )}
-                  </div>
-                </div>
-                <div className="flex flex-col md:flex-row gap-3">
+
+                <div className={inputContainerStyle}>
+                  <input
+                    type="text"
+                    {...register("cancellationPolicy")}
+                    aria-invalid={!!errors.cancellationPolicy}
+                    placeholder=""
+                    className={inputStyle}
+                  />
                   <label
                     htmlFor="cancellation-refund-policy"
-                    className="md:w-[200px] font-medium"
+                    className={inputLabelStyle}
                   >
                     Cancellation & Refund Policy{" "}
                     <span className="text-red-500">*</span>
                   </label>
-                  <div className="w-full">
-                    <input
-                      type="text"
-                      {...register("cancellationPolicy")}
-                      aria-invalid={!!errors.cancellationPolicy}
-                      placeholder="Type here..."
-                      className="p-2 border border-black rounded-sm w-full"
-                    />
-                    {errors.cancellationPolicy && (
-                      <p className="error-msg">
-                        {errors.cancellationPolicy.message}
-                      </p>
-                    )}
-                  </div>
+                  {errors.cancellationPolicy && (
+                    <p className="error-msg">
+                      {errors.cancellationPolicy.message}
+                    </p>
+                  )}
                 </div>
-                <div className="flex gap-3 items-center justify-center py-10 px-4">
+                <div className="flex gap-3 items-center justify-center py-6">
                   <Button onClick={() => setCurrentStep(0)}>Back</Button>
                   <Button onClick={() => setCurrentStep(2)}>Next</Button>
                 </div>
               </div>
-              <div className="w-full md:w-[380px] bg-[#FFF9EE] border-l-4 border-[#FF9F29] p-6 rounded-md text-sm text-gray-800 space-y-4">
+              {/* Note Section - Made consistent with step 1 */}
+              <div className="w-full md:max-w-sm px-6 py-10 bg-[#FFF9EE] space-y-4 text-sm text-gray-800">
                 <div className="flex items-center gap-2 text-[#FF9F29] font-semibold text-base">
                   <TriangleAlert className="w-5 h-5" />
                   Note:
@@ -507,12 +534,12 @@ const onSubmit = async (data: ServiceOverview) => {
 
           {/* Form Content step 03 */}
           {currentStep === 2 && (
-            <div className="flex flex-col md:flex-row gap-6 w-full">
-              <div className="flex-1 space-y-6 px-4 py-6">
-                <div className="flex flex-col md:flex-row gap-3">
+            <div className="flex flex-col md:flex-row md:divide-x bg-white rounded-md shadow-md md:divide-gray-300">
+              <div className="flex-1 items-center justify-center px-5 md:px-15 lg:px-24 py-10 space-y-6">
+                <div className="flex flex-col items-center gap-3">
                   <label
                     htmlFor="photo-gallery"
-                    className="md:w-[200px] font-medium"
+                    className="text-sm text-gray-500 font-semibold"
                   >
                     Photo Gallery <span className="text-red-500">*</span>
                   </label>
@@ -566,13 +593,8 @@ const onSubmit = async (data: ServiceOverview) => {
                     )}
                   </div>
                 </div>
-                <div className="flex flex-col md:flex-row gap-3">
-                  <label
-                    htmlFor="serviceable-areas"
-                    className="md:w-[200px] font-medium"
-                  >
-                    Serviceable Areas <span className="text-red-500">*</span>
-                  </label>
+
+                <div className="flex flex-col md:flex-row items-start gap-3">
                   <div className="w-full">
                     <Select
                       isMulti
@@ -592,81 +614,73 @@ const onSubmit = async (data: ServiceOverview) => {
                     )}
                   </div>
                 </div>
-                <div className="flex flex-col md:flex-row gap-3">
+                <div className={inputContainerStyle}>
+                  <input
+                    type="text"
+                    {...register("noticePeriod")}
+                    aria-invalid={!!errors.noticePeriod}
+                    placeholder=""
+                    className={inputStyle}
+                  />
                   <label
                     htmlFor="notice-lead-period"
-                    className="md:w-[200px] font-medium"
+                    className={inputLabelStyle}
                   >
                     Notice/Lead Period <span className="text-red-500">*</span>
                   </label>
-                  <div className="w-full">
-                    <input
-                      type="text"
-                      {...register("noticePeriod")}
-                      aria-invalid={!!errors.noticePeriod}
-                      placeholder="E.g. 2 weeks notice"
-                      className="p-2 border border-black rounded-sm w-full"
-                    />
-                    {errors.noticePeriod && (
-                      <p className="error-msg mt-1">
-                        {errors.noticePeriod.message}
-                      </p>
-                    )}
-                  </div>
+                  {errors.noticePeriod && (
+                    <p className="error-msg mt-1">
+                      {errors.noticePeriod.message}
+                    </p>
+                  )}
                 </div>
-                <div className="flex flex-col md:flex-row gap-3">
-                  <label
-                    htmlFor="other-details"
-                    className="md:w-[200px] font-medium"
-                  >
+                <div className={inputContainerStyle}>
+                  <input
+                    type="text"
+                    {...register("otherDetails")}
+                    aria-invalid={!!errors.otherDetails}
+                    placeholder="Type here..."
+                    className={inputStyle}
+                  />
+                  <label htmlFor="other-details" className={inputLabelStyle}>
                     Any Other Details <span>(Optional)</span>
                   </label>
-                  <div className="w-full">
-                    <input
-                      type="text"
-                      {...register("otherDetails")}
-                      aria-invalid={!!errors.otherDetails}
-                      placeholder="Type here..."
-                      className="p-2 border border-black rounded-sm w-full"
-                    />
-                    {errors.otherDetails && (
-                      <p className="error-msg mt-1">
-                        {errors.otherDetails.message}
-                      </p>
-                    )}
-                  </div>
+                  {errors.otherDetails && (
+                    <p className="error-msg mt-1">
+                      {errors.otherDetails.message}
+                    </p>
+                  )}
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-3">
+                <div className={inputContainerStyle}>
+                  <input
+                    type="text"
+                    {...register("discountsAndOffers")}
+                    placeholder="Type here..."
+                    className={inputStyle}
+                  />
                   <label
                     htmlFor="discounts-and-offers"
-                    className="md:w-[200px] font-medium"
+                    className={inputLabelStyle}
                   >
                     Discounts & Offers <span>(Optional)</span>
                   </label>
-                  <div className="w-full">
-                    <input
-                      type="text"
-                      {...register("discountsAndOffers")}
-                      placeholder="Type here..."
-                      className="p-2 border border-black rounded-sm w-full"
-                    />
-                    {errors.discountsAndOffers && (
-                      <p className="error-msg mt-1">
-                        {errors.discountsAndOffers.message}
-                      </p>
-                    )}
-                  </div>
+                  {errors.discountsAndOffers && (
+                    <p className="error-msg mt-1">
+                      {errors.discountsAndOffers.message}
+                    </p>
+                  )}
                 </div>
 
-                <div className="flex gap-3 items-center justify-center py-8">
+                <div className="flex gap-3 items-center justify-center py-6">
                   <Button onClick={() => setCurrentStep(1)}>Back</Button>
                   <Button type="submit" disabled={loading}>
                     {loading ? "Submitting..." : "Submit"}
                   </Button>
                 </div>
               </div>
-              <div className="w-full md:w-[380px] bg-[#FFF9EE] border-l-4 border-[#FF9F29] p-6 rounded-md text-sm text-gray-800 space-y-4">
+              {/* Note Section - Made consistent with step 1 */}
+              <div className="w-full md:max-w-sm px-6 py-10 bg-[#FFF9EE] space-y-4 text-sm text-gray-800">
                 <div className="flex items-center gap-2 text-[#FF9F29] font-semibold text-base">
                   <TriangleAlert className="w-5 h-5" />
                   Note:

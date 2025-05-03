@@ -17,7 +17,7 @@ export default function DashboardLayout({
         </div>
       </div>
 
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 container mx-auto">{children}</main>
 
       <Footer />
     </div>
