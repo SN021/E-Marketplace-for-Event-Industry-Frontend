@@ -45,8 +45,8 @@ export default function ServicePageClient({ data }: { data: any }) {
             className="mb-5 "
             variant={"destructive"}
             onClick={() => {
-              setShowQRForm(false)
-            }}          
+              setShowQRForm(false);
+            }}
           >
             <ArrowLeftIcon /> <span>Back</span>
           </Button>
@@ -57,9 +57,9 @@ export default function ServicePageClient({ data }: { data: any }) {
         </div>
       )}
 
-      <div className={`p-6 max-w-screen-xl mx-auto ${showQRForm ? 'hidden': ''}`}>
-      
-
+      <div
+        className={`p-6 max-w-screen-xl mx-auto ${showQRForm ? "hidden" : ""}`}
+      >
         {/* Title and Vendor Info */}
         <h1 className="text-3xl font-bold mb-1">{data.service_title}</h1>
         <p className="text-gray-600 text-sm mb-4">
@@ -102,7 +102,9 @@ export default function ServicePageClient({ data }: { data: any }) {
 
               <div className="border-t border-gray-200 my-4" />
 
-              <h3 className="text-lg font-semibold mb-2">Base Price Includes</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                Base Price Includes
+              </h3>
               <ul className="list-none space-y-2 text-gray-700">
                 {data.price_features
                   ?.filter((feature: string) => feature?.trim())
@@ -122,7 +124,6 @@ export default function ServicePageClient({ data }: { data: any }) {
                   Request a Quotation
                 </Button>
               )}
-              <Button disabled>Contact Vendor</Button>
             </div>
           </div>
 
@@ -175,27 +176,26 @@ export default function ServicePageClient({ data }: { data: any }) {
               </span>
             ))}
           </div>
+        </div>
 
-          {/* Reviews */}
-          <div>
-            <h2 className="text-xl font-semibold mb-2">
-              Rating & Reviews
-              {typeof data.averageRating === "number" && (
-                <span className="ml-3 text-lg">
-                  {data.averageRating.toFixed(1)} ⭐
-                </span>
-              )}
-            </h2>
-            {!loadingUser && userId && (
-              <ServiceReviewsWrapper
-                serviceId={data.service_id}
-                userId={userId}
-              />
+        {/* Reviews */}
+        <div className="max-w-xl">
+          <h2 className="text-xl font-semibold mb-2">
+            Rating & Reviews
+            {typeof data.averageRating === "number" && (
+              <span className="ml-3 text-lg">
+                {data.averageRating.toFixed(1)} ⭐
+              </span>
             )}
-          </div>
+          </h2>
+          {!loadingUser && userId && (
+            <ServiceReviewsWrapper
+              serviceId={data.service_id}
+              userId={userId}
+            />
+          )}
         </div>
       </div>
     </div>
-    
   );
 }

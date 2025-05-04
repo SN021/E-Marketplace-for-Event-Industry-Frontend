@@ -1,3 +1,5 @@
+// app/api/vendor-offers/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { auth } from "@clerk/nextjs/server";
@@ -19,44 +21,55 @@ export async function GET(req: NextRequest) {
   const from = (page - 1) * limit;
   const to = from + limit - 1;
 
+  // Get vendor internal user ID
   const { data: userData, error: userError } = await supabase
     .from("user")
-    .select()
-    .eq("clerk_user_id", userId);
+    .select("id")
+    .eq("clerk_user_id", userId)
+    .single();
 
-  if (userError || !userData || userData.length === 0) {
-    return NextResponse.json(
-      { message: "User not found or database error" },
-      { status: 500 }
-    );
+  if (userError || !userData) {
+    return NextResponse.json({ error: "Vendor not found" }, { status: 500 });
   }
 
-  const id = userData[0].id;
+  const vendorId = userData.id;
 
   const { data, error, count } = await supabase
-    .from("conversations")
+    .from("offers")
     .select(
       `
       id,
-      last_message,
-      last_message_time,
+      description,
+      price,
       status,
-      service_id,
-      service:services ( service_title ),
-      client_id,
-      vendor_id
+      created_at,
+      expires_at,
+      conversation:conversation_id (
+        id,
+        client:user!conversations_client_id_fkey (
+          first_name,
+          last_name,
+          email,
+          username
+        ),
+        service:services (
+          service_title
+        )
+      )
     `,
-      { count: "exact" } // for total count
+      { count: "exact" }
     )
-    .or(`client_id.eq.${id},vendor_id.eq.${id}`)
-    .order("last_message_time", { ascending: false })
+    .eq("vendor_id", vendorId)
+    .order("created_at", { ascending: false })
     .range(from, to);
 
   if (error) {
+    console.error("Error fetching offers with joins:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const totalPages = Math.ceil((count || 0) / limit);
-
-  return NextResponse.json({ conversations: data, totalPages });
+  return NextResponse.json({
+    offers: data,
+    totalPages: Math.ceil((count || 0) / limit),
+  });
 }

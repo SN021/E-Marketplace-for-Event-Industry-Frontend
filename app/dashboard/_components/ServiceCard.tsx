@@ -4,6 +4,8 @@ import { Star, CheckCircle, Heart } from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { Bounce, ToastContainer, toast } from "react-toastify";
+
 
 type ServiceCardProps = {
   serviceId: string;
@@ -29,14 +31,18 @@ export const ServiceCard = ({
   href = "#",
 }: ServiceCardProps) => {
   const [isSaved, setIsSaved] = useState(false);
+  const notifySave = () => toast("Saved");
 
   const toggleSave = async () => {
     try {
-      setIsSaved((prev) => !prev);
+      setIsSaved((prev) => {
+        const next = !prev;
+        return next;
+      });
+
       await axios.post("/api/service-save", {
         service_id: serviceId,
       });
-      alert(isSaved ? "Removed from saved" : "Saved successfully");
     } catch (err) {
       console.error("Failed to toggle save:", err);
     }
@@ -53,16 +59,32 @@ export const ServiceCard = ({
         className="w-full h-[150px] object-cover rounded"
       />
 
-      <Heart
-        onClick={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          toggleSave();
-        }}
-        className={`absolute bottom-3 right-3 w-5 h-5 cursor-pointer transition ${
-          isSaved ? "text-yellow-500" : "text-gray-400 hover:text-yellow-500"
-        }`}
-      />
+      <div>
+        <Heart
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            toggleSave();
+            notifySave();
+          }}
+          className={`absolute bottom-3 right-3 w-5 h-5 cursor-pointer transition ${
+            isSaved ? "text-yellow-500" : "text-gray-400 hover:text-yellow-500"
+          }`}
+        />
+        <ToastContainer
+          position="top-right"
+          autoClose={2500}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Bounce}
+        />
+      </div>
 
       <h3 className="text-sm font-semibold mt-3 break-words line-clamp-2">
         {title}

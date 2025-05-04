@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
+import { CheckCircle, XCircle, Loader2 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 export function OfferBubble({
   offerId,
@@ -19,7 +21,6 @@ export function OfferBubble({
 
   useEffect(() => {
     const fetchOffer = async () => {
-      console.log(offerId);
       try {
         const res = await axios.get(`/api/offers/${offerId}`);
         setOffer(res.data.offer);
@@ -49,51 +50,84 @@ export function OfferBubble({
   };
 
   if (loading)
-    return <div className="text-sm text-gray-400">Loading offer...</div>;
+    return (
+      <div className="text-sm text-gray-400 flex items-center gap-2">
+        <Loader2 className="w-4 h-4 animate-spin" />
+        Loading offer...
+      </div>
+    );
+
   if (error || !offer)
     return (
-      <div className="text-red-600 text-sm">{error || "Offer not found"}</div>
+      <div className="text-red-600 text-sm font-medium">
+        {error || "Offer not found"}
+      </div>
     );
 
   const isAccepted = status === "accepted";
   const isDeclined = status === "declined";
 
+  const statusBadge = isAccepted ? (
+    <span className="inline-flex items-center gap-1 text-green-700 bg-green-100 px-2 py-0.5 rounded-full text-xs font-semibold">
+      <CheckCircle className="w-4 h-4" />
+      Accepted
+    </span>
+  ) : isDeclined ? (
+    <span className="inline-flex items-center gap-1 text-red-700 bg-red-100 px-2 py-0.5 rounded-full text-xs font-semibold">
+      <XCircle className="w-4 h-4" />
+      Declined
+    </span>
+  ) : null;
+
   return (
     <div
-      className={`max-w-[75%] px-4 py-3 rounded-xl shadow-md border text-sm ${
-        isSelf ? "bg-blue-50 ml-auto" : "bg-yellow-50 mr-auto"
+      className={`max-w-[75%] px-5 py-4 rounded-3xl shadow-lg border backdrop-blur-sm transition-all duration-200
+      ${
+        isSelf
+          ? "bg-gradient-to-br from-blue-50 to-white ml-auto"
+          : "bg-gradient-to-br from-yellow-50 to-white mr-auto"
       }`}
     >
-      <h3 className="font-semibold text-base mb-1">{offer.title}</h3>
-      <p className="text-gray-700 mb-2 whitespace-pre-wrap">
-        {offer.description}
-      </p>
-      <p className="font-bold text-primary text-lg mb-2">
+      <div className="flex justify-between items-center mb-2">
+        <h3 className="font-bold text-base text-gray-900 tracking-tight">
+          {offer.title}
+        </h3>
+        {statusBadge}
+      </div>
+
+      <div className="prose prose-sm text-gray-700 mb-3 max-w-none">
+        <ReactMarkdown>{offer.description}</ReactMarkdown>
+      </div>
+
+      <p className="font-bold text-xl text-primary mb-3 tracking-wide">
         LKR {Number(offer.price).toLocaleString()}
       </p>
 
-      {isAccepted && (
-        <div className="text-green-600 font-semibold">Offer Accepted</div>
-      )}
-      {isDeclined && (
-        <div className="text-red-600 font-semibold">Offer Declined</div>
-      )}
-
       {!isSelf && !isAccepted && !isDeclined && (
-        <div className="flex gap-2 mt-2">
+        <div className="flex gap-2 mt-1">
           <Button
-            className="bg-green-600 text-white text-xs px-3 py-1"
+            variant="default"
+            className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-full px-5 py-1.5 transition-all duration-200"
             disabled={actionLoading}
             onClick={() => handleAction("accept")}
           >
-            Accept
+            {actionLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              "Accept"
+            )}
           </Button>
           <Button
-            className="bg-red-600 text-white text-xs px-3 py-1"
+            variant="destructive"
+            className="text-sm font-medium rounded-full px-5 py-1.5 transition-all duration-200"
             disabled={actionLoading}
             onClick={() => handleAction("decline")}
           >
-            Decline
+            {actionLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              "Decline"
+            )}
           </Button>
         </div>
       )}
