@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { auth } from "@clerk/nextjs/server";
 
@@ -8,8 +8,8 @@ const supabase = createClient(
 );
 
 export async function PATCH(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: { params: { id: string } }
 ) {
   const { userId } = await auth();
 
@@ -37,7 +37,7 @@ export async function PATCH(
   const { error: updateError } = await supabase
     .from("user")
     .update({ role })
-    .eq("id", params.id);
+    .eq("id", context.params.id);
 
   if (updateError) {
     return NextResponse.json({ error: updateError.message }, { status: 500 });
