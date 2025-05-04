@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ServiceCard } from "./ServiceCard";
-import Link from "next/link";
-import {HashLoader} from 'react-spinners';
+import { HashLoader } from "react-spinners";
 
 type Service = {
   serviceId: string;
@@ -13,7 +12,7 @@ type Service = {
   seller: string;
   imageUrl: string;
   discount?: string;
-  averageRating:number;
+  averageRating: number;
 };
 
 type ServiceCarouselProps = {
@@ -49,22 +48,23 @@ export const ServiceCarousel = ({ title }: ServiceCarouselProps) => {
       ) : services.length === 0 ? (
         <p className="text-gray-500 text-sm">No services found.</p>
       ) : (
-        <div className="grid grid-cols-4 gap-10 overflow-x-auto pb-2 justify-center container mx-auto">
+        <div className="flex gap-4 overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-4 pb-2 container mx-auto">
           {services.map((service) => (
-            <Link key={service.id} href={`/dashboard/services/${service.id}`}>
-              <div className="cursor-pointer">
-                <ServiceCard
-                  key={service.id}
-                  serviceId={service.id}
-                  title={service.title}
-                  seller={service.seller}
-                  price={service.price.toString()}
-                  imageUrl={service.imageUrl}
-                  discount={service.discount}
-                  averageRating ={service.averageRating}
-                />
-              </div>
-            </Link>
+            <div
+              key={service.id}
+              className="flex-shrink-0 min-w-[280px] max-w-[320px] md:min-w-0"
+            >
+              <ServiceCard
+                serviceId={service.id}
+                title={service.title}
+                seller={service.seller}
+                price={service.price.toString()}
+                imageUrl={service.imageUrl}
+                discount={service.discount}
+                averageRating={service.averageRating}
+                href={`/dashboard/services/${service.id}`}
+              />
+            </div>
           ))}
         </div>
       )}

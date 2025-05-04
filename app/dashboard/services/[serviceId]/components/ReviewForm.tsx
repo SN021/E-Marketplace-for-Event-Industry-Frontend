@@ -5,6 +5,7 @@ import axios from "axios";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ratingOptions } from "@/data/ratings";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 
 export function ReviewForm({
   serviceId,
@@ -26,6 +27,20 @@ export function ReviewForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const addReviewToast = () => toast("Review Added!");
+  const duplicateReviewToast = () => {
+    toast.error("You have already submitted a review for this service.", {
+      position: "top-right",
+      autoClose: 2500,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  };
 
   useEffect(() => {
     setReview(existingReview?.review || "");
@@ -33,7 +48,6 @@ export function ReviewForm({
   }, [existingReview]);
 
   const [finalUserId, setFinalUserId] = useState(userId);
-  
 
   useEffect(() => {
     if (userId) setFinalUserId(userId);
@@ -62,19 +76,18 @@ export function ReviewForm({
       });
 
       onSubmitSuccess?.({ review, rating });
-       window.location.reload();
+      addReviewToast();
+      window.location.reload();
     } catch (err: any) {
-        if (err.response?.status === 409) {
-          setError("You have already submitted a review for this service.");
-        } else {
-          setError("Something went wrong. Please try again.");
-        }
+      if (err.response?.status === 409) {
+        duplicateReviewToast();
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
   };
-
-
 
   return (
     <div className="mt-6 border-t pt-4 space-y-2">
@@ -107,16 +120,28 @@ export function ReviewForm({
           ))}
       </div>
 
-      <Button
-        onClick={handleSubmit}
-        disabled={loading || !userId}
-      >
-        {loading
-          ? "Submitting..."
-          : existingReview
-          ? "Update Review"
-          : "Submit Review"}
-      </Button>
+      <div>
+        <Button onClick={handleSubmit} disabled={loading || !userId}>
+          {loading
+            ? "Submitting..."
+            : existingReview
+            ? "Update Review"
+            : "Submit Review"}
+        </Button>
+        <ToastContainer
+          position="top-right"
+          autoClose={2500}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Bounce}
+        />
+      </div>
 
       {error && <p className="error-msg">{error}</p>}
     </div>

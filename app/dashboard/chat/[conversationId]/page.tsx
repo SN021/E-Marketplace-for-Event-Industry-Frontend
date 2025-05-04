@@ -164,7 +164,7 @@ export default function ChatPage() {
                 <ReactMarkdown>{msg.content}</ReactMarkdown>
               </div>
               <span className="text-xs text-gray-400 mt-1">
-                {isSelf ? "You" : "Other"} ·{" "}
+                {isSelf ? "You" : "Vendor"} ·{" "}
                 {new Date(msg.created_at).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",

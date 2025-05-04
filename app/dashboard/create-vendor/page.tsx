@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   AlertCircle,
   LoaderPinwheel,
+  MessageCircleWarning,
   Pencil,
   Plus,
   Upload,
@@ -29,25 +30,56 @@ import axios from "axios";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/Loader";
 
 const page = () => {
-  // Timeline effect
   const ref = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const [formStep, setFormStep] = useState<1 | 2>(1);
-  const [timelineHeight, setTimelineHeight] = useState<number>(0);
   const step1Ref = useRef<HTMLDivElement>(null);
   const step2Ref = useRef<HTMLDivElement>(null);
 
-  // Input styles
-  const inputContainerStyle = "relative z-0 w-full mb-6 group ";
-  const inputStyle =
-    "block shadow py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 hover:border-gray-400 duration-300 hover:shadow-md appearance-none focus:outline-none focus:ring-0 focus:border-[#D39D55] peer";
-  const inputLabelStyle =
-    "absolute px-2 text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 font-medium";
-  const selectStyle =
-    "block appearance-none w-full shadow bg-white border-b border-gray-300 hover:border-gray-400 py-2.5 px-2 leading-tight focus:outline-none focus:border-primary transition-colors text-sm text-gray-500 font-medium duration-300 hover:shadow-md";
+  const [status, setStatus] = useState<
+    "checking" | "applied" | "forbidden" | "allowed"
+  >("checking");
+  const [formStep, setFormStep] = useState<1 | 2>(1);
+  const [timelineHeight, setTimelineHeight] = useState<number>(0);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get("/api/get-user");
+        const user = response.data?.[0];
+
+        if (!user || !user.role) {
+          console.warn("User data or role not found.");
+          return;
+        }
+
+        if (user.role === "vendor") {
+          setStatus("forbidden");
+          return;
+        }
+
+        if (user.is_vendor === true && user.role === "user") {
+          setStatus("applied");
+          return;
+        }
+
+        setStatus("allowed");
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    if (status === "forbidden") {
+      window.location.href = "/forbidden";
+    }
+  }, [status]);
 
   useEffect(() => {
     const measureHeight = () => {
@@ -58,12 +90,19 @@ const page = () => {
       }
     };
 
-    // Run after layout
     const timeout = setTimeout(measureHeight, 0);
     return () => clearTimeout(timeout);
   }, [formStep]);
 
-  // Form data
+  // Input styles
+  const inputContainerStyle = "relative z-0 w-full mb-6 group ";
+  const inputStyle =
+    "block shadow py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 hover:border-gray-400 duration-300 hover:shadow-md appearance-none focus:outline-none focus:ring-0 focus:border-[#D39D55] peer";
+  const inputLabelStyle =
+    "absolute px-2 text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 font-medium";
+  const selectStyle =
+    "block appearance-none w-full shadow bg-white border-b border-gray-300 hover:border-gray-400 py-2.5 px-2 leading-tight focus:outline-none focus:border-primary transition-colors text-sm text-gray-500 font-medium duration-300 hover:shadow-md";
+
   const {
     register,
     control,
@@ -90,8 +129,7 @@ const page = () => {
     name: "socialLinks",
   });
 
-  //options for map function
-const experienceOptions = [
+  const experienceOptions = [
     { value: "just-started (0-6 months)", label: "Just-started (0-6 months)" },
     {
       value: "growing (6-24 months)",
@@ -101,7 +139,7 @@ const experienceOptions = [
     { value: "experienced (5+ years)", label: "Experienced (5+ years)" },
   ];
 
-const provinceOptions = [
+  const provinceOptions = [
     { value: "Central", label: "Central" },
     { value: "Eastern", label: "Eastern" },
     { value: "Northern", label: "Northern" },
@@ -113,7 +151,7 @@ const provinceOptions = [
     { value: "Western", label: "Western" },
   ];
 
-const cityOptions = [
+  const cityOptions = [
     { value: "Ampara", label: "Ampara" },
     { value: "Anuradhapura", label: "Anuradhapura" },
     { value: "Avissawella", label: "Avissawella" },
@@ -154,16 +192,14 @@ const cityOptions = [
     { value: "Wattala", label: "Wattala" },
   ];
 
-const languageOptions = [
+  const languageOptions = [
     { value: "English", label: "English" },
     { value: "Sinhala", label: "Sinhala" },
     { value: "Tamil", label: "Tamil" },
   ];
 
   const { isSignedIn, user, isLoaded } = useUser();
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
-
 
   const uploadFile = async (
     file: File,
@@ -207,7 +243,6 @@ const languageOptions = [
         userId,
       };
 
-
       const response = await axios.post("/api/create-vendor", payload);
 
       const profilePicUrl = profilePicture?.[0]
@@ -234,6 +269,33 @@ const languageOptions = [
       setLoading(false);
     }
   };
+
+  if (status === "checking") {
+    return <Loader />;
+  }
+
+  if (status === "applied") {
+    return (
+      <div className="mx-auto max-w-xl my-10 p-6 bg-yellow-50 border-l-4 border-primary text-yellow-800 rounded-md shadow-md">
+        <h2 className="text-lg font-semibold mb-2 flex items-center gap-2 justify-center">
+          <span>
+            <MessageCircleWarning />
+          </span>
+          Vendor Request Pending
+        </h2>
+        <p className="text-sm">
+          You’ve already submitted a vendor application. Please wait while an
+          administrator reviews and approves your request.
+        </p>
+        <div className="flex items-center justify-center mt-5">
+          <Button onClick={() => router.push("/dashboard")} className="">
+            Go back
+          </Button>
+        </div>
+      </div>
+    );
+
+  }
 
   return (
     <div

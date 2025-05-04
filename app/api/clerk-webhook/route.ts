@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
       const { error } = await supabase.from('user').insert([{
         clerk_user_id: id,
         email,
-        username,      // or use first_name/last_name if you prefer
+        username,      
         first_name,
         last_name,
         is_vendor: false,
@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Webhook processed successfully' }, { status: 200 });
 
   } catch (error) {
-    console.error('❌ Webhook error:', error);
+    console.error('Webhook error:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }

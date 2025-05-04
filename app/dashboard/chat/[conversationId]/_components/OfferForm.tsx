@@ -4,7 +4,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 
-export function OfferForm({ conversationId, vendorId }: { conversationId: string, vendorId: string }) {
+export function OfferForm({
+  conversationId,
+  vendorId,
+}: {
+  conversationId: string;
+  vendorId: string;
+}) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
@@ -15,7 +21,6 @@ export function OfferForm({ conversationId, vendorId }: { conversationId: string
     "block shadow py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 hover:border-gray-400 duration-300 hover:shadow-md appearance-none focus:outline-none focus:ring-0 focus:border-[#D39D55] peer";
   const inputLabelStyle =
     "absolute px-2 text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 font-medium";
-  
 
   const handleSendOffer = async () => {
     if (!title || !description || !price) {
@@ -29,7 +34,7 @@ export function OfferForm({ conversationId, vendorId }: { conversationId: string
       const payload = {
         conversationId,
         vendorId: vendorId,
-        description: `${title}\n\n${description}`,
+        description: `**${title}**\n\n${description}`,
         price: Number(price),
         expiresAt: null,
       };
@@ -50,7 +55,6 @@ export function OfferForm({ conversationId, vendorId }: { conversationId: string
       setLoading(false);
     }
   };
-
 
   return (
     <div className="bg-white shadow-md rounded p-4 space-y-4 mb-4 max-w-xl mx-auto">
@@ -92,10 +96,7 @@ export function OfferForm({ conversationId, vendorId }: { conversationId: string
         </label>
       </div>
 
-      <Button
-        disabled={loading}
-        onClick={handleSendOffer}
-      >
+      <Button disabled={loading} onClick={handleSendOffer}>
         {loading ? "Sending..." : "Send Offer"}
       </Button>
     </div>

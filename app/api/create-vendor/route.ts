@@ -1,94 +1,95 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
-
-
-//setup Supabase server client
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-//POST route for Clerk webhooks
 export async function POST(req: NextRequest) {
   try {
     const payload = await req.json();
-    // get user details
-    const { data, error } = await supabase
-      .from('user')
-      .select()
-      .eq('clerk_user_id', payload.userId);
 
-    if (error) {
-      console.error('Supabase query error:', error);
-      return NextResponse.json({ message: 'Database error' }, { status: 500 });
+    const { data: user, error: userError } = await supabase
+      .from("user")
+      .select("id")
+      .eq("clerk_user_id", payload.userId)
+      .single();
+
+    if (userError || !user) {
+      console.error("User not found:", userError);
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    if (!data || data.length === 0) {
-      return NextResponse.json({ message: 'User not found' }, { status: 404 });
-    }
+    const {
+      userName,
+      displayName,
+      email,
+      about,
+      businessName,
+      brn,
+      businessAddress,
+      experience,
+      website,
+      province,
+      city,
+      businessEmail,
+      businessPhone,
+      languages,
+      socialLinks,
+    } = payload;
 
-
-
-    const id = data?.[0].id;
-    const vendorUsername = payload.userName;
-    const vendorDisplayname = payload.displayName;
-    const email = payload.email;
-    const about = payload.about;
-    const businessName = payload.businessName;
-    const brn = payload.brn;
-    const businessAddress = payload.businessAddress;
-    const experience = payload.experience;
-    const website = payload.website;
-    const province = payload.province;
-    const city = payload.city;
-    const businessEmail = payload.businessEmail;
-    const businessPhone = payload.businessPhone;
-    const languages = payload.languages;
-    const socialLinks = payload.socialLinks;
-
-    const { error: insertError } = await supabase.from('vendor').insert([{
-        id: id,
-        vendor_username: vendorUsername,
-        display_name: vendorDisplayname,
+    const { error: vendorInsertError } = await supabase.from("vendor").insert([
+      {
+        id: user.id,
+        vendor_username: userName,
+        display_name: displayName,
         email: email,
-        about: about,
+        about,
         business_name: businessName,
-        brn: brn,
+        brn,
         business_address: businessAddress,
-        experience: experience,
-        website: website,
-        province: province,
-        city: city,
+        experience,
+        website,
+        province,
+        city,
         business_email: businessEmail,
         business_phone: businessPhone,
-        languages: languages,
+        languages,
         social_links: socialLinks,
-    }]);
+      },
+    ]);
 
-    if (insertError) {
-        console.error('Vendor insert error:', insertError);
-        return NextResponse.json({ message: 'Failed to insert user' }, { status: 500 });
+    if (vendorInsertError) {
+      console.error("Vendor insert error:", vendorInsertError);
+      return NextResponse.json(
+        { message: "Failed to insert vendor" },
+        { status: 500 }
+      );
     }
 
+    const { error: flagError } = await supabase
+      .from("user")
+      .update({ is_vendor: true }) 
+      .eq("id", user.id);
 
-    const { error: updateError } = await supabase
-        .from('user')
-        .update({
-          is_vendor: 'TRUE'
-        })
-        .eq('id', id);
-
-
-    if (updateError) {
-      console.error('User update error:', updateError);
-      return NextResponse.json({ message: 'Failed to insert user' }, { status: 500 });
+    if (flagError) {
+      console.error("Failed to flag user as vendor:", flagError);
+      return NextResponse.json(
+        { message: "Failed to flag vendor request" },
+        { status: 500 }
+      );
     }
-  
-    return NextResponse.json({ message: 'User inserted successfully' }, { status: 200 });
 
+    return NextResponse.json(
+      { message: "Vendor request submitted" },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error('Webhook error:', error);
-    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+    console.error("Error in vendor request:", error);
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

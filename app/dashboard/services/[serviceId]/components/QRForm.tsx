@@ -41,20 +41,19 @@ export function QuotationRequestForm({
   const onSubmit = async (data: QRFormData) => {
     setLoading(true);
 
-    const initialMessage = `
-      📄 **Quotation Request**
-
-      **👤 Name:** ${data.fullName}  
-      **📞 Phone:** ${data.phone}  
-      **🎉 Event:** ${data.eventTitle}  
-      **📍 Location:** ${data.eventLocation}  
-      **📅 Date:** ${data.eventDate}  
-      **💰 Budget:** ${data.budget || "Not specified"}
-
-      **📝 Message:**  
-      ${data.message}
-      `.trim();
-
+    const initialMessage = [
+      `**Quotation Request**`,
+      ``,
+      `**Name:** ${data.fullName}`,
+      `**Phone:** ${data.phone}`,
+      `**Event:** ${data.eventTitle}`,
+      `**Location:** ${data.eventLocation}`,
+      `**Date:** ${data.eventDate}`,
+      `**Budget:** ${data.budget || "Not specified"}`,
+      ``,
+      `**Message:**`,
+      `${data.message}`,
+    ].join("\n");
 
     try {
       const res = await axios.post("/api/conversations/create", {
@@ -86,7 +85,9 @@ export function QuotationRequestForm({
         className="flex flex-col gap-5 border p-6 rounded shadow max-w-lg bg-white mx-auto"
       >
         <div>
-          <h2 className="text-2xl font-bold text-primary text-center pb-3">Service Request Form</h2>
+          <h2 className="text-2xl font-bold text-primary text-center pb-3">
+            Service Request Form
+          </h2>
         </div>
         <div className={inputContainerStyle}>
           <input
@@ -158,6 +159,7 @@ export function QuotationRequestForm({
             {...register("budget")}
             placeholder=""
             className={inputStyle}
+            type="number"
           />
           <label htmlFor="userName" className={inputLabelStyle}>
             Estimated Budget (optional)
