@@ -11,7 +11,7 @@ export async function GET(
   req: Request,
   context: { params: Promise<{ userId: string }> }
 ) {
-  const { userId } = await context.params; // ✅ This is the key fix
+  const { userId } = await context.params;
 
   const { userId: clerkUserId } = await auth();
 
@@ -37,6 +37,16 @@ export async function GET(
 
   if (error || !vendor) {
     return NextResponse.json({ error: "Vendor not found" }, { status: 404 });
+  }
+
+  if (vendor.profile_picture) {
+    const { data: signedUrlData, error: urlError } = await supabase.storage
+      .from("vendor-assets") 
+      .createSignedUrl(vendor.profile_picture, 60 * 60); 
+
+    if (!urlError && signedUrlData?.signedUrl) {
+      vendor.profile_picture = signedUrlData.signedUrl;
+    }
   }
 
   return NextResponse.json({ vendor });

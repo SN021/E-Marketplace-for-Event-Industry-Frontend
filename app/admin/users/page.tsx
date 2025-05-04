@@ -17,6 +17,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import Loader from "@/components/Loader";
+import { Button } from "@/components/ui/button";
 
 type User = {
   id: string;
@@ -49,6 +51,8 @@ export default function AdminDashboard() {
   const [roleFilter, setRoleFilter] = useState("all");
   const [vendorRequestFilter, setVendorRequestFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [vendorLoading, setVendorLoading] = useState(false);
+
   const USERS_PER_PAGE = 8;
 
   useEffect(() => {
@@ -74,15 +78,20 @@ export default function AdminDashboard() {
       setVendorDetails(null);
       return;
     }
-    async function fetchVendorDetails() {
+
+    const fetchVendorDetails = async () => {
+      setVendorLoading(true);
       try {
         const res = await axios.get(`/api/admin/vendors/${selectedUser?.id}`);
         setVendorDetails(res.data.vendor);
       } catch (err) {
         console.error("Error fetching vendor details:", err);
         setVendorDetails(null);
+      } finally {
+        setVendorLoading(false);
       }
-    }
+    };
+
     fetchVendorDetails();
   }, [selectedUser]);
 
@@ -119,7 +128,9 @@ export default function AdminDashboard() {
 
   return (
     <div className="container mx-auto p-5">
-      <h1 className="text-2xl text-center font-bold mb-10 pt-5">Admin User Management</h1>
+      <h1 className="text-2xl text-center font-bold mb-10 pt-5">
+        Admin User Management
+      </h1>
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
         <div className="flex gap-4 items-center">
@@ -198,18 +209,18 @@ export default function AdminDashboard() {
 
         <div className="mt-4 flex gap-2">
           {Array.from({ length: totalPages }, (_, i) => (
-            <button
+            <Button
               key={i + 1}
               onClick={() => setCurrentPage(i + 1)}
               className={cn(
-                "px-3 py-1 rounded border text-sm",
+                "",
                 currentPage === i + 1
-                  ? "bg-blue-600 text-white border-blue-600"
+                  ? ""
                   : "bg-white text-gray-700 border-gray-300"
               )}
             >
               {i + 1}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -223,13 +234,14 @@ export default function AdminDashboard() {
           }
         }}
       >
-        <DialogContent className="max-w-md break-words whitespace-normal">
+        <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
           {selectedUser && (
-            <div>
-              <DialogHeader>
+            <>
+              <DialogHeader className="shrink-0">
                 <DialogTitle>User Details</DialogTitle>
               </DialogHeader>
-              <div className="mt-2 text-sm break-words whitespace-normal">
+
+              <div className="overflow-y-auto pr-2 text-sm break-words whitespace-normal flex-1 mt-2">
                 <p>
                   <strong>Email:</strong> {selectedUser.email}
                 </p>
@@ -243,67 +255,132 @@ export default function AdminDashboard() {
                   <strong>Vendor Requested:</strong>{" "}
                   {selectedUser.is_vendor ? "Yes" : "No"}
                 </p>
-              </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {selectedUser.is_vendor && selectedUser.role === "user" && (
-                  <button
-                    className="px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
-                    onClick={() => handleRoleUpdate("vendor")}
-                  >
-                    Approve as Vendor
-                  </button>
-                )}
-                {selectedUser.role !== "admin" && (
-                  <button
-                    className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
-                    onClick={() => handleRoleUpdate("admin")}
-                  >
-                    Make Admin
-                  </button>
-                )}
-              </div>
-              {vendorDetails && (
-                <div className="mt-6 border-t pt-4 text-sm break-words whitespace-normal">
-                  <h3 className="text-md font-semibold mb-1">Vendor Details</h3>
-                  <p>
-                    <strong>Business Name:</strong>{" "}
-                    {vendorDetails.business_name}
-                  </p>
-                  <p>
-                    <strong>Display Name:</strong> {vendorDetails.display_name}
-                  </p>
-                  <p>
-                    <strong>About:</strong> {vendorDetails.about}
-                  </p>
-                  <p>
-                    <strong>Phone:</strong> {vendorDetails.business_phone}
-                  </p>
-                  <p>
-                    <strong>Email:</strong> {vendorDetails.business_email}
-                  </p>
-                  <p>
-                    <strong>Address:</strong> {vendorDetails.city},{" "}
-                    {vendorDetails.province}
-                  </p>
-                  <p>
-                    <strong>Languages:</strong> {vendorDetails.languages}
-                  </p>
-                  <p>
-                    <strong>Website:</strong> {vendorDetails.website || "N/A"}
-                  </p>
-                  <p>
-                    <strong>Social Links:</strong> {vendorDetails.social_links}
-                  </p>
-                  {vendorDetails.profile_picture && (
-                    <img
-                      src={vendorDetails.profile_picture}
-                      alt="Profile"
-                      className="mt-3 rounded-lg w-full max-w-[200px] border"
-                    />
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {selectedUser.is_vendor && selectedUser.role === "user" && (
+                    <Button
+                      onClick={() => handleRoleUpdate("vendor")}
+                    >
+                      Approve as Vendor
+                    </Button>
+                  )}
+                  {selectedUser.role !== "admin" && (
+                    <Button
+                      className="bg-red-500 hover:bg-red-400"
+                      onClick={() => handleRoleUpdate("admin")}
+                    >
+                      Make Admin
+                    </Button>
                   )}
                 </div>
-              )}
-            </div>
+
+                {selectedUser.is_vendor && (
+                  <div className="mt-6 border-t pt-4">
+                    {vendorLoading ? (
+                      <div className="text-center text-sm text-gray-500 py-4">
+                        <Loader />
+                      </div>
+                    ) : vendorDetails ? (
+                      <>
+                        <h3 className="text-md font-semibold mb-3 text-gray-800 border-b pb-1">
+                          Vendor Details
+                        </h3>
+
+                        <div className="space-y-2 text-sm text-gray-700">
+                          <div className="flex items-center justify-center gap-5">
+                            {vendorDetails.profile_picture && (
+                              <div className="mt-4">
+                                <div className="mt-2 w-32 h-32 rounded-full overflow-hidden border">
+                                  <img
+                                    src={vendorDetails.profile_picture}
+                                    alt="Vendor Profile"
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                              </div>
+                            )}
+                            <div className="mt-4 flex flex-col gap-5">
+                              <p>
+                                <strong>Business Name:</strong>{" "}
+                                {vendorDetails.business_name}
+                              </p>
+                              <p>
+                                <strong>Display Name:</strong>{" "}
+                                {vendorDetails.display_name}
+                              </p>
+                            </div>
+                          </div>
+                          <p>
+                            <strong>About:</strong>{" "}
+                            <span className="block text-gray-600 whitespace-pre-line">
+                              {vendorDetails.about}
+                            </span>
+                          </p>
+                          <p>
+                            <strong>Phone:</strong>{" "}
+                            {vendorDetails.business_phone}
+                          </p>
+                          <p>
+                            <strong>Email:</strong>{" "}
+                            {vendorDetails.business_email}
+                          </p>
+                          <p>
+                            <strong>Address:</strong> {vendorDetails.city},{" "}
+                            {vendorDetails.province}
+                          </p>
+
+                          <div>
+                            <strong>Languages:</strong>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {JSON.parse(vendorDetails.languages).map(
+                                (lang: string, idx: number) => (
+                                  <span
+                                    key={idx}
+                                    className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full"
+                                  >
+                                    {lang}
+                                  </span>
+                                )
+                              )}
+                            </div>
+                          </div>
+
+                          <p>
+                            <strong>Website:</strong>{" "}
+                            {vendorDetails.website || (
+                              <span className="text-gray-500">N/A</span>
+                            )}
+                          </p>
+
+                          <div>
+                            <strong>Social Links:</strong>
+                            <ul className="list-disc pl-5 space-y-1 mt-1 text-blue-600 underline">
+                              {JSON.parse(vendorDetails.social_links).map(
+                                (link: { url: string }, idx: number) => (
+                                  <li key={idx}>
+                                    <a
+                                      href={link.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      {link.url}
+                                    </a>
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-sm text-red-500">
+                        Failed to load vendor details.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </>
           )}
         </DialogContent>
       </Dialog>

@@ -219,7 +219,7 @@ export default function CreateServicePage() {
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Form Content step 01 */}
           {currentStep === 0 && (
-            <div className="flex flex-col md:flex-row md:divide-x bg-white rounded-md shadow-md md:divide-gray-300 ">
+            <div className="flex flex-col md:flex-row md:divide-x bg-white rounded-md shadow-md md:divide-primary ">
               {/* Form Section */}
               <div className="flex-1 items-center justify-center px-5 md:px-15 lg:px-24 py-10 space-y-6 ">
                 {/* Service Title */}
@@ -313,7 +313,7 @@ export default function CreateServicePage() {
                       Search Tags <span className="text-red-500">*</span>
                     </label>
 
-                    <p className="text-xs text-gray-600">
+                    <p className="text-xs text-gray-600/50 py-2">
                       {watch("s_tags")?.length || 0}/6 tags maximum. Use letters
                       and numbers only. Type and press Enter...
                     </p>
@@ -391,7 +391,7 @@ export default function CreateServicePage() {
 
           {/* Form Content step 02 */}
           {currentStep === 1 && (
-            <div className="flex flex-col md:flex-row md:divide-x bg-white rounded-md shadow-md md:divide-gray-300 ">
+            <div className="flex flex-col md:flex-row md:divide-x bg-white rounded-md shadow-md md:divide-primary ">
               <div className="flex-1 items-center justify-center px-5 md:px-15 lg:px-24 py-10 space-y-6">
                 <div className={inputContainerStyle}>
                   <textarea
@@ -444,7 +444,6 @@ export default function CreateServicePage() {
                         {`Feature ${index + 1}${
                           index < 2 ? " (required)" : " (optional)"
                         }`}
-                        <span className="text-red-500">*</span>
                       </label>
                       {errors.basePriceFeatures &&
                         Array.isArray(errors.basePriceFeatures) &&
@@ -534,7 +533,7 @@ export default function CreateServicePage() {
 
           {/* Form Content step 03 */}
           {currentStep === 2 && (
-            <div className="flex flex-col md:flex-row md:divide-x bg-white rounded-md shadow-md md:divide-gray-300">
+            <div className="flex flex-col md:flex-row md:divide-x bg-white rounded-md shadow-md md:divide-primary">
               <div className="flex-1 items-center justify-center px-5 md:px-15 lg:px-24 py-10 space-y-6">
                 <div className="flex flex-col items-center gap-3">
                   <label
@@ -639,7 +638,7 @@ export default function CreateServicePage() {
                     type="text"
                     {...register("otherDetails")}
                     aria-invalid={!!errors.otherDetails}
-                    placeholder="Type here..."
+                    placeholder=""
                     className={inputStyle}
                   />
                   <label htmlFor="other-details" className={inputLabelStyle}>
@@ -656,7 +655,7 @@ export default function CreateServicePage() {
                   <input
                     type="text"
                     {...register("discountsAndOffers")}
-                    placeholder="Type here..."
+                    placeholder=""
                     className={inputStyle}
                   />
                   <label
