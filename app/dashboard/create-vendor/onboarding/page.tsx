@@ -26,7 +26,7 @@ const page = () => {
       </div>
 
       <h1 className="text-2xl md:text-3xl font-semibold text-center text-[#1A1443] mb-4">
-        Vendor Account Has Successfully Created
+        Vendor Account Has Successfully Applied
       </h1>
       <p className="text-center text-gray-500 max-w-md">
         You're all set to be{" "}
