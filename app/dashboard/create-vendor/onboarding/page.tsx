@@ -26,24 +26,21 @@ const page = () => {
       </div>
 
       <h1 className="text-2xl md:text-3xl font-semibold text-center text-[#1A1443] mb-4">
-        Vendor Account Has Successfully Applied
+        Your Vendor Application Has Been Submitted!
       </h1>
-      <p className="text-center text-gray-500 max-w-md">
-        You're all set to be{" "}
-        <span className="font-medium">an amazing vendor</span>! Your account has
-        successfully created. Let's create your service list and get started.
+      <p className="text-center text-gray-600 max-w-md">
+        Thank you for joining us as{" "}
+        <span className="font-medium">a amazing vendor</span>. Your application
+        is currently under review by our admin team. Once approved, your vendor
+        profile will go live on the platform. Meanwhile, you can start building
+        your service listings and setting up your dashboard.
       </p>
 
-      <Link href="/dashboard/create-service">
-        <Button className="mt-10">Create Your First Service</Button>
-      </Link>
-      <Link href="/dashboard/vendor-dashboard">
-        <Button 
-        variant="link"
-        className="text-gray-500 mt-4"> Skip</Button>
+      <Link href="/dashboard">
+        <Button className="mt-10">Back</Button>
       </Link>
     </div>
   );
-}
+};
 
-export default page
+export default page;
