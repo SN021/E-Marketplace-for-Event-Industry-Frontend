@@ -6,6 +6,7 @@ import VendorAccountInfo from "./_components/VendorAccountInfo";
 import ViewOffers from "./_components/VendorOffers";
 import axios from "axios";
 import ServicesHistory from "./_components/ServicesHistory";
+import Link from "next/link";
 
 const dummyComponents: Record<string, React.ReactNode> = {
   "View Offers": <ViewOffers />,
