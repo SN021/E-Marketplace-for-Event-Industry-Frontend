@@ -30,7 +30,7 @@ export function Reviews({
 
   useEffect(() => {
     axios
-      .post("/api/get-service-reviews", { service_id: serviceId })
+      .post("/api/review/get-service-reviews", { service_id: serviceId })
       .then((res) => setReviews(res.data.reviews))
       .catch((err) => console.error("Review fetch error:", err));
   }, [serviceId]);

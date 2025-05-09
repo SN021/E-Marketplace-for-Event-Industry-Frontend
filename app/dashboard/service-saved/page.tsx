@@ -21,7 +21,7 @@ export default function SavedServicesPage() {
   useEffect(() => {
     async function fetchSaved() {
       try {
-        const res = await axios.get("/api/get-saved");
+        const res = await axios.get("/api/save/get-saved");
         setServices(res.data || []);
       } catch (err) {
         console.error("Failed to fetch saved services", err);

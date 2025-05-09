@@ -18,7 +18,7 @@ const VendorAccountInfo: React.FC = () => {
 
   const fetchVendorData = async () => {
     try {
-      const res = await api.get("/get-vendor");
+      const res = await api.get("/vendor/get-vendor");
       setVendorData(res.data);
 
       const links = res.data?.social_links
@@ -37,7 +37,7 @@ const VendorAccountInfo: React.FC = () => {
 
   const handleSave = async () => {
     try {
-      await api.put("/update-vendor", {
+      await api.put("/vendor/update-vendor", {
         ...vendorData,
         userId: user?.id,
         social_links: JSON.stringify(parsedLinks),

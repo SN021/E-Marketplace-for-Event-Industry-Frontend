@@ -212,7 +212,7 @@ const page = () => {
     formData.append("userId", userId);
 
     try {
-      const res = await fetch("/api/upload-file", {
+      const res = await fetch("/api/vendor/upload-file", {
         method: "POST",
         body: formData,
       });
@@ -243,7 +243,7 @@ const page = () => {
         userId,
       };
 
-      const response = await axios.post("/api/create-vendor", payload);
+      const response = await axios.post("/api/vendor/create-vendor", payload);
 
       const profilePicUrl = profilePicture?.[0]
         ? await uploadFile(profilePicture[0], "profile", userId)

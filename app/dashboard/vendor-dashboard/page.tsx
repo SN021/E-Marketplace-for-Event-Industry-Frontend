@@ -5,14 +5,11 @@ import { VendorSidebar } from "./_components/VendorSidebar";
 import VendorAccountInfo from "./_components/VendorAccountInfo";
 import ViewOffers from "./_components/VendorOffers";
 import axios from "axios";
+import ServicesHistory from "./_components/ServicesHistory";
 
 const dummyComponents: Record<string, React.ReactNode> = {
   "View Offers": <ViewOffers />,
-  "Service Listing History": (
-    <div className="text-gray-500">
-      Service listing history will appear here.
-    </div>
-  ),
+  "Service Listing History": <ServicesHistory />,
   "My Analytics": (
     <div className="text-gray-500">Analytics will appear here.</div>
   ),

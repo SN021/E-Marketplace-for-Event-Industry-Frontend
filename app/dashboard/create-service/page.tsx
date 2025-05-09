@@ -132,7 +132,7 @@ export default function CreateServicePage() {
         formData.append("images", file);
       });
 
-      const uploadRes = await fetch("/api/upload-service", {
+      const uploadRes = await fetch("/api/services/upload-service", {
         method: "POST",
         body: formData,
       });
@@ -147,7 +147,7 @@ export default function CreateServicePage() {
         photoGalleryPaths: uploadJson.paths,
       };
 
-      const response = await axios.post("/api/create-service", payload);
+      const response = await axios.post("/api/services/create-service", payload);
       toast.success("Service has been created");
       router.push("/dashboard");
     } catch (error: any) {

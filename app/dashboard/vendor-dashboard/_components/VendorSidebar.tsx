@@ -35,7 +35,7 @@ export const VendorSidebar: React.FC<SidebarProps> = ({
   useEffect(() => {
     const fetchVendorData = async () => {
       try {
-        const res = await api.get("/get-vendor");
+        const res = await api.get("/vendor/get-vendor");
         setVendorData(res.data);
 
         const formData = new FormData();
@@ -88,7 +88,7 @@ export const VendorSidebar: React.FC<SidebarProps> = ({
             key={label}
             onClick={() => {
               onTabChange(label);
-              setMobileOpen(false); // close drawer on mobile
+              setMobileOpen(false); 
             }}
             className={`w-full text-left px-4 py-2 text-sm rounded-md ${
               activeTab === label

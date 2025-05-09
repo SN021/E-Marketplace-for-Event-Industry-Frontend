@@ -26,7 +26,7 @@ export const ServiceCarousel = ({ title }: ServiceCarouselProps) => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const res = await fetch("/api/get-services");
+        const res = await fetch("/api/services/get-services");
         const json = await res.json();
         setServices(json.services || []);
       } catch (error) {

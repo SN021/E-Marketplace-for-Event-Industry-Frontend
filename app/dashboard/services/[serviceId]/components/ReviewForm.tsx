@@ -68,7 +68,7 @@ export function ReviewForm({
 
     setLoading(true);
     try {
-      await axios.post("/api/create-service-review", {
+      await axios.post("/api/review/create-service-review", {
         service_id: serviceId,
         user_id: finalUserId,
         review: review.trim(),

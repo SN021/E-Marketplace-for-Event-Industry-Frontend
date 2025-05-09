@@ -43,7 +43,7 @@ function SearchResults() {
         if (query) params.append("q", query);
         if (subcategory) params.append("subcategory", subcategory);
 
-        const res = await fetch(`/api/search?${params.toString()}`, {
+        const res = await fetch(`/api/filter/search?${params.toString()}`, {
           cache: "no-store",
         });
 
@@ -92,7 +92,7 @@ const handleFilterApply = async (newFilters?: any, page = 1) => {
       if (query) params.append("q", query);
       if (subcategory) params.append("subcategory", subcategory);
 
-      const res = await fetch(`/api/search?${params.toString()}`, {
+      const res = await fetch(`/api/filter/search?${params.toString()}`, {
         cache: "no-store",
       });
       const data = await res.json();
@@ -111,7 +111,7 @@ const handleFilterApply = async (newFilters?: any, page = 1) => {
         limit: 12,
       };
 
-      const res = await fetch("/api/filter-services", {
+      const res = await fetch("/api/filter/filter-services", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -180,38 +180,38 @@ const handleFilterApply = async (newFilters?: any, page = 1) => {
           ? `"${formatSubcategoryLabel(subcategory)}"`
           : ""}
       </h1>
-      
+
       {(filters.rating ||
         filters.minPrice ||
         filters.maxPrice ||
         (filters.experience && filters.experience.length > 0) ||
         (filters.location && filters.location.length > 0)) && (
         <div className="mb-6">
-        <h2 className="text-gray-500 mb-2">Active Filters</h2> 
-        <div className="text-sm text-gray-600 mb-6 space-x-2">
-          {filters.rating && (
-            <span className="inline-block bg-gray-200 px-2 py-1 rounded">
-              ⭐ {filters.rating}+
-            </span>
-          )}
-          {(filters.minPrice != null || filters.maxPrice != null) && (
-            <span className="inline-block bg-gray-200 px-2 py-1 rounded">
-              Price:{" "}
-              {filters.minPrice != null ? `LKR ${filters.minPrice}` : "Any"} -{" "}
-              {filters.maxPrice != null ? `LKR ${filters.maxPrice}` : "Any"}
-            </span>
-          )}
-          {filters.experience && filters.experience.length > 0 && (
-            <span className="inline-block bg-gray-200 px-2 py-1 rounded">
-              Experience: {filters.experience.join(", ")}
-            </span>
-          )}
-          {filters.location && filters.location.length > 0 && (
-            <span className="inline-block bg-gray-200 px-2 py-1 rounded">
-              Location: {filters.location.join(", ")}
-            </span>
-          )}
-        </div>
+          <h2 className="text-gray-500 mb-2">Active Filters</h2>
+          <div className="text-sm text-gray-600 mb-6 space-x-2">
+            {filters.rating && (
+              <span className="inline-block bg-gray-200 px-2 py-1 rounded">
+                ⭐ {filters.rating}+
+              </span>
+            )}
+            {(filters.minPrice != null || filters.maxPrice != null) && (
+              <span className="inline-block bg-gray-200 px-2 py-1 rounded">
+                Price:{" "}
+                {filters.minPrice != null ? `LKR ${filters.minPrice}` : "Any"} -{" "}
+                {filters.maxPrice != null ? `LKR ${filters.maxPrice}` : "Any"}
+              </span>
+            )}
+            {filters.experience && filters.experience.length > 0 && (
+              <span className="inline-block bg-gray-200 px-2 py-1 rounded">
+                Experience: {filters.experience.join(", ")}
+              </span>
+            )}
+            {filters.location && filters.location.length > 0 && (
+              <span className="inline-block bg-gray-200 px-2 py-1 rounded">
+                Location: {filters.location.join(", ")}
+              </span>
+            )}
+          </div>
         </div>
       )}
 
@@ -233,11 +233,8 @@ const handleFilterApply = async (newFilters?: any, page = 1) => {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-30 gap-y-10">
                 {services.map((service: any) => (
-                  <Link
-                    href={`/dashboard/services/${service.service_id}`}
-                    key={service.service_id}
-                  >
-                    <div className="cursor-pointer ">
+
+                    <div key={service.service_id} className="cursor-pointer ">
                       <ServiceCard
                         title={service.service_title}
                         serviceId={service.service_id}
@@ -248,9 +245,9 @@ const handleFilterApply = async (newFilters?: any, page = 1) => {
                         }
                         discount={service.discounts_and_offers}
                         averageRating={service.average_rating}
+                        href={`/dashboard/services/${service.service_id}`}
                       />
                     </div>
-                  </Link>
                 ))}
               </div>
               {services.length > 0 && (

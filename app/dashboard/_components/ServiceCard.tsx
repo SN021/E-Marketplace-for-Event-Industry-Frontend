@@ -40,7 +40,7 @@ export const ServiceCard = ({
         return next;
       });
 
-      await axios.post("/api/service-save", {
+      await axios.post("/api/save/service-save", {
         service_id: serviceId,
       });
     } catch (err) {
@@ -51,7 +51,7 @@ export const ServiceCard = ({
   return (
     <Link
       href={href}
-      className="block w-full max-w-[320px] sm:max-w-full h-[360px] bg-white rounded-lg shadow-sm p-4 relative flex flex-col justify-between hover:shadow-md transition"
+      className="w-full max-w-[320px] sm:max-w-full h-[360px] bg-white rounded-lg shadow-sm p-4 relative flex flex-col justify-between hover:shadow-md transition"
     >
       <img
         src={imageUrl}
