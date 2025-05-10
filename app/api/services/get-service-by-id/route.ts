@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
       console.warn("Failed to parse or sign images for service:", serviceId);
     }
 
-   
+
     const { data: vendorData } = await supabase
       .from("vendor")
       .select("display_name")

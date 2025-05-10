@@ -3,17 +3,20 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 type Service = {
-  id: string;
+  service_id: string;
   service_title: string;
   category: string;
   thumbnail_url: string;
 };
 
-export default function ServicesHistory() {
+type ServicesHistoryProps = {
+  onEditService: (serviceId: string) => void;
+};
+
+export default function ServicesHistory({onEditService,}: ServicesHistoryProps) {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,6 +24,7 @@ export default function ServicesHistory() {
     const fetchServices = async () => {
       try {
         const res = await axios.get("/api/services/get-service-by-vendorid");
+        console.log("Fetched services:", res.data);
         setServices(res.data);
       } catch (err) {
         console.error("Error fetching services:", err);
@@ -45,9 +49,9 @@ export default function ServicesHistory() {
     <div>
       <h1 className="text-xl font-semibold mb-8">Vendor Services History</h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 mx-auto gap-6">
-        {services.map((service, id) => (
+        {services.map((service) => (
           <div
-            key={id}
+            key={service.service_id}
             className="bg-white shadow rounded-lg p-4 flex flex-col w-full max-w-[320px] sm:max-w-full justify-between "
           >
             <div>
@@ -66,18 +70,22 @@ export default function ServicesHistory() {
                 <p className="text-gray-500">{service.category}</p>
               </div>
             </div>
-            <div className="flex  gap-2 mt-4">
-              <Link href={`/dashboard/edit-service/${service.id}`}>
-                <Button size="sm">Edit</Button>
-              </Link>
+            <div className="flex gap-2 mt-4">
+              <Button size="sm" onClick={() => onEditService(service.service_id)}>
+                Edit
+              </Button>
               <Button
                 size="sm"
                 variant="secondary"
                 className="bg-red-500 hover:bg-red-400 text-white"
                 onClick={async () => {
-                  await axios.delete(`/api/vendor/services/${service.id}`);
+                  const confirm = window.confirm(
+                    "Are you sure you want to delete this service?"
+                  );
+                  if (!confirm) return;
+                  await axios.delete(`/api/services/edit-service/${service.service_id}`);
                   setServices((prev) =>
-                    prev.filter((s) => s.id !== service.id)
+                    prev.filter((s) => s.service_id !== service.service_id)
                   );
                 }}
               >
