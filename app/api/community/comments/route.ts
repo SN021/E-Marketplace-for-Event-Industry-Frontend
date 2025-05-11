@@ -15,8 +15,8 @@ export async function POST(req: NextRequest) {
   }
 
   const { post_id, content } = await req.json();
-  if (!post_id || !content) {
-    return NextResponse.json({ error: "Missing post Id or content" }, { status: 400 });
+  if (!content) {
+    return NextResponse.json({ error: "Missing content" }, { status: 400 });
   }
 
   const { data: userData, error: userError } = await supabase
