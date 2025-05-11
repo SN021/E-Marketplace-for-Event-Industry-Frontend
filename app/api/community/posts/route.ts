@@ -10,7 +10,19 @@ const supabase = createClient(
 export async function GET() {
   const { data, error } = await supabase
     .from("community_posts")
-    .select("*")
+    .select(
+      `
+      post_id,
+      title,
+      content,
+      created_at,
+      vendor_id,
+      user!community_posts_vendor_id_fkey (
+        first_name,
+        last_name
+      )
+    `
+    )
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -19,6 +31,7 @@ export async function GET() {
 
   return NextResponse.json(data);
 }
+
 
 
 export async function POST(req: Request) {

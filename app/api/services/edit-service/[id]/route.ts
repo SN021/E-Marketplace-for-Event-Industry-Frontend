@@ -96,7 +96,6 @@ export async function DELETE(
     .eq("service_id", id)
 
     const convoId = data?.[0].id;
-    console.log(data);
 
 
 //delete service from offer table

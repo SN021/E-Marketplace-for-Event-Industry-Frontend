@@ -13,16 +13,28 @@ export async function GET(
   const { postId } = await context.params;
 
   if (!postId) {
-    return NextResponse.json({ error: "Missing PostId" }, { status: 400 });
+    return NextResponse.json({ error: "Missing postId" }, { status: 400 });
   }
 
   const { data, error } = await supabase
     .from("community_comments")
-    .select("*")
+    .select(
+      `
+      comment_id,
+      content,
+      created_at,
+      vendor_id,
+      user:vendor_id (
+        first_name,
+        last_name
+      )
+    `
+    )
     .eq("post_id", postId)
     .order("created_at", { ascending: true });
 
   if (error) {
+    console.error("Supabase error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
