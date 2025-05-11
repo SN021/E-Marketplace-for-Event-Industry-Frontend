@@ -63,7 +63,7 @@ const Navbar = () => {
             </form>
 
             {userType === "vendor" && (
-              <Link href="" className="nav-a text-lg font-semibold px-4">
+              <Link href="/dashboard/community" className="nav-a text-lg font-semibold px-4">
                 Community Hub
               </Link>
             )}

@@ -5,6 +5,7 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { TriangleAlert } from "lucide-react";
 
+
 type EditServiceProps = {
   id: string;
   onCancel?: () => void;
@@ -33,7 +34,7 @@ export default function EditService({ id, onCancel }: EditServiceProps) {
       try {
         const res = await axios.get(`/api/services/edit-service/${id}`);
         setData(res.data);
-        console.log(res.data);
+
 
         setForm({
           service_description: res.data.description || "",

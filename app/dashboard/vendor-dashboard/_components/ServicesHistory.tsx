@@ -24,7 +24,6 @@ export default function ServicesHistory({onEditService,}: ServicesHistoryProps) 
     const fetchServices = async () => {
       try {
         const res = await axios.get("/api/services/get-service-by-vendorid");
-        console.log("Fetched services:", res.data);
         setServices(res.data);
       } catch (err) {
         console.error("Error fetching services:", err);
