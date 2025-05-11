@@ -49,7 +49,7 @@ export async function PUT(req: NextRequest) {
     .from("vendor")
     .update({
       business_name: payload.business_name,
-      business_email: payload.business_email,
+      paypal_email: payload.paypal_email,
       business_phone: payload.business_phone,
       business_address: payload.business_address,
       experience: payload.experience,

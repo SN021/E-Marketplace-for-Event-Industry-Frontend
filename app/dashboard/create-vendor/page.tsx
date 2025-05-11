@@ -10,6 +10,7 @@ import {
   MessageCircleWarning,
   Pencil,
   Plus,
+  TriangleAlert,
   Upload,
   X,
 } from "lucide-react";
@@ -31,6 +32,7 @@ import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
+import Link from "next/link";
 
 const page = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -652,27 +654,6 @@ const page = () => {
 
                       <div className={inputContainerStyle}>
                         <input
-                          type="email"
-                          {...register("businessEmail")}
-                          aria-invalid={!!errors.businessEmail}
-                          placeholder=""
-                          className={inputStyle}
-                        />
-                        <label
-                          htmlFor="businessEmail"
-                          className={inputLabelStyle}
-                        >
-                          Business Email Address *
-                        </label>
-                        {errors.businessEmail && (
-                          <p className="error-msg">
-                            {errors.businessEmail.message}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className={inputContainerStyle}>
-                        <input
                           type="Tel"
                           {...register("businessPhone")}
                           aria-invalid={!!errors.businessPhone}
@@ -691,6 +672,33 @@ const page = () => {
                           </p>
                         )}
                       </div>
+
+                      <div className={inputContainerStyle}>
+                        <input
+                          type="email"
+                          {...register("paypalEmail")}
+                          aria-invalid={!!errors.paypalEmail}
+                          placeholder=""
+                          className={inputStyle}
+                        />
+                        <label
+                          htmlFor="paypalEmail"
+                          className={inputLabelStyle}
+                        >
+                          Paypal Email Address *
+                        </label>
+                        {errors.paypalEmail && (
+                          <p className="error-msg">
+                            {errors.paypalEmail.message}
+                          </p>
+                        )}
+                      </div>
+                      <p className="text-xs font-base mt-[-25] text-left relative w-full text-gray-500">
+                        <span className="text-red-600 text-sm">* </span> If you
+                        do not own a PayPal account, please visit bellow link
+                        and make a new account. Provide the email that used to create your paypal account.
+                        <Link className="text-blue-500" href=" https://www.paypal.com/lk/welcome/signup/#/login_info"> Create Paypal Account.</Link>
+                      </p>
                     </div>
                   </div>
                 </div>

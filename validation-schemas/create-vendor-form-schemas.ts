@@ -30,7 +30,7 @@ export const vendorFormSchema = z.object({
   website: z.string().url("Invalid URL").or(z.literal("")).optional(),
   province: z.string().min(1,"Select your province"),
   city: z.string().min(1,"Select your city"),
-  businessEmail: z.string().email("Invalid email"),
+  paypalEmail: z.string().email("Invalid email"),
   businessPhone: z.string().regex(/^\d{10}$/, "Phone number must be exactly 10 digits"),
   languages: z.array(z.string()).min(1, "Select at least one language"),
   socialLinks: z

@@ -81,16 +81,16 @@ const VendorAccountInfo: React.FC = () => {
 
             <div>
               <label className="block text-sm font-medium">
-                Business Email Address
+                Paypal Email Address
               </label>
               <input
                 disabled={!isEditing}
                 className="input-style w-full"
-                value={vendorData.business_email || ""}
+                value={vendorData.paypal_email || ""}
                 onChange={(e) =>
                   setVendorData({
                     ...vendorData,
-                    business_email: e.target.value,
+                    paypal_email: e.target.value,
                   })
                 }
               />
