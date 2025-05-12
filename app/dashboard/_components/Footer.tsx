@@ -60,7 +60,7 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <a href=" " className="hover:underline">
+              <a href="/dashboard/about-us" className="hover:underline">
                 About Us
               </a>
             </li>
@@ -76,7 +76,7 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <a href=" " className="hover:underline">
+              <a href="/dashboard/terms-and-privacy" className="hover:underline">
                 Privacy Policy
               </a>
             </li>

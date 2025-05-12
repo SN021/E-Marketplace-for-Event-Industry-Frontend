@@ -696,8 +696,8 @@ const page = () => {
                       <p className="text-xs font-base mt-[-25] text-left relative w-full text-gray-500">
                         <span className="text-red-600 text-sm">* </span> If you
                         do not own a PayPal account, please visit bellow link
-                        and make a new account. Provide the email that used to create your paypal account.
-                        <Link className="text-blue-500" href=" https://www.paypal.com/lk/welcome/signup/#/login_info"> Create Paypal Account.</Link>
+                        and make a new account. Provide the email that used to create your paypal account. 
+                        <Link className="text-blue-600" href=" https://www.paypal.com/lk/welcome/signup/#/login_info"> Create Paypal Account.</Link>
                       </p>
                     </div>
                   </div>
@@ -1006,7 +1006,7 @@ const page = () => {
                             {...register("agreeToTerms")}
                           />
                           <label>
-                            Agree to privacy policy & terms of services
+                            <Link className="text-blue-600 underline" href = "/dashboard/terms-and-privacy"> Agree to privacy policy & terms of services </Link>
                           </label>
                         </div>
                         {errors.agreeToTerms && (

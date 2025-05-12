@@ -36,11 +36,13 @@ export function OfferBubble({
     fetchOffer();
   }, [offerId]);
 
-  const handleAction = async (action: "accept" | "decline") => {
+  const handleDecline = async (action:"decline") => {
     setActionLoading(true);
     try {
       await axios.post(`/api/offers/${offerId}/respond`, { action });
-      setStatus(action === "accept" ? "accepted" : "declined");
+      setStatus("declined");
+
+      
     } catch (err) {
       console.error("Offer action failed:", err);
       alert("Something went wrong");
@@ -48,6 +50,34 @@ export function OfferBubble({
       setActionLoading(false);
     }
   };
+
+  const handleAcceptAndPay = async () => {
+    setActionLoading(true);
+    try {
+      // Mark offer as accepted
+      await axios.post(`/api/offers/${offerId}/respond`, { action: "accept" });
+      setStatus("accepted");
+
+      // Create PayPal order
+      const paymentRes = await axios.post("/api/payment/create-order", {
+        offerId: "test-offer-id"
+      });
+      console.log(paymentRes.data);
+
+      const { url } = paymentRes.data;
+      if (url) {
+        window.location.href = url; 
+      } else {
+        alert("Failed to create PayPal payment.");
+      }
+    } catch (err) {
+      console.error("Accept & Pay error:", err);
+      alert("Something went wrong");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
 
   if (loading)
     return (
@@ -109,7 +139,7 @@ export function OfferBubble({
             variant="default"
             className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-full px-5 py-1.5 transition-all duration-200"
             disabled={actionLoading}
-            onClick={() => handleAction("accept")}
+            onClick={handleAcceptAndPay}
           >
             {actionLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -121,7 +151,7 @@ export function OfferBubble({
             variant="destructive"
             className="text-sm font-medium rounded-full px-5 py-1.5 transition-all duration-200"
             disabled={actionLoading}
-            onClick={() => handleAction("decline")}
+            onClick={() => handleDecline("decline")}
           >
             {actionLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
