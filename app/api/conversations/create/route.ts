@@ -4,19 +4,17 @@ import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY! 
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-
 export async function POST(request: NextRequest) {
-
   const { userId } = await auth();
-  console.log(userId)
+  console.log(userId);
 
   if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-  
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { data: userData, error: userError } = await supabase
     .from("user")
     .select()

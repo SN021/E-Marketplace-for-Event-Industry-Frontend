@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -36,13 +36,11 @@ export function OfferBubble({
     fetchOffer();
   }, [offerId]);
 
-  const handleDecline = async (action:"decline") => {
+  const handleDecline = async (action: "decline") => {
     setActionLoading(true);
     try {
       await axios.post(`/api/offers/${offerId}/respond`, { action });
       setStatus("declined");
-
-      
     } catch (err) {
       console.error("Offer action failed:", err);
       alert("Something went wrong");
@@ -58,26 +56,74 @@ export function OfferBubble({
       await axios.post(`/api/offers/${offerId}/respond`, { action: "accept" });
       setStatus("accepted");
 
-      // Create PayPal order
-      const paymentRes = await axios.post("/api/payment/create-order", {
-        offerId: "test-offer-id"
-      });
-      console.log(paymentRes.data);
+      // Log the offerId before making the request
+      console.log("Sending offerId:", offerId);
+
+      // Ensure offerId is a string
+      const offerIdString = offerId.toString();
+
+      // Create PayPal order with explicit content type and careful payload construction
+      const paymentRes = await axios.post(
+        "/api/payment/create",
+        JSON.stringify({ offerId: offerIdString }), // Explicitly stringify the payload
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          // Add config to log request details
+          transformRequest: [
+            (data, headers) => {
+              console.log("Request data:", data);
+              console.log("Request headers:", headers);
+              return data;
+            },
+          ],
+        }
+      );
+
+      console.log("Full payment response:", paymentRes);
+      console.log("Payment response data:", paymentRes.data);
 
       const { url } = paymentRes.data;
       if (url) {
-        window.location.href = url; 
+        window.location.href = url;
       } else {
         alert("Failed to create PayPal payment.");
       }
     } catch (err) {
-      console.error("Accept & Pay error:", err);
-      alert("Something went wrong");
+      // Detailed error logging
+      if (axios.isAxiosError(err)) {
+        const axiosError = err as AxiosError;
+
+        console.error("Full Axios error object:", axiosError);
+        console.error("Error config:", axiosError.config);
+
+        if (axiosError.response) {
+          console.error("Detailed error response:", {
+            data: axiosError.response.data,
+            status: axiosError.response.status,
+            headers: axiosError.response.headers,
+          });
+        }
+
+        // More specific error handling
+        if (axiosError.response?.status === 400) {
+          console.error("Bad request details:", axiosError.response?.data);
+          alert("Invalid request. Please check the offer details.");
+        } else if (axiosError.response?.status === 500) {
+          console.error("Server error details:", axiosError.response?.data);
+          alert("Server error occurred. Please try again.");
+        } else {
+          alert(`Payment error: ${axiosError.message}`);
+        }
+      } else {
+        console.error("Unexpected error:", err);
+        alert("An unexpected error occurred.");
+      }
     } finally {
       setActionLoading(false);
     }
   };
-
 
   if (loading)
     return (
