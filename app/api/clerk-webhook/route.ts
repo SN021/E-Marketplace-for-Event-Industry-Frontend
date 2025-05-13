@@ -2,11 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { Webhook } from "svix";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { createClient } from "@supabase/supabase-js";
-import { NextApiResponse } from "next";
-
 
 export const runtime = "nodejs";
-
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
@@ -14,12 +11,10 @@ const supabase = createClient(
 );
 
 // POST route for Clerk webhooks
-export async function POST(req: NextRequest, res: NextApiResponse) {
+export async function POST(req: NextRequest) {
   try {
-
     const payload = await req.json();
     const body = JSON.stringify(payload);
-
 
     const svixId = req.headers.get("svix-id");
     const svixTimestamp = req.headers.get("svix-timestamp");
@@ -31,7 +26,6 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
         { status: 400 }
       );
     }
-
 
     const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
     if (!webhookSecret) {
@@ -114,7 +108,15 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
         .select()
         .eq("clerk_user_id", id);
 
-      const userId = userData?.[0].id;
+      if (userError || !userData || userData.length === 0) {
+        console.error("Error finding user to delete:", userError);
+        return NextResponse.json(
+          { message: "Error finding user to delete" },
+          { status: 500 }
+        );
+      }
+
+      const userId = userData[0].id;
 
       // Delete community comments
       await supabase
@@ -131,7 +133,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
       // Delete saved services
       await supabase.from("saved_services").delete().eq("user_id", userId);
 
-      // Delete offers (you already have ON DELETE CASCADE for vendor_id, but still safe to call directly)
+      // Delete offers
       await supabase.from("offers").delete().eq("vendor_id", userId);
 
       // Delete messages
@@ -150,13 +152,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
       await supabase.from("vendor").delete().eq("id", userId);
 
       // Finally, delete the user
-      await supabase.from("user").delete().eq("id", userId);
-
-      // Delete from DB by clerk_user_id
-      const { error } = await supabase
-        .from("user")
-        .delete()
-        .eq("clerk_user_id", id);
+      const { error } = await supabase.from("user").delete().eq("id", userId);
 
       if (error) {
         console.error("Error deleting user:", error);
@@ -165,9 +161,8 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
           { status: 500 }
         );
       }
-      console.log(" User deleted from DB successfully.");
+      console.log("User deleted from DB successfully.");
     }
-
 
     return NextResponse.json(
       { message: "Webhook processed successfully" },
