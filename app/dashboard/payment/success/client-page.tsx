@@ -103,7 +103,7 @@ export default function PaymentSuccess() {
             : status === STATUS.FAILED || status === STATUS.ERROR
             ? "Payment Failed"
             : "Processing Payment"}
-        </h1>
+        </h1> 
 
         <p className="text-gray-600 mb-6">{statusMessage}</p>
 
