@@ -5,6 +5,11 @@ import CommunityFeed from "./_components/CommunityFeed";
 import CreatePostForm from "./_components/CreatePostForm";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Loader from "@/components/Loader";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { PostProvider } from "./_components/PostContext";
 
 export default function CommunityPage() {
   const { isLoaded, isSignedIn } = useUser();
@@ -48,16 +53,40 @@ export default function CommunityPage() {
     }
   }, [status]);
 
-  if (!isLoaded) return <p>Loading...</p>;
+  if (!isLoaded) return (
+    <div>
+      <Loader />
+    </div>
+  );
   if (!isSignedIn)
     return <p className="text-red-500">Please log in to continue.</p>;
 
   return (
-    <div className="max-w-2xl mx-auto py-10">
-      <h1 className="text-2xl font-bold mb-6">Vendor Community Hub</h1>
-      <CreatePostForm />
-      <hr className="my-6" />
-      <CommunityFeed />
-    </div>
+    <PostProvider>
+      <div className="max-w-xl mx-auto py-10">
+        <h1 className="text-2xl font-bold mb-6">Vendor Community Hub</h1>
+        <div>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant={"default"} className="text-xs">
+              <span><Plus/></span>
+              Add New Post
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[600px] max-h-[80vh] flex flex-col bg-white">
+            <DialogHeader>
+              <DialogTitle>Add New Post</DialogTitle>
+            </DialogHeader>
+            <div className="flex-1 overflow-auto">
+              <CreatePostForm />
+            </div>
+          </DialogContent>
+        </Dialog>
+        </div>
+        
+        <hr className="my-6" />
+        <CommunityFeed />
+      </div>
+    </PostProvider>
   );
 }

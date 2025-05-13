@@ -1,18 +1,20 @@
 "use client";
 
-import { Star, CheckCircle, Heart, BadgePercent } from "lucide-react";
+import { Star, CheckCircle2, Heart, BadgePercent } from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
 import Link from "next/link";
-import { Bounce, ToastContainer, toast } from "react-toastify";
-import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import clsx from "clsx";
+import { motion } from "framer-motion";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import Image from "next/image";
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import { Button } from "@/components/ui/button";
 
 type ServiceCardProps = {
   serviceId: string;
@@ -26,141 +28,155 @@ type ServiceCardProps = {
   href?: string;
 };
 
-export const ServiceCard = ({
+export function ServiceCard({
   serviceId,
   title,
   seller,
   price,
   imageUrl,
+  averageRating = 0,
   verified = true,
   discount,
-  averageRating,
   href = "#",
-}: ServiceCardProps) => {
-  const [isSaved, setIsSaved] = useState(false);
-  const notifySave = () => toast("Saved");
+}: ServiceCardProps) {
+  const [saved, setSaved] = useState(false);
 
-  const toggleSave = async () => {
-    try {
-      setIsSaved((prev) => !prev);
-
-      await axios.post("/api/save/service-save", {
-        service_id: serviceId,
-      });
-    } catch (err) {
-      console.error("Failed to toggle save:", err);
-    }
+  const errorMsg = () => {
+    toast.error("An error has occurred", {
+      position: "top-right",
+      autoClose: 2500,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  };
+  const savedMsg = () => {
+    toast.success("Service saved successfully", {
+      position: "top-right",
+      autoClose: 2500,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
   };
 
-  return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 10 }}
-        transition={{ duration: 0.3 }}
-      >
-        <Link
-          href={href}
-          className="w-full max-w-[320px] sm:max-w-full h-[350px] bg-white rounded-lg shadow-sm p-4 relative flex flex-col group hover:shadow-lg transition-all duration-300"
-        >
-          {/* Image */}
-          <div className="overflow-hidden rounded w-full h-[150px] relative">
-            <Image
-              src={imageUrl}
-              alt={title}
-              fill
-              className="object-cover rounded transform transition-transform duration-500 group-hover:scale-105"
-              placeholder="blur"
-              blurDataURL="/blur-placeholder.png" // you can replace this with a base64 or actual tiny placeholder
-            />
-          </div>
+  async function toggleSave() {
+    setSaved((s) => !s);
+    try {
+      await axios.post("/api/save/service-save", { service_id: serviceId });
+      savedMsg();
+    } catch (err) {
+      errorMsg();
+      console.error(err);
+    }
+  }
 
-          {/* Content */}
-          <div className="flex flex-col justify-between grow mt-3 overflow-hidden">
-            <TooltipProvider>
-              {/* Title with tooltip */}
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 12 }}
+      transition={{ duration: 0.25 }}
+      className="group relative isolate"
+    >
+      <Link
+        href={href}
+        aria-label={`View ${title}`}
+        className="flex h-80 w-full max-w-[320px] flex-col overflow-hidden rounded-xl border border-transparent bg-white/90 shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:bg-neutral-900/70"
+      >
+        <span className="pointer-events-none absolute inset-0 -z-[1] rounded-[inherit] bg-gradient-to-br from-primary/0 via-primary/30 to-primary/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
+
+        <figure className="relative h-40 w-full overflow-hidden">
+          <Image
+            src={imageUrl}
+            alt={title}
+            fill
+            sizes="(max-width:768px) 100vw, 320px"
+            priority
+            placeholder="blur"
+            blurDataURL="https://imgenerate.com/generate?width=400&height=400&bg=d39d55&text_color=ffffff&font_size=24&angle=0&text=Loading"
+            className="h-full w-full object-cover transition-transform duration-500 will-change-transform group-hover:scale-110"
+          />
+
+          {discount && (
+            <TooltipProvider delayDuration={150}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="truncate cursor-default">
-                    <h3 className="text-sm font-semibold">{title}</h3>
-                  </div>
+                  <figcaption
+                    aria-label="View discount details"
+                    className="absolute left-2 top-2 grid h-7 w-7 place-items-center rounded-full
+                       bg-yellow-500/90 text-white shadow cursor-default"
+                  >
+                    <BadgePercent className="h-4 w-4" />
+                    <span className="sr-only">{discount}</span>
+                  </figcaption>
                 </TooltipTrigger>
-                <TooltipContent side="top" className="text-xs max-w-xs">
-                  {title}
+                <TooltipContent side="top" className="max-w-xs text-xs">
+                  {discount}
                 </TooltipContent>
               </Tooltip>
-
-              {/* Seller info */}
-              <p className="text-xs text-gray-500 flex items-center gap-1 mt-1">
-                by {seller}
-                {verified && <CheckCircle className="w-4 h-4 text-green-600" />}
-              </p>
-
-              {/* Rating */}
-              <div className="flex items-center gap-1 mt-1">
-                <Star className="w-4 h-4 text-yellow-500" />
-                <span className="text-xs font-medium text-gray-700">
-                  {averageRating?.toFixed(1)}
-                </span>
-              </div>
-
-              {/* Price */}
-              <p className="mt-2 font-semibold text-sm">
-                Starts at Rs. {price}.00
-              </p>
-
-              {/* Discount with tooltip */}
-              {discount && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="truncate flex items-center gap-1 cursor-default mt-1">
-                      <BadgePercent className="w-4 h-4 text-yellow-500" />
-                      <p className="text-sm text-yellow-600 font-semibold">
-                        {discount}
-                      </p>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="text-xs max-w-xs">
-                    {discount}
-                  </TooltipContent>
-                </Tooltip>
-              )}
             </TooltipProvider>
-          </div>
+          )}
+        </figure>
 
-          {/* Heart Icon */}
-          <motion.div
-            whileTap={{ scale: 1.3 }}
-            className="absolute bottom-4 right-4"
-          >
-            <Heart
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                toggleSave();
-                notifySave();
-              }}
-              className={`w-5 h-5 cursor-pointer transition ${
-                isSaved
-                  ? "text-yellow-500"
-                  : "text-gray-400 hover:text-yellow-500"
-              }`}
-            />
-          </motion.div>
+        <div className="flex flex-1 flex-col gap-1 px-4 py-3">
+          <TooltipProvider delayDuration={150}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <h3 className="line-clamp-2 cursor-default text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  {title}
+                </h3>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-xs text-xs">
+                {title}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
-          {/* Toast */}
-          <ToastContainer
-            position="top-right"
-            autoClose={2500}
-            hideProgressBar={false}
-            closeOnClick={false}
-            pauseOnHover
-            theme="light"
-            transition={Bounce}
-          />
-        </Link>
-      </motion.div>
-    </AnimatePresence>
+          <p className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+            by&nbsp;{seller}
+            {verified && (
+              <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+            )}
+          </p>
+
+          <span className="mt-1 flex items-center gap-1">
+            <Star className="h-4 w-4 text-yellow-400" />
+            <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+              {averageRating.toFixed(1)}
+            </span>
+          </span>
+
+          <p className="mt-auto text-sm font-semibold">
+            Starts at&nbsp;Rs.&nbsp;{price}.00
+          </p>
+        </div>
+
+        <button
+          type="button"
+          aria-label={saved ? "Remove from saved" : "Save service"}
+          onClick={(e) => {
+            e.preventDefault();
+            toggleSave();
+          }}
+          className={clsx(
+            "absolute bottom-4 right-4 grid h-8 w-8 place-items-center rounded-full backdrop-blur-lg transition",
+            saved
+              ? "text-yellow-500"
+              : "text-gray-400 hover:text-yellow-500 dark:hover:text-yellow-400"
+          )}
+        >
+          <Heart className="h-5 w-5" />
+        </button>
+      </Link>
+    </motion.article>
   );
-};
+}

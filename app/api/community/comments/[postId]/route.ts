@@ -11,6 +11,15 @@ export async function GET(
   context: { params: Promise<{ postId: string }> }
 ) {
   const { postId } = await context.params;
+  const { searchParams } = req.nextUrl;
+
+  // Default to page 1 and 5 items per page if not specified
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const limit = parseInt(searchParams.get('limit') || '5', 10);
+  const order = searchParams.get('order') || 'desc';
+
+  // Calculate offset
+  const offset = (page - 1) * limit;
 
   if (!postId) {
     return NextResponse.json({ error: "Missing postId" }, { status: 400 });
@@ -28,10 +37,12 @@ export async function GET(
         first_name,
         last_name
       )
-    `
+    `,
+    { count: 'exact' }
     )
     .eq("post_id", postId)
-    .order("created_at", { ascending: true });
+    .order("created_at", { ascending: order === 'asc' })
+    .range(offset, offset + limit - 1);
 
   if (error) {
     console.error("Supabase error:", error);
