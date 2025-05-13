@@ -7,16 +7,18 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+export async function GET(req: NextRequest) {
   const { userId } = await auth();
 
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const url = new URL(req.url);
+  const id = url.pathname.split("/").pop(); // or use `req.nextUrl.pathname`
+
+  if (!id) {
+    return NextResponse.json({ error: "Missing service ID" }, { status: 400 });
   }
 
   const { data, error } = await supabase
@@ -28,9 +30,6 @@ export async function GET(
   if (error || !data) {
     return NextResponse.json({ error: "Service not found" }, { status: 404 });
   }
-
-
-
 
   return NextResponse.json(data);
 }
