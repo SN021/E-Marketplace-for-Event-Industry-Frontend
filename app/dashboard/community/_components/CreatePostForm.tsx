@@ -61,7 +61,7 @@ export default function CreatePostForm() {
       setTitle("");
       setContent("");
       postCreateMsg();
-      triggerPostRefresh(); // Trigger a refresh of posts
+      triggerPostRefresh(); 
     } else {
       const { error } = await response.json();
       console.error("Failed to create post:", error);

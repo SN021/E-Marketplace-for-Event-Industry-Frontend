@@ -5,6 +5,7 @@ import axios, { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { Bounce, toast } from "react-toastify";
 
 export function OfferBubble({
   offerId,
@@ -18,6 +19,34 @@ export function OfferBubble({
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
+
+  const errorMsg = () => {
+    toast.error("Something went wrong. Please try again.", {
+      position: "top-right",
+      autoClose: 2500,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  };
+
+  const paymentErrorMsg = () => {
+    toast.error("Payment failed. Please try again.", {
+      position: "top-right",
+      autoClose: 2500,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  };
 
   useEffect(() => {
     const fetchOffer = async () => {
@@ -43,84 +72,89 @@ export function OfferBubble({
       setStatus("declined");
     } catch (err) {
       console.error("Offer action failed:", err);
-      alert("Something went wrong");
+      errorMsg();
     } finally {
       setActionLoading(false);
     }
   };
 
   const handleAcceptAndPay = async () => {
+    // Disable further interactions
     setActionLoading(true);
+    
+    // Show a loading toast with a spinner
+    const loadingToastId = toast.info(
+      <div className="flex items-center">
+        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+        Please wait while we process your payment. Do not close this window.
+      </div>, 
+      {
+        position: "top-center",
+        autoClose: false,  // Prevent auto-closing
+        hideProgressBar: true,
+        closeOnClick: false,  // Prevent user from closing
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        toastId: "payment-loading",  // Unique ID for easy dismissal
+      }
+    );
+  
     try {
       // Mark offer as accepted
       await axios.post(`/api/offers/${offerId}/respond`, { action: "accept" });
       setStatus("accepted");
-
-      // Log the offerId before making the request
-      console.log("Sending offerId:", offerId);
-
-      // Ensure offerId is a string
+  
+      // Prepare offer ID for payment
       const offerIdString = offerId.toString();
-
-      // Create PayPal order with explicit content type and careful payload construction
+  
+      // Create PayPal order
       const paymentRes = await axios.post(
         "/api/payment/create",
-        JSON.stringify({ offerId: offerIdString }), // Explicitly stringify the payload
+        JSON.stringify({ offerId: offerIdString }),
         {
           headers: {
             "Content-Type": "application/json",
           },
-          // Add config to log request details
-          transformRequest: [
-            (data, headers) => {
-              console.log("Request data:", data);
-              console.log("Request headers:", headers);
-              return data;
-            },
-          ],
         }
       );
-
-      console.log("Full payment response:", paymentRes);
-      console.log("Payment response data:", paymentRes.data);
-
-      const { url } = paymentRes.data;
+  
+      // Handle payment response
+      const url = paymentRes.data.url;
       if (url) {
+        // Dismiss loading toast before redirecting
+        toast.dismiss(loadingToastId);
         window.location.href = url;
       } else {
-        alert("Failed to create PayPal payment.");
+        // Dismiss loading toast and show error
+        toast.dismiss(loadingToastId);
+        paymentErrorMsg();
       }
     } catch (err) {
-      // Detailed error logging
+      // Dismiss loading toast
+      toast.dismiss(loadingToastId);
+  
+      // Detailed error handling
       if (axios.isAxiosError(err)) {
-        const axiosError = err as AxiosError;
-
-        console.error("Full Axios error object:", axiosError);
-        console.error("Error config:", axiosError.config);
-
-        if (axiosError.response) {
-          console.error("Detailed error response:", {
-            data: axiosError.response.data,
-            status: axiosError.response.status,
-            headers: axiosError.response.headers,
-          });
-        }
-
-        // More specific error handling
+        const axiosError = err;
+        
+        // Log specific error details
         if (axiosError.response?.status === 400) {
           console.error("Bad request details:", axiosError.response?.data);
-          alert("Invalid request. Please check the offer details.");
+          paymentErrorMsg();
         } else if (axiosError.response?.status === 500) {
           console.error("Server error details:", axiosError.response?.data);
-          alert("Server error occurred. Please try again.");
+          paymentErrorMsg();
         } else {
-          alert(`Payment error: ${axiosError.message}`);
+          paymentErrorMsg();
         }
       } else {
         console.error("Unexpected error:", err);
-        alert("An unexpected error occurred.");
+        paymentErrorMsg();
       }
     } finally {
+      // Re-enable interactions
       setActionLoading(false);
     }
   };

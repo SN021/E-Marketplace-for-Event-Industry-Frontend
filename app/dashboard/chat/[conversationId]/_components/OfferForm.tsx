@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { Bounce, toast } from "react-toastify";
 
 
 export function OfferForm({
@@ -17,6 +18,34 @@ export function OfferForm({
   const [price, setPrice] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const fieldError = () => {
+    toast.error("All fields are required", {
+      position: "top-right",
+      autoClose: 2500,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  };
+
+  const errorMsg = () => {
+    toast.error("Something went wrong. Please try again.", {
+      position: "top-right",
+      autoClose: 2500,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  };
+
   const inputContainerStyle = "relative z-0 w-full mb-6 group ";
   const inputStyle =
     "block shadow py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 hover:border-gray-400 duration-300 hover:shadow-md appearance-none focus:outline-none focus:ring-0 focus:border-[#D39D55] peer";
@@ -25,7 +54,7 @@ export function OfferForm({
 
   const handleSendOffer = async () => {
     if (!title || !description || !price) {
-      alert("All fields are required");
+      fieldError();
       return;
     }
 
@@ -51,7 +80,7 @@ export function OfferForm({
       }
     } catch (error) {
       console.error("Failed to send offer:", error);
-      alert("Something went wrong while sending the offer");
+      errorMsg();
     } finally {
       setLoading(false);
     }
