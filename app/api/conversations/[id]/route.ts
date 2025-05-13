@@ -28,9 +28,8 @@ export async function GET(
   }
 
   const dbUserId = userData.id;
-  const { id: conversationId } = await context.params; // ✅ await it here
+  const { id: conversationId } = await context.params; 
 
-  console.log("conversationId:", conversationId);
 
   const { data: conversation, error } = await supabase
     .from("conversations")

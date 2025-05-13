@@ -9,7 +9,6 @@ const supabase = createClient(
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log("📦 Incoming body:", body);
     const { conversationId, senderId, content, messageType = "text" } = body;
 
     if (!conversationId || !senderId || !content) {

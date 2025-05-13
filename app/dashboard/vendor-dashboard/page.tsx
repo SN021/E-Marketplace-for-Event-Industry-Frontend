@@ -7,6 +7,7 @@ import ViewOffers from "./_components/VendorOffers";
 import axios from "axios";
 import ServicesHistory from "./_components/ServicesHistory";
 import EditService from "./_components/EditService";
+import VendorAnalytics from "./_components/VendorAnalytics";
 
 
 
@@ -51,7 +52,7 @@ const VendorDashboardPage: React.FC = () => {
     if (activeTab === "Account Info") return <VendorAccountInfo />;
     if (activeTab === "View Offers") return <ViewOffers />;
     if (activeTab === "My Analytics") {
-      return <div className="text-gray-500">Analytics will appear here.</div>;
+      return <VendorAnalytics />;
     }
     if (activeTab === "Service Listing History") {
       return selectedServiceId ? (

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Bounce, toast } from "react-toastify";
+import { convertLKRtoUSD } from "@/lib/utils/currency-converter";
 
 export function OfferBubble({
   offerId,
@@ -19,6 +20,7 @@ export function OfferBubble({
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
+  const [usdPrice, setUsdPrice] = useState<string | null>(null);
 
   const errorMsg = () => {
     toast.error("Something went wrong. Please try again.", {
@@ -64,6 +66,22 @@ export function OfferBubble({
 
     fetchOffer();
   }, [offerId]);
+
+  useEffect(() => {
+    const fetchUsdPrice = async () => {
+      try {
+        const conversion = await convertLKRtoUSD();
+        const usdAmount = (offer?.price * conversion).toFixed(2);
+        setUsdPrice(usdAmount);
+      } catch (error) {
+        console.error('Failed to convert price', error);
+      }
+    };
+
+    if (offer) {
+      fetchUsdPrice();
+    }
+  }, [offer]);
 
   const handleDecline = async (action: "decline") => {
     setActionLoading(true);
@@ -210,7 +228,8 @@ export function OfferBubble({
       </div>
 
       <p className="font-bold text-xl text-primary mb-3 tracking-wide">
-        LKR {Number(offer.price).toLocaleString()}
+        LKR {Number(offer.price).toLocaleString()} 
+        {usdPrice && <span className="text-sm text-gray-500 ml-2">({usdPrice} USD)</span>}
       </p>
 
       {!isSelf && !isAccepted && !isDeclined && (

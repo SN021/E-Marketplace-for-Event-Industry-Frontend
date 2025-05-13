@@ -56,8 +56,8 @@ const VendorAccountInfo: React.FC = () => {
     );
 
   return (
-    <main className="w-full bg-white">
-      <section className="rounded-xl p-4 sm:p-6 max-w-screen-md mx-auto shadow-sm">
+    <main className="w-full bg-white shadow-sm rounded-xl">
+      <section className=" p-4 sm:p-6 max-w-screen-md mx-auto ">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-xl font-semibold">Vendor Account Info</h1>
         </div>

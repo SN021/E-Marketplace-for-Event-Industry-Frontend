@@ -57,22 +57,19 @@ type Offer = {
   id: string;
   price: number;
   description: string;
-  status: "sent" | "accepted" | "declined";
+  status: string;
   created_at: string;
   expires_at: string;
-  payment_status?: "pending" | "paid" | "failed" | null;
-  payment?: Array<{
-    status: "pending" | "paid" | "failed";
-  }>;
+  payment?: {
+    status: string;
+  };
   conversation?: {
     service?: {
       service_title: string;
     };
     client?: {
       first_name: string;
-      last_name?: string;
       email: string;
-      username?: string;
     };
   };
 };
@@ -117,18 +114,8 @@ export default function VendorAnalytics() {
       ]);
 
       setSelectedService(serviceData);
-      const filteredOffers = offerRes.offers.map((offer: any) => {
-        // Extract payment status similar to VendorOffers component
-        const paymentStatus = offer.payment && offer.payment.length > 0 
-          ? offer.payment[0].status 
-          : null;
-          
-        return {
-          ...offer,
-          payment_status: paymentStatus
-        };
-      }).filter((o: Offer) => 
-        o.conversation?.service?.service_title === serviceData.service_title
+      const filteredOffers = offerRes.offers.filter(
+        (o: Offer) => o.conversation?.service?.service_title === serviceData.service_title
       );
       setOffers(filteredOffers);
 
@@ -272,17 +259,7 @@ export default function VendorAnalytics() {
                               <p><strong>Status:</strong> <Badge>{offer.status}</Badge></p>
                               <p><strong>Sent:</strong> {new Date(offer.created_at).toLocaleString()}</p>
                               <p><strong>Expires:</strong> {new Date(offer.expires_at).toLocaleString()}</p>
-                              {offer.payment_status && (
-                                <p>
-                                  <strong>Payment:</strong>{" "}
-                                  <Badge variant={
-                                    offer.payment_status === 'paid' ? 'default' : 
-                                    offer.payment_status === 'failed' ? 'destructive' : 'outline'
-                                  }>
-                                    {offer.payment_status.charAt(0).toUpperCase() + offer.payment_status.slice(1)}
-                                  </Badge>
-                                </p>
-                              )}
+                              <p><strong>Payment:</strong> <Badge variant="outline">{offer.payment?.status || "Not started"}</Badge></p>
                               <p><strong>Client:</strong> {offer.conversation?.client?.first_name} ({offer.conversation?.client?.email})</p>
                             </AccordionContent>
                           </AccordionItem>

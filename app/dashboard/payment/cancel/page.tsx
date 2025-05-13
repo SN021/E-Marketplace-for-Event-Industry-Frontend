@@ -3,13 +3,26 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Bounce, toast } from "react-toastify";
 
 export default function PaymentCancelled() {
   const router = useRouter();
+  const paymentCancelMsg = () => {
+    toast.error("Payment cancelled.", {
+      position: "top-right",
+      autoClose: 2500,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  };
 
   useEffect(() => {
-    // Optionally log or notify the user
-    console.log("User cancelled the PayPal payment.");
+    paymentCancelMsg();
   }, []);
 
   return (

@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: convError.message }, { status: 500 });
     }
 
-    return NextResponse.json({ offer }, { status: 200 });
+    return NextResponse.json(offer, { status: 200 });
 
   } catch (error) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

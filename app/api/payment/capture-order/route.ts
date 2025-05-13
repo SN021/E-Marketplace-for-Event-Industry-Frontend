@@ -39,15 +39,56 @@ export async function POST(req: NextRequest) {
   const data = await res.json();
 
   if (data.status === "COMPLETED") {
+    // Defensive checks for data structure
+    const purchaseUnit = data.purchase_units?.[0];
+    const payments = purchaseUnit?.payments?.captures?.[0];
+    const amount = payments?.amount;
+
+    if (!purchaseUnit || !payments || !amount) {
+      console.error('Incomplete PayPal response structure', {
+        hasPurchaseUnit: !!purchaseUnit,
+        hasPayments: !!payments,
+        hasAmount: !!amount
+      });
+      
+      return NextResponse.json({ 
+        success: false, 
+        error: 'Incomplete payment information' 
+      }, { status: 400 });
+    }
+
+    // Fetch offer details to get vendor_id
+    const { data: offerData, error: offerError } = await supabase
+      .from('offers')
+      .select('vendor_id')
+      .eq('id', offerId)
+      .single();
+
+    if (offerError || !offerData) {
+      console.error('Failed to fetch offer details:', offerError);
+      return NextResponse.json({ 
+        success: false, 
+        error: 'Offer not found' 
+      }, { status: 404 });
+    }
+
     // Save payment record
-    await supabase.from("payments").insert({
+    const paymentInsert = await supabase.from("payments").insert({
       offer_id: offerId,
-      vendor_id: data.purchase_units[0].payee.merchant_id,
-      client_id: null, // You can fetch this from offer
-      amount: data.purchase_units[0].amount.value,
+      vendor_id: offerData.vendor_id, // Use the vendor_id from the offer
+      amount: amount.value,
       status: "paid",
       paypal_order_id: data.id,
     });
+
+    // Log any insertion errors
+    if (paymentInsert.error) {
+      console.error('Payment insertion error:', paymentInsert.error);
+      return NextResponse.json(
+        { success: false, error: paymentInsert.error },
+        { status: 400 }
+      );
+    }
 
     // Mark offer as paid
     await supabase.from("offers").update({ status: "paid" }).eq("id", offerId);

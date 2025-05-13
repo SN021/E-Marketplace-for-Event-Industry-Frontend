@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { TriangleAlert } from "lucide-react";
+import { Bounce, toast } from "react-toastify";
+import { HashLoader } from "react-spinners";
 
 
 type EditServiceProps = {
@@ -15,6 +17,33 @@ export default function EditService({ id, onCancel }: EditServiceProps) {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  const serviceUpdateMsg = () => {
+      toast.success("Service updated successfully.", {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    };
+    const errorMsg = () => {
+      toast.error("Something went wrong. Please try again.", {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    };
 
   const [form, setForm] = useState({
     service_description: "",
@@ -80,17 +109,21 @@ export default function EditService({ id, onCancel }: EditServiceProps) {
         search_tags: form.search_tags.split(",").map((a) => a.trim()),
         starting_price: parseFloat(form.starting_price),
       });
-      alert("Service updated successfully.");
+      serviceUpdateMsg();
       if (onCancel) onCancel();
     } catch (error) {
       console.error("Failed to save:", error);
-      alert("Something went wrong.");
+      errorMsg();
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return (
+    <div className="flex justify-center items-center h-full">
+      <HashLoader color="#D39D55" />  
+    </div>
+  );
   if (!data) return <p>Service not found.</p>;
 
   return (

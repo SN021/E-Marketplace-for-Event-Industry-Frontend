@@ -17,6 +17,7 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const page = parseInt(searchParams.get("page") || "1", 10);
+  const includePayment = searchParams.get("include_payment") === "true";
   const limit = 10;
   const from = (page - 1) * limit;
   const to = from + limit - 1;
@@ -44,6 +45,9 @@ export async function GET(req: NextRequest) {
       status,
       created_at,
       expires_at,
+      payment:payments (
+        status
+      ),
       conversation:conversation_id (
         id,
         client:user!conversations_client_id_fkey (

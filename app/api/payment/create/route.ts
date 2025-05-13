@@ -1,11 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { convertLKRtoUSD } from "@/lib/utils/currency-converter";
 
 // Create Supabase client
 const supabase = createClient(
-  process.env.SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
+
+// Validate environment variables
+const requiredEnvVars = [
+  "PAYPAL_CLIENT_ID",
+  "PAYPAL_CLIENT_SECRET",
+  "NEXT_PUBLIC_APP_URL",
+  "SUPABASE_SERVICE_ROLE_KEY",
+  "NEXT_PUBLIC_SUPABASE_URL",
+];
+
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    throw new Error(`${envVar} is missing`);
+  }
+}
 
 async function getAccessToken() {
   // Comprehensive environment variable validation
@@ -17,7 +33,6 @@ async function getAccessToken() {
 
   for (const envVar of requiredEnvVars) {
     if (!process.env[envVar]) {
-      console.error(`${envVar} is not set`);
       throw new Error(`${envVar} is missing`);
     }
   }
@@ -39,9 +54,7 @@ async function getAccessToken() {
     });
 
     // Log full response details
-    console.log("PayPal Token Response Status:", res.status);
     const responseText = await res.text();
-    console.log("PayPal Token Response Body:", responseText);
 
     // Check if response is successful
     if (!res.ok) {
@@ -53,7 +66,6 @@ async function getAccessToken() {
     try {
       data = JSON.parse(responseText);
     } catch (parseError) {
-      console.error("Failed to parse PayPal response:", parseError);
       throw new Error(`Invalid response from PayPal: ${responseText}`);
     }
 
@@ -64,7 +76,6 @@ async function getAccessToken() {
 
     return data.access_token;
   } catch (error) {
-    console.error("Detailed error getting PayPal access token:", error);
     throw error;
   }
 }
@@ -83,7 +94,6 @@ export async function POST(req: NextRequest) {
       try {
         // If JSON parsing fails, try text parsing on the cloned request
         const text = await clonedReq.text();
-        console.log("Raw request body text:", text);
 
         // Try parsing the text as JSON
         body = JSON.parse(text);
@@ -96,16 +106,9 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    console.log("Parsed request body:", body);
-    console.log(
-      "Using PayPal credentials:",
-      process.env.PAYPAL_CLIENT_ID,
-      process.env.PAYPAL_CLIENT_SECRET
-    );
-
-    // Destructure offerId, with additional logging
+    // Destructure offerId and conversationId, with additional logging
     const offerId = body?.offerId;
-    console.log("Extracted offerId:", offerId);
+    const conversationId = body?.conversationId;
 
     // Validate offerId
     if (!offerId) {
@@ -135,10 +138,6 @@ export async function POST(req: NextRequest) {
       .eq("id", offerId)
       .single();
 
-    // Extensive logging
-    console.log("Supabase Query Error:", error);
-    console.log("Full offer object:", JSON.stringify(offer, null, 2));
-
     // Extract PayPal email with multiple fallback methods
     let paypalEmail: string | null = null;
 
@@ -154,9 +153,6 @@ export async function POST(req: NextRequest) {
         .select("paypal_email")
         .eq("id", offer?.vendor_id)
         .single();
-
-      console.log("Direct Vendor Lookup Error:", vendorError);
-      console.log("Direct Vendor Data:", JSON.stringify(vendorData, null, 2));
 
       paypalEmail = vendorData?.paypal_email || null;
     }
@@ -176,8 +172,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log("Final PayPal Email:", paypalEmail);
-
     // Get PayPal access token
     let accessToken;
     try {
@@ -191,13 +185,17 @@ export async function POST(req: NextRequest) {
     }
 
     // Prepare PayPal order body
+    // Convert LKR to USD for PayPal
+    const usdRate = await convertLKRtoUSD();
+    const usdAmount = Number((offer.price * usdRate).toFixed(2));
+
     const orderBody = {
       intent: "CAPTURE",
       purchase_units: [
         {
           amount: {
             currency_code: "USD",
-            value: offer.price.toString(),
+            value: usdAmount.toString(),
           },
           payee: {
             email_address: paypalEmail,
@@ -209,8 +207,12 @@ export async function POST(req: NextRequest) {
         brand_name: "Venzor",
         landing_page: "LOGIN",
         user_action: "PAY_NOW",
-        return_url: `${process.env.NEXT_PUBLIC_APP_URL}/payment/success?offerId=${offer.id}`,
-        cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/payment/cancel`,
+        return_url: conversationId 
+          ? `${process.env.NEXT_PUBLIC_APP_URL}/payment/success?offerId=${offer.id}&conversationId=${conversationId}&lkrAmount=${offer.price}&usdAmount=${usdAmount}` 
+          : `${process.env.NEXT_PUBLIC_APP_URL}/payment/success?offerId=${offer.id}&lkrAmount=${offer.price}&usdAmount=${usdAmount}`,
+        cancel_url: conversationId 
+          ? `${process.env.NEXT_PUBLIC_APP_URL}/payment/cancel?conversationId=${conversationId}` 
+          : `${process.env.NEXT_PUBLIC_APP_URL}/payment/cancel`,
       },
     };
 

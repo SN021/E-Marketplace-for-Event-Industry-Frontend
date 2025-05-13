@@ -9,7 +9,6 @@ const supabase = createClient(
 
 export async function POST(request: NextRequest) {
   const { userId } = await auth();
-  console.log(userId);
 
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -20,7 +19,6 @@ export async function POST(request: NextRequest) {
     .select()
     .eq("clerk_user_id", userId);
 
-  console.log(userData);
   const id = userData?.[0].id;
 
   const body = await request.json();

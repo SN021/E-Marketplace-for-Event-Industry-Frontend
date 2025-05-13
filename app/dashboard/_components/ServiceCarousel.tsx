@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { ServiceCard } from "./ServiceCard";
 import { HashLoader } from "react-spinners";
+import Link from "next/link";
+import axios from "axios";
+import { logServiceView } from '@/lib/utils/analytics';
 
 type Service = {
   serviceId: string;
@@ -54,16 +57,18 @@ export const ServiceCarousel = ({ title }: ServiceCarouselProps) => {
               key={service.id}
               className="flex-shrink-0 min-w-[280px] max-w-[320px] md:min-w-0"
             >
-              <ServiceCard
-                serviceId={service.id}
-                title={service.title}
-                seller={service.seller}
-                price={service.price.toString()}
-                imageUrl={service.imageUrl}
-                discount={service.discount}
-                averageRating={service.averageRating}
-                href={`/dashboard/services/${service.id}`}
-              />
+              <div onClick={() => logServiceView(service.id)}>
+                <ServiceCard
+                  serviceId={service.id}
+                  title={service.title}
+                  seller={service.seller}
+                  price={service.price.toString()}
+                  imageUrl={service.imageUrl}
+                  discount={service.discount}
+                  averageRating={service.averageRating}
+                  href={`/dashboard/services/${service.id}`}
+                />
+              </div>
             </div>
           ))}
         </div>
