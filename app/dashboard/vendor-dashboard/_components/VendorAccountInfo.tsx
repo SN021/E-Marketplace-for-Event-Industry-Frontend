@@ -18,7 +18,7 @@ const VendorAccountInfo: React.FC = () => {
 
   const fetchVendorData = async () => {
     try {
-      const res = await api.get("/get-vendor");
+      const res = await api.get("/vendor/get-vendor");
       setVendorData(res.data);
 
       const links = res.data?.social_links
@@ -37,7 +37,7 @@ const VendorAccountInfo: React.FC = () => {
 
   const handleSave = async () => {
     try {
-      await api.put("/update-vendor", {
+      await api.put("/vendor/update-vendor", {
         ...vendorData,
         userId: user?.id,
         social_links: JSON.stringify(parsedLinks),
@@ -56,8 +56,8 @@ const VendorAccountInfo: React.FC = () => {
     );
 
   return (
-    <main className="w-full bg-white">
-      <section className="rounded-xl p-4 sm:p-6 max-w-screen-md mx-auto shadow-sm">
+    <main className="w-full bg-white shadow-sm rounded-xl">
+      <section className=" p-4 sm:p-6 max-w-screen-md mx-auto ">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-xl font-semibold">Vendor Account Info</h1>
         </div>
@@ -81,16 +81,16 @@ const VendorAccountInfo: React.FC = () => {
 
             <div>
               <label className="block text-sm font-medium">
-                Business Email Address
+                Paypal Email Address
               </label>
               <input
                 disabled={!isEditing}
                 className="input-style w-full"
-                value={vendorData.business_email || ""}
+                value={vendorData.paypal_email || ""}
                 onChange={(e) =>
                   setVendorData({
                     ...vendorData,
-                    business_email: e.target.value,
+                    paypal_email: e.target.value,
                   })
                 }
               />

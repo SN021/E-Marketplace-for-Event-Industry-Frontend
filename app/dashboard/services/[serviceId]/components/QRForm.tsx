@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { QRSchema, QRFormData } from "@/validation-schemas/qrForm-form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Bounce, toast } from "react-toastify";
 
 export function QuotationRequestForm({
   vendorId,
@@ -19,6 +20,20 @@ export function QuotationRequestForm({
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const convoErrorMsg = () => {
+    toast.error("Conversation creation failed.", {
+      position: "top-right",
+      autoClose: 2500,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  };
 
   const {
     register,
@@ -66,11 +81,11 @@ export function QuotationRequestForm({
       if (conversationId) {
         router.push(`/dashboard/chat/${conversationId}`);
       } else {
-        alert("Conversation creation failed.");
+        convoErrorMsg();
       }
     } catch (error: any) {
       console.error("Error:", error?.response?.data || error.message);
-      alert("Something went wrong. Please try again.");
+      convoErrorMsg();
     } finally {
       setLoading(false);
     }

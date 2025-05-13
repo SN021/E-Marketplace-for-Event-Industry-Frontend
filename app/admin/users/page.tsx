@@ -34,7 +34,7 @@ type Vendor = {
   display_name: string;
   about: string;
   business_phone: string;
-  business_email: string;
+  paypal_email: string;
   city: string;
   province: string;
   languages: string;
@@ -322,7 +322,7 @@ export default function AdminDashboard() {
                           </p>
                           <p>
                             <strong>Email:</strong>{" "}
-                            {vendorDetails.business_email}
+                            {vendorDetails.paypal_email}
                           </p>
                           <p>
                             <strong>Address:</strong> {vendorDetails.city},{" "}

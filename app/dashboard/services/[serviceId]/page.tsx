@@ -15,7 +15,7 @@ export default async function Page(
   const baseUrl  = `${protocol}://${host}`;
 
   const res = await fetch(
-    `${baseUrl}/api/get-service-by-id?id=${serviceId}`,
+    `${baseUrl}/api/services/get-service-by-id?id=${serviceId}`,
     {
       headers: { cookie: hdrs.get("cookie") || "" },
       cache: "no-store",

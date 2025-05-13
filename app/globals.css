@@ -122,6 +122,11 @@
   @apply text-black bg-background
 }
 
+.cl-formFieldLabel{
+  @apply text-black 
+}
+
+
 /* Clerk avatar box */
 .cl-avatarBox {
   @apply h-6 w-6;
@@ -244,3 +249,5 @@
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+

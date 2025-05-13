@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "./_components/Navbar";
 import Footer from "./_components/Footer";
 import { CategoryBar } from "./_components/CategoryBar";
+import { Providers } from "./providers";
 
 export default function DashboardLayout({
   children,
@@ -17,7 +18,9 @@ export default function DashboardLayout({
         </div>
       </div>
 
-      <main className="flex-1 container mx-auto">{children}</main>
+      <main className="flex-1 container mx-auto">
+        <Providers>{children}</Providers>
+      </main>
 
       <Footer />
     </div>

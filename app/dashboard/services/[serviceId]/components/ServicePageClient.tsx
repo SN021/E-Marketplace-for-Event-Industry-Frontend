@@ -6,7 +6,7 @@ import { ArrowLeftIcon, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ServiceReviewsWrapper from "./ServiceReviewsWrapper";
 import { QuotationRequestForm } from "./QRForm";
-// import { toast } from "react-hot-toast"; // optional
+
 
 export default function ServicePageClient({ data }: { data: any }) {
   const [userId, setUserId] = useState("");
@@ -97,7 +97,9 @@ export default function ServicePageClient({ data }: { data: any }) {
                 LKR{" "}
                 <span className="text-4xl">
                   {data.starting_price?.toLocaleString()}
+                  .00
                 </span>
+
               </p>
 
               <div className="border-t border-gray-200 my-4" />

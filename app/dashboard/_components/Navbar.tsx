@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Search, Mail, Heart, Menu, X, Settings } from "lucide-react";
+import { Search, Mail, Heart, Menu, X } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -10,13 +10,15 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [userType, setUserType] = useState("user");
-  const router = useRouter(); 
+  const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-    router.push(`/dashboard/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    setIsMobileMenuOpen(false); 
+    router.push(
+      `/dashboard/search?q=${encodeURIComponent(searchQuery.trim())}`
+    );
+    setIsMobileMenuOpen(false);
   };
 
   useEffect(() => {
@@ -24,9 +26,8 @@ const Navbar = () => {
       try {
         const response = await axios.get("/api/get-user");
         const userData = response.data;
-        const role = userData[0]?.role;        
+        const role = userData[0]?.role;
         setUserType(role);
-        
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
@@ -63,7 +64,10 @@ const Navbar = () => {
             </form>
 
             {userType === "vendor" && (
-              <Link href="" className="nav-a text-lg font-semibold px-4">
+              <Link
+                href="/dashboard/community"
+                className="nav-a text-base text-center font-semibold px-4"
+              >
                 Community Hub
               </Link>
             )}
@@ -78,11 +82,6 @@ const Navbar = () => {
             <li>
               <Link href="/dashboard/service-saved">
                 <Heart className="nav-a" />
-              </Link>
-            </li>
-            <li>
-              <Link href="">
-                <Settings className="nav-a" />
               </Link>
             </li>
             <li>
@@ -143,7 +142,10 @@ const Navbar = () => {
 
             <div className="flex flex-col gap-3 items-center">
               {userType === "vendor" && (
-                <Link href="" className="nav-a text-base font-medium">
+                <Link
+                  href=""
+                  className="nav-a text-sm text-center font-medium"
+                >
                   Community Hub
                 </Link>
               )}

@@ -11,6 +11,20 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/payment/success',
+        destination: '/dashboard/payment/success',
+        permanent: true,
+      },
+      {
+        source: '/payment/cancel',
+        destination: '/dashboard/payment/cancel',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
