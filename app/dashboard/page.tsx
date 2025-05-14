@@ -4,8 +4,6 @@ import React, { useEffect, useState } from "react";
 import { HeroBanner } from "./_components/HeroBanner";
 import { ServiceCarousel } from "./_components/ServiceCarousel";
 import Loader from "@/components/Loader";
-import { Button } from "@/components/ui/button";
-import { useUser } from "@clerk/nextjs";
 
 export default function Dashboard() {
   const [pageLoading, SetPageLoading] = useState(true);

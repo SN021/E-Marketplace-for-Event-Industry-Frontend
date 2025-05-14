@@ -25,6 +25,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { HashLoader } from "react-spinners";
 
 type ServiceData = {
   service_id: string;
@@ -147,7 +148,11 @@ export default function VendorAnalytics() {
     }
   };
 
-  if (loading) return <p>Loading analytics data...</p>;
+  if (loading) return (
+    <div className="flex justify-center items-center h-full">
+      <HashLoader color="#D39D55" />
+    </div>
+  );
   if (error) return <p className="text-red-500">{error}</p>;
   if (analytics.length === 0) return <p>No analytics data available</p>;
 

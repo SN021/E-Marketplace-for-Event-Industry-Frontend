@@ -233,32 +233,37 @@ export function OfferBubble({
       </p>
 
       {!isSelf && !isAccepted && !isDeclined && (
-        <div className="flex gap-2 mt-1">
-          <Button
-            variant="default"
-            className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-full px-5 py-1.5 transition-all duration-200"
-            disabled={actionLoading}
-            onClick={handleAcceptAndPay}
-          >
-            {actionLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              "Accept"
-            )}
-          </Button>
-          <Button
-            variant="destructive"
-            className="text-sm font-medium rounded-full px-5 py-1.5 transition-all duration-200"
-            disabled={actionLoading}
-            onClick={() => handleDecline("decline")}
-          >
-            {actionLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              "Decline"
-            )}
-          </Button>
-        </div>
+        <>
+          <p className="text-sm text-gray-600 mb-3 italic">
+            By accepting this offer, you'll be securely redirected to our payment gateway to complete your transaction.
+          </p>
+          <div className="flex gap-2 mt-1">
+            <Button
+              variant="default"
+              className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-full px-5 py-1.5 transition-all duration-200"
+              disabled={actionLoading}
+              onClick={handleAcceptAndPay}
+            >
+              {actionLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                "Accept & Proceed to Payment"
+              )}
+            </Button>
+            <Button
+              variant="destructive"
+              className="text-sm font-medium rounded-full px-5 py-1.5 transition-all duration-200"
+              disabled={actionLoading}
+              onClick={() => handleDecline("decline")}
+            >
+              {actionLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                "Decline Offer"
+              )}
+            </Button>
+          </div>
+        </>
       )}
     </div>
   );
