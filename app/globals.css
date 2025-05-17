@@ -3,8 +3,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme{
-  --color-primary: #D39D55;
+@theme {
+	--color-primary: #d39d55;
+  --container-padding-sm: 1rem;
+  --container-padding-md: 2rem;
+  --container-padding-lg: 4rem;
 }
 
 /* @theme inline {
@@ -22,91 +25,92 @@
 } */
 
 :root {
-  --radius: 0.625rem;
-  --background: #FBF7E9;
-  --foreground: #171717;
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: #D39D55;
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+	--radius: 0.625rem;
+	--background: #fbf7e9;
+	--foreground: #171717;
+	--card: oklch(1 0 0);
+	--card-foreground: oklch(0.145 0 0);
+	--popover: oklch(1 0 0);
+	--popover-foreground: oklch(0.145 0 0);
+	--primary: #d39d55;
+	--primary-foreground: oklch(0.985 0 0);
+	--secondary: oklch(0.97 0 0);
+	--secondary-foreground: oklch(0.205 0 0);
+	--muted: oklch(0.97 0 0);
+	--muted-foreground: oklch(0.556 0 0);
+	--accent: oklch(0.97 0 0);
+	--accent-foreground: oklch(0.205 0 0);
+	--destructive: oklch(0.577 0.245 27.325);
+	--border: oklch(0.922 0 0);
+	--input: oklch(0.922 0 0);
+	--ring: oklch(0.708 0 0);
+	--chart-1: oklch(0.646 0.222 41.116);
+	--chart-2: oklch(0.6 0.118 184.704);
+	--chart-3: oklch(0.398 0.07 227.392);
+	--chart-4: oklch(0.828 0.189 84.429);
+	--chart-5: oklch(0.769 0.188 70.08);
+	--sidebar: oklch(0.985 0 0);
+	--sidebar-foreground: oklch(0.145 0 0);
+	--sidebar-primary: oklch(0.205 0 0);
+	--sidebar-primary-foreground: oklch(0.985 0 0);
+	--sidebar-accent: oklch(0.97 0 0);
+	--sidebar-accent-foreground: oklch(0.205 0 0);
+	--sidebar-border: oklch(0.922 0 0);
+	--sidebar-ring: oklch(0.708 0 0);
 }
 
-
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+	--radius-sm: calc(var(--radius) - 4px);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 4px);
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+	--color-chart-1: var(--chart-1);
+	--color-chart-2: var(--chart-2);
+	--color-chart-3: var(--chart-3);
+	--color-chart-4: var(--chart-4);
+	--color-chart-5: var(--chart-5);
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-ring: var(--sidebar-ring);
+  --container-padding-sm: 1rem;
+  --container-padding-md: 2rem;
+  --container-padding-lg: 4rem;
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+	* {
+		@apply border-border outline-ring/50;
+	}
+	body {
+		@apply bg-background text-foreground;
+	}
 }
 
-
 .cl-card {
-  backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
 }
 
 /* Clerk UserButton root */
@@ -114,140 +118,175 @@
   @apply h-12 md:h-20;
 } */
 
-.cl-userButtonPopoverActionButton{
-  @apply text-black hover:scale-[101%] hover:text-black/80 duration-300 bg-background transition-transform hover:bg-background
+.cl-userButtonPopoverActionButton {
+	@apply text-black hover:scale-[101%] hover:text-black/80 duration-300 bg-background transition-transform hover:bg-background;
 }
 
-.cl-userButtonPopoverCard{
-  @apply text-black bg-background
+.cl-userButtonPopoverCard {
+	@apply text-black bg-background;
 }
 
-.cl-formFieldLabel{
-  @apply text-black 
+.cl-formFieldLabel {
+	@apply text-black;
 }
-
 
 /* Clerk avatar box */
 .cl-avatarBox {
-  @apply h-6 w-6;
+	@apply h-6 w-6;
 }
 
-.cl-headerTitle{
-  @apply text-zinc-800 font-bold;
+.cl-headerTitle {
+	@apply text-zinc-800 font-bold;
 }
 
-.cl-internal-3gh7hq, .cl-internal-5d9djf {
-  @apply text-zinc-700;
+.cl-internal-3gh7hq,
+.cl-internal-5d9djf {
+	@apply text-zinc-700;
 }
 
-.cl-badge{
-  @apply text-primary font-bold;
+.cl-badge {
+	@apply text-primary font-bold;
 }
 
-.cl-pageScrollBox{
-  @apply bg-background text-black ;
+.cl-pageScrollBox {
+	@apply bg-background text-black;
 }
 
-.cl-profilePage{
-  @apply text-zinc-700 font-medium
+.cl-profilePage {
+	@apply text-zinc-700 font-medium;
 }
 
 /* Primary button */
 .primary-btn {
-  @apply bg-primary ml-0 md:ml-6 px-4 py-2 rounded-[10px] font-semibold hover:bg-white hover:text-black duration-300;
+	@apply bg-primary ml-0 md:ml-6 px-4 py-2 rounded-[10px] font-semibold hover:bg-white hover:text-black duration-300;
 }
 
 /* Nav link styling */
 .nav-a {
-  @apply text-primary hover:text-white cursor-pointer duration-300;
+	@apply text-primary hover:text-white cursor-pointer duration-300;
 }
 
 .hover-border-glow {
-  @apply dark:bg-black bg-white text-black dark:text-white flex items-center w-full;
+	@apply dark:bg-black bg-white text-black dark:text-white flex items-center w-full;
 }
 
 /* Create vendor styling */
 .floating-label-container {
-  position: relative;
-  margin-bottom: 1.5rem;
+	position: relative;
+	margin-bottom: 1.5rem;
 }
 
 .floating-label-container input {
-  width: 100%;
-  border: none;
-  border-bottom: 2px solid #ccc;
-  outline: none;
-  padding: 0.5rem 0;
-  font-size: 1rem;
-  background: transparent;
+	width: 100%;
+	border: none;
+	border-bottom: 2px solid #ccc;
+	outline: none;
+	padding: 0.5rem 0;
+	font-size: 1rem;
+	background: transparent;
 }
 
 .floating-label-container label {
-  position: absolute;
-  top: 0.5rem;
-  left: 0;
-  pointer-events: none;
-  transition: 0.2s ease all;
-  color: #aaa;
+	position: absolute;
+	top: 0.5rem;
+	left: 0;
+	pointer-events: none;
+	transition: 0.2s ease all;
+	color: #aaa;
 }
 
-.floating-label-container input:focus+label,
-.floating-label-container input:not(:placeholder-shown)+label {
-  top: -1rem;
-  font-size: 0.8rem;
-  color: #5264AE;
+.floating-label-container input:focus + label,
+.floating-label-container input:not(:placeholder-shown) + label {
+	top: -1rem;
+	font-size: 0.8rem;
+	color: #5264ae;
 }
 
-.timeline-container{
-  @apply bg-white flex-col flex gap-5 items-center justify-center w-full rounded-[40px] px-15 py-10 md:px-15 lg:px-20 xl:px-30 shadow-lg;
+.timeline-container {
+	@apply bg-white flex-col flex gap-5 items-center justify-center w-full rounded-[40px] px-15 py-10 md:px-15 lg:px-20 xl:px-30 shadow-lg;
 }
 
 .react-select__control {
-  @apply w-full shadow bg-white border-0 border-b border-gray-300 hover:border-gray-400 py-1.5 px-1 text-sm text-gray-500 font-medium transition-all duration-300 hover:shadow-md;
+	@apply w-full shadow bg-white border-0 border-b border-gray-300 hover:border-gray-400 py-1.5 px-1 text-sm text-gray-500 font-medium transition-all duration-300 hover:shadow-md;
 
-  border-radius: 0 !important;
-  border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  border-bottom-width: 2px !important;
-  padding-left: 0px !important;
+	border-radius: 0 !important;
+	border-top: none !important;
+	border-left: none !important;
+	border-right: none !important;
+	border-bottom-width: 2px !important;
+	padding-left: 0px !important;
 }
 
 .react-select__control--placeholder {
-  color: #aaa !important;
+	color: #aaa !important;
 }
 
 .react-select__control--is-focused {
-  border-bottom-color: #D39D55 !important;
-  border-bottom-width: 2px !important;
-  border-color: #D39D55 !important;
-  outline: none !important;
-  box-shadow: none !important;
+	border-bottom-color: #d39d55 !important;
+	border-bottom-width: 2px !important;
+	border-color: #d39d55 !important;
+	outline: none !important;
+	box-shadow: none !important;
 }
 
-
-
-.create-vendor-input-container{
-  @apply flex flex-col w-full;
+.create-vendor-input-container {
+	@apply flex flex-col w-full;
 }
 
-.error-msg{
-  @apply text-red-500 text-xs italic mt-2;
+.error-msg {
+	@apply text-red-500 text-xs italic mt-2;
 }
 
 /* test */
 .input-style {
-  @apply w-full px-3 py-2 border text-gray-600 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent;
+	@apply w-full px-3 py-2 border text-gray-600 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent;
 }
 
-
 .scrollbar-none {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
 }
 
 .scrollbar-none::-webkit-scrollbar {
-  display: none;
+	display: none;
 }
 
+/* Hero seciton */
+@utility container {
+  margin-inline: auto;
+  padding-inline: var(--container-padding-sm);
 
+  @media (min-width: 768px) {
+    padding-inline: var(--container-padding-md);
+  }
+
+  @media (min-width: 1024px) {
+    padding-inline: var(--container-padding-lg);
+  }
+}
+
+@keyframes scroll-up {
+	0% {
+		transform: translateY(0%);
+	}
+	100% {
+		transform: translateY(-50%);
+	}
+}
+
+@keyframes scroll-down {
+	0% {
+		transform: translateY(-50%);
+	}
+	100% {
+		transform: translateY(0%);
+	}
+}
+
+.animate-scroll-up {
+	animation: scroll-up 20s linear infinite;
+}
+
+.animate-scroll-down {
+	animation: scroll-down 20s linear infinite;
+}
