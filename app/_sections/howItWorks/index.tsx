@@ -35,7 +35,7 @@ export default function HowItWorks() {
 
 	return (
 		<section className="py-20 bg-background text-center h-screen flex flex-col items-center justify-center">
-			<h2 className="text-4xl font-bold text-gray-900 mb-16">
+			<h2 className="text-4xl md:text-5xl font-bold text-zinc-800 mb-10">
 				HOW IT <span className="text-primary">WORKS</span>?
 			</h2>
 
