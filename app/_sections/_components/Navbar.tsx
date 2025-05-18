@@ -107,7 +107,7 @@ function Navbar({}: Props) {
 									</Link>
 								</li>
 								<li>
-									<Link href="/dashboard" className="block w-full" onClick={() => setIsMobileMenuOpen(false)}>
+									<Link href="/about-us" className="block w-full" onClick={() => setIsMobileMenuOpen(false)}>
 										<Button variant="ghost" className="w-full justify-start px-4 py-2">About us</Button>
 									</Link>
 								</li>
