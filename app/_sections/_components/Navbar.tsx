@@ -22,7 +22,7 @@ function Navbar({}: Props) {
 		<div className="px-4 md:px-10 pt-2 fixed w-full z-50">
 			<div className="bg-[#171a1b]/85 backdrop-blur-md mx-auto h-20 border-b border-gray-500 text-white rounded-2xl">
 				<div className="h-full px-5 flex items-center justify-between">
-					<Link href="/dashboard">
+					<Link href="/">
 						<div className="flex items-center text-3xl font-bold text-primary tracking-wider">
 							<span className="inline-block w-9 h-9 bg-primary text-white font-extrabold text-center rounded-sm mr-1">
 								V
@@ -45,7 +45,7 @@ function Navbar({}: Props) {
 								</Link>
 							</li>
 							<li>
-								<Link href="/dashboard">
+								<Link href="/about-us">
 									<Button variant={"link"} className="text-zinc-200 border border-primary/0 hover:border-primary/80"> About us</Button>
 								</Link>
 							</li>

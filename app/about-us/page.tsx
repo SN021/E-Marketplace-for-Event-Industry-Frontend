@@ -1,21 +1,24 @@
 import Image from "next/image";
+import FooterLanding from "../_sections/_components/Footer";
+import Navbar from "../_sections/_components/Navbar";
 
 export default function AboutUsPage() {
   return (
     <main className="bg-[#fef9ef] text-gray-900">
-      <section className="max-w-6xl mx-auto px-6 py-16">
+      <Navbar/>
+      <section className="max-w-6xl mx-auto px-6 py-30 ">
         <h1 className="text-4xl md:text-5xl font-bold mb-6">About Venzor,</h1>
-        <p className="text-base md:text-lg max-w-3xl leading-relaxed">
+        <p className="text-base md:text-lg max-w-5xl leading-relaxed">
           Welcome to Venzor, Sri Lanka's first dedicated e-marketplace for event
           service providers. Born from a deep understanding of the challenges
-          faced by new and small businesses in the event industry, Venzor empowers
-          vendors and connects them with clients through a trusted,
+          faced by new and small businesses in the event industry, Venzor
+          empowers vendors and connects them with clients through a trusted,
           transparent, and user-friendly platform. Whether you're planning a
           wedding, a corporate event, or a private celebration, Venzor makes it
           easy to discover verified service providers, compare offers, and book
           with confidence.
         </p>
-        <p className="text-base md:text-lg mt-4 max-w-3xl leading-relaxed">
+        <p className="text-base md:text-lg mt-4 max-w-5xl leading-relaxed">
           We bridge the gap between talent and opportunity, boosting visibility
           for MSMEs while making event planning simpler, smarter, and
           stress-free.
@@ -23,21 +26,21 @@ export default function AboutUsPage() {
 
         <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
           <Image
-            src="/images/about-us01.jpg"
+            src="/images/about-us02.jpg"
             alt="pic01"
             width={300}
             height={200}
             className="rounded shadow-md"
           />
           <Image
-            src="/images/about-us02.jpg"
+            src="/images/about-us01.jpg"
             alt="pic02"
             width={300}
             height={200}
             className="rounded shadow-md"
           />
           <Image
-            src="/images/about-us03.jpg"
+            src="/images/about-us04.jpg"
             alt="pic03"
             width={300}
             height={200}
@@ -47,10 +50,9 @@ export default function AboutUsPage() {
       </section>
 
       <section className="bg-[#fff9e7] ">
-        <div className="max-w-6xl mx-auto py-8 px-6 grid md:grid-cols-2 gap-8 items-center">
-
+        <div className="max-w-6xl mx-auto py-8 px-6 grid md:grid-cols-3 gap-8 items-center">
           {/* Left - vertical label and block */}
-          <div className="relative">
+          <div className="relative md:col-span-1">
             <div className="absolute -left-8  top-1/2 transform -translate-y-1/2 rotate-[-90deg] text-5xl font-medium text-white ml-10">
               Our Story
             </div>
@@ -58,7 +60,7 @@ export default function AboutUsPage() {
           </div>
 
           {/* Right - Vision and Mission */}
-          <div className="space-y-12">
+          <div className="space-y-12 md:col-span-2 ">
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <svg
@@ -99,6 +101,7 @@ export default function AboutUsPage() {
           </div>
         </div>
       </section>
+      <FooterLanding/>
     </main>
   );
 }

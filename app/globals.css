@@ -170,6 +170,14 @@
 	@apply dark:bg-black bg-white text-black dark:text-white flex items-center w-full;
 }
 
+.cl-formFieldLabel {
+	@apply text-white/70
+}
+
+.cl-headerTitle{
+	@apply text-primary
+}
+
 /* Create vendor styling */
 .floating-label-container {
 	position: relative;
