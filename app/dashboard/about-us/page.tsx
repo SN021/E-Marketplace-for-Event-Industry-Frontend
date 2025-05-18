@@ -8,8 +8,8 @@ export default function AboutUsPage() {
         <p className="text-base md:text-lg max-w-3xl leading-relaxed">
           Welcome to Venzor, Sri Lanka's first dedicated e-marketplace for event
           service providers. Born from a deep understanding of the challenges
-          faced by new and small businesses in the event industry, Venzor
-          empowers vendors and connects them with clients through a trusted,
+          faced by new and small businesses in the event industry, Venzor empowers
+          vendors and connects them with clients through a trusted,
           transparent, and user-friendly platform. Whether you're planning a
           wedding, a corporate event, or a private celebration, Venzor makes it
           easy to discover verified service providers, compare offers, and book
