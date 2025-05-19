@@ -33,7 +33,7 @@ export default function ForbiddenPage() {
         transition={{ delay: 0.4, duration: 0.5 }}
         className="text-gray-600 max-w-md mb-6"
       >
-        You don’t have permission to access this page. Please contact an
+        You don't have permission to access this page. Please contact an
         administrator if you think this is a mistake.
       </motion.p>
 
