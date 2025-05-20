@@ -30,9 +30,8 @@ function FeatureSection({}: Props) {
 									Instant Vendor Matchmaking
 								</h4>
 								<p className="text-sm">
-									Quickly find the best vendors tailored to your event type,
-									location, preferences, and budget through smart filtering and
-									matchmaking algorithms.
+									Quickly find the best vendors tailored to your budget,
+									location, preferences, and reviews through advanced browsing and filtering.
 								</p>
 							</div>
 						</div>

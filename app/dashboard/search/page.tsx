@@ -17,7 +17,6 @@ type FiltersType = {
   sortOrder?: string | null;
 };
 
-
 function SearchResults() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
@@ -27,8 +26,6 @@ function SearchResults() {
   const [error, setError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState<FiltersType>({});
-
-
 
   useEffect(() => {
     if (!query && !subcategory) {
@@ -61,9 +58,8 @@ function SearchResults() {
       }
     }
 
-    
     setServices([]);
-    setCurrentPage(1); 
+    setCurrentPage(1);
     setFilters({});
     fetchSearchResults();
   }, [query, subcategory]);
@@ -75,75 +71,70 @@ function SearchResults() {
       .join(" ");
   }
 
+  const handleFilterApply = async (newFilters?: any, page = 1) => {
+    const effectiveFilters = newFilters ?? filters;
+    setLoading(true);
+    setError(false);
 
-const handleFilterApply = async (newFilters?: any, page = 1) => {
-  const effectiveFilters = newFilters ?? filters;
-  setLoading(true);
-  setError(false);
+    try {
+      const isReset =
+        !effectiveFilters || Object.keys(effectiveFilters).length === 0;
 
-  try {
+      if (isReset) {
+        const params = new URLSearchParams();
+        if (query) params.append("q", query);
+        if (subcategory) params.append("subcategory", subcategory);
 
-    const isReset =
-      !effectiveFilters || Object.keys(effectiveFilters).length === 0;
-
-    if (isReset) {
- 
-      const params = new URLSearchParams();
-      if (query) params.append("q", query);
-      if (subcategory) params.append("subcategory", subcategory);
-
-      const res = await fetch(`/api/filter/search?${params.toString()}`, {
-        cache: "no-store",
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data?.error || "Something went wrong");
-      }
-      setServices(data);
-    } else {
-    
-      const payload = {
-        ...effectiveFilters,
-        query: query || null,
-        subcategory: subcategory || null,
-        sortOrder: effectiveFilters.sortOrder || null,
-        page,
-        limit: 12,
-      };
-
-      const res = await fetch("/api/filter/filter-services", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data?.error || "Something went wrong");
-      }
-      if (page === 1) {
+        const res = await fetch(`/api/filter/search?${params.toString()}`, {
+          cache: "no-store",
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data?.error || "Something went wrong");
+        }
         setServices(data);
       } else {
-        setServices((prev) => [...prev, ...data]);
+        const payload = {
+          ...effectiveFilters,
+          query: query || null,
+          subcategory: subcategory || null,
+          sortOrder: effectiveFilters.sortOrder || null,
+          page,
+          limit: 12,
+        };
+
+        const res = await fetch("/api/filter/filter-services", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data?.error || "Something went wrong");
+        }
+        if (page === 1) {
+          setServices(data);
+        } else {
+          setServices((prev) => [...prev, ...data]);
+        }
       }
+
+      if (newFilters) {
+        setFilters(newFilters);
+      }
+
+      setCurrentPage(page);
+    } catch (err) {
+      console.error("Filter error:", err);
+      setError(true);
+      if (page === 1) setServices([]);
+    } finally {
+      setLoading(false);
     }
-
-  if (newFilters) {
-    setFilters(newFilters); 
-  }
-
-    setCurrentPage(page);
-  } catch (err) {
-    console.error("Filter error:", err);
-    setError(true);
-    if (page === 1) setServices([]);
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   const handleLoadMore = () => {
-    handleFilterApply(undefined, currentPage + 1); 
+    handleFilterApply(undefined, currentPage + 1);
   };
 
   if (!query && !subcategory) {
@@ -233,21 +224,20 @@ const handleFilterApply = async (newFilters?: any, page = 1) => {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-30 gap-y-10">
                 {services.map((service: any) => (
-
-                    <div key={service.service_id} className="cursor-pointer ">
-                      <ServiceCard
-                        title={service.service_title}
-                        serviceId={service.service_id}
-                        seller={service.display_name}
-                        price={service.starting_price}
-                        imageUrl={
-                          service.signed_photo_urls?.[0] || "/placeholder.jpg"
-                        }
-                        discount={service.discounts_and_offers}
-                        averageRating={service.average_rating}
-                        href={`/dashboard/services/${service.service_id}`}
-                      />
-                    </div>
+                  <div key={service.service_id} className="cursor-pointer ">
+                    <ServiceCard
+                      title={service.service_title}
+                      serviceId={service.service_id}
+                      seller={service.display_name}
+                      price={service.starting_price}
+                      imageUrl={
+                        service.signed_photo_urls?.[0] || "/placeholder.jpg"
+                      }
+                      discount={service.discounts_and_offers}
+                      averageRating={service.average_rating}
+                      href={`/dashboard/services/${service.service_id}`}
+                    />
+                  </div>
                 ))}
               </div>
               {services.length > 0 && (

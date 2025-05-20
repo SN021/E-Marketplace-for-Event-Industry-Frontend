@@ -286,7 +286,7 @@ const page = () => {
           Vendor Request Pending
         </h2>
         <p className="text-sm">
-          You’ve already submitted a vendor application. Please wait while an
+          You've already submitted a vendor application. Please wait while an
           administrator reviews and approves your request.
         </p>
         <div className="flex items-center justify-center mt-5">
