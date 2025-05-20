@@ -57,7 +57,7 @@ export default function TermsAndPrivacyPage() {
       <p className="mb-4">
         All bookings are subject to vendor availability. Cancellation policies
         are defined by vendors and must be respected by clients. We are not
-        liable for disputes, delays, or service issues — but we do provide a
+        liable for disputes, delays, or service issues, but we do provide a
         dispute resolution mechanism.
       </p>
 
