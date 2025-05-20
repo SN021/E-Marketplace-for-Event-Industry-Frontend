@@ -44,15 +44,16 @@ export const CategoryBar = () => {
           {eventServiceCategories.map((cat, idx) => (
             <DropdownMenu key={idx}>
               <DropdownMenuTrigger asChild>
-                <Button variant={"link"}>{cat.label}</Button>
+                <Button variant={"link"} className="text-zinc-600">{cat.label}</Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56">
+              <DropdownMenuContent className="w-56 text-black">
                 {cat.subcategories.map((sub, i) => (
                   <DropdownMenuItem key={i}>
                     <Link
                       href={`/dashboard/search?subcategory=${encodeURIComponent(
                         sub.value
                       )}`}
+                      className="text-black"
                     >
                       {sub.label}
                     </Link>
