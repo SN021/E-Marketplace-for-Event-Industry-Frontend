@@ -228,7 +228,7 @@ export function OfferBubble({
       </div>
 
       <p className="font-bold text-xl text-primary mb-3 tracking-wide">
-        LKR {Number(offer.price).toLocaleString()} 
+        LKR {Number(offer.price).toLocaleString()}
         {usdPrice && <span className="text-sm text-gray-500 ml-2">({usdPrice} USD)</span>}
       </p>
 
