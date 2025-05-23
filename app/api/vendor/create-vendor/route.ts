@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
         website,
         province,
         city,
-        Paypal_email: paypalEmail,
+        paypal_email: paypalEmail,
         business_phone: businessPhone,
         languages,
         social_links: socialLinks,
